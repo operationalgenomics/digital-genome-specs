@@ -190,7 +190,7 @@ Genes define:
 * simulation units
 * audit-ready operational knowledge
 
->> They are the middle layer between:
-
+> They are the middle layer between:
+---
 👉 atomic codons
 👉 full Digital Genome structures
