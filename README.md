@@ -38,3 +38,26 @@ Canonical diagrams that visually define the architecture.
 ---
 
 ## 🧬 The Digital Genome Architecture (high-level)
+[Codons] → [Operational Genes] → [Digital Genome] → [Cognitive Core] → [Coordinated Action]
+
+
+A full PNG version of this diagram will be added as part of `/diagrams/`.
+
+---
+
+## 📄 Related Materials
+
+White Papers:  
+- PT-BR: https://github.com/operationalgenomics/whitepapers  
+- EN-US: https://github.com/operationalgenomics/whitepapers/tree/main/EN
+
+Official Book:  
+- PT-BR: https://a.co/d/a4PRANJ  
+- EN-US: https://a.co/d/ciFwzqM
+
+---
+
+## 🧠 About the Author
+
+**Carlos Eduardo Favini** is the founder of Operational Genomics and author of *The Digital Genome*.  
+His work defines the conceptual, structural, and cognitive foundations of Industry 5.0.
