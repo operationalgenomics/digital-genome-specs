@@ -1,0 +1,335 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://operationalgenomics.org/schemas/digital-genome.json",
+  "title": "Digital Genome Schema",
+  "description": "Formal JSON Schema for validating Operational Genomics structures",
+  
+  "definitions": {
+    
+    "SafetyLevel": {
+      "type": "string",
+      "enum": ["info", "warning", "critical"],
+      "description": "Risk classification for operational components"
+    },
+    
+    "GeneStatus": {
+      "type": "string",
+      "enum": ["draft", "active", "deprecated", "archived"],
+      "description": "Lifecycle status of an operational gene"
+    },
+    
+    "PraxeologicalCodon": {
+      "type": "object",
+      "description": "The atomic, indivisible unit of purposeful operational knowledge",
+      "required": ["entity_id", "action_id", "target_state_id"],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "64-character hexadecimal unique identifier"
+        },
+        "entity_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier of the entity being acted upon"
+        },
+        "action_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier of the action to perform"
+        },
+        "target_state_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier of the desired resulting state"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Domain-specific parameters for the action",
+          "additionalProperties": true
+        },
+        "preconditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Conditions that must be true before execution"
+        },
+        "postconditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Conditions expected to be true after execution"
+        },
+        "safety_level": {
+          "$ref": "#/definitions/SafetyLevel"
+        },
+        "context": {
+          "type": "object",
+          "description": "Additional contextual information",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    
+    "OperationalGene": {
+      "type": "object",
+      "description": "A structured sequence of Praxeological Codons expressing a functional capability",
+      "required": ["uid", "name", "purpose"],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "64-character hexadecimal unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Human-readable name for the gene"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Declarative description of what this gene accomplishes"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "default": "1.0.0",
+          "description": "Semantic version string"
+        },
+        "status": {
+          "$ref": "#/definitions/GeneStatus"
+        },
+        "codons": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/PraxeologicalCodon" },
+          "minItems": 1,
+          "description": "Ordered sequence of praxeological codons"
+        },
+        "activation_conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Conditions required for gene activation"
+        },
+        "postconditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Expected truths after successful execution"
+        },
+        "exception_handlers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Mapping of exception types to handler strategies"
+        },
+        "evaluation_metrics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "KPIs for assessing execution quality"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional descriptive information",
+          "properties": {
+            "executor": { "type": "string" },
+            "action": { "type": "string" },
+            "target": { "type": "string" },
+            "domain": { "type": "string" },
+            "priority": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "fitness_scores": {
+          "type": "object",
+          "additionalProperties": { 
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "description": "Historical performance scores per context"
+        },
+        "parent_genes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "UIDs of ancestor genes for evolutionary tracking"
+        },
+        "created_at": {
+          "type": "number",
+          "description": "Unix timestamp of creation"
+        },
+        "modified_at": {
+          "type": "number",
+          "description": "Unix timestamp of last modification"
+        }
+      },
+      "additionalProperties": false
+    },
+    
+    "EntityRegistration": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["physical", "logical", "agent", "resource", "sensor"],
+          "description": "Entity classification"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "registered_at": {
+          "type": "number"
+        }
+      }
+    },
+    
+    "ActionRegistration": {
+      "type": "object",
+      "required": ["name", "category"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["operational", "informational", "safety", "diagnostic"],
+          "description": "Action classification"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "registered_at": {
+          "type": "number"
+        }
+      }
+    },
+    
+    "StateRegistration": {
+      "type": "object",
+      "required": ["name", "category"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable name"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["operational", "safety", "intermediate", "diagnostic"],
+          "description": "State classification"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "registered_at": {
+          "type": "number"
+        }
+      }
+    },
+    
+    "EvolutionEvent": {
+      "type": "object",
+      "required": ["timestamp", "event_type", "gene_uid"],
+      "properties": {
+        "timestamp": {
+          "type": "number",
+          "description": "Unix timestamp of the event"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": ["insertion", "modification", "deprecation", "evolution", "deletion"],
+          "description": "Type of evolution event"
+        },
+        "gene_uid": {
+          "type": "string",
+          "description": "UID of the affected gene"
+        },
+        "gene_name": {
+          "type": "string"
+        },
+        "stem": {
+          "type": "string"
+        },
+        "chromosome": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  },
+  
+  "type": "object",
+  "description": "Complete Digital Genome structure",
+  "required": ["genome_id", "name", "genes"],
+  "properties": {
+    "genome_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Unique identifier for this genome"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable name for this genome"
+    },
+    "genes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/OperationalGene" },
+      "description": "Map of gene UIDs to gene objects"
+    },
+    "stems": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "Thematic groupings of genes"
+    },
+    "chromosomes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "Functional groupings of genes"
+    },
+    "evolution_history": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/EvolutionEvent" },
+      "description": "Chronicle of all genome changes"
+    },
+    "entity_registry": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/EntityRegistration" },
+      "description": "Registry of known entities"
+    },
+    "action_registry": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/ActionRegistration" },
+      "description": "Registry of known actions"
+    },
+    "state_registry": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/StateRegistration" },
+      "description": "Registry of known states"
+    },
+    "created_at": {
+      "type": "number",
+      "description": "Unix timestamp of genome creation"
+    },
+    "modified_at": {
+      "type": "number",
+      "description": "Unix timestamp of last modification"
+    }
+  },
+  "additionalProperties": false
+}
