@@ -100,13 +100,23 @@ digital-genome-specs/
 │   │   ├── oracle-synthesizer.md
 │   │   ├── merism-evolution.md
 │   │   └── governance-interface.md
-│   └── unl/
-│       ├── specification.md
-│       ├── intent-mapping.md
-│       ├── semantic-ontology.md
-│       ├── context-model.md
-│       ├── codification-rules.md
-│       └── translation-engine.md
+│   ├── unl/
+│   │   ├── specification.md
+│   │   ├── semantic-ontology.md
+│   │   ├── intent-mapping.md
+│   │   ├── context-model.md
+│   │   ├── codification-rules.md
+│   │   ├── translation-engine.md
+│   │   └── diagrams.md
+│   └── system/
+│       ├── architecture-diagrams.md
+│       ├── execution-model.md
+│       ├── monitoring-model.md
+│       ├── feedback-model.md
+│       ├── governance-model.md
+│       ├── integration-contracts.md
+│       ├── operational-scenarios.md
+│       └── safety-invariants.md
 │
 ├── src/                            # Reference implementation
 │   ├── digital_genome_core.py      # Core: Codons, Genes, Genome, Ribosome
