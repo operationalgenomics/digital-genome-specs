@@ -1,253 +1,345 @@
 # Security Principles
-### Foundational Security Model for the Digital Genome Ecosystem
+### Integrated Security Architecture for a Multi‑Tenant, Ledger‑Anchored, Attribute‑Aware, Governance‑Enforced Cognitive Ecosystem
 
 ---
 
 ## 1. Purpose
 
-The **Security Principles** define the mandatory security philosophy, posture, and operational rules that govern every layer of the Digital Genome Ecosystem.
+The **Security Principles** define the mandatory security model for the Digital Genome Ecosystem.  
+This rewritten edition includes all improvements requested:
 
-These principles ensure the system is:
-- secure against internal and external threats,
-- resilient to intentional misuse,
-- compliant with governance and safety constraints,
-- capable of operating in hostile or sensitive environments,
-- verifiable and auditable at all times.
+- cryptographic integrity based on *ledger‑anchored signature lineage*,
+- unified RBAC + ABAC authorization,
+- multi‑tenant DataSpaces isolation,
+- cross‑tenant governance boundaries,
+- cognitive and simulation sandboxing,
+- identity lineage and multi‑signature approvals,
+- deployment integrity and version security,
+- detailed diagram references.
 
-Security applies to:
-- cognition,
-- execution,
-- deployment,
-- communication,
-- data integrity,
-- versioning,
-- governance decisions.
+Security is **not a subsystem** — it is a **structural property of the entire ecosystem**.
 
 ---
 
 ## 2. Core Security Philosophy
 
 ### 2.1 Zero Trust Architecture
-No subsystem, node, operator, or external system is inherently trusted.
-Every interaction must be authenticated, validated, and authorized.
+No identity, subsystem, or request is inherently trusted.  
+Every interaction requires authentication, authorization, and contextual validation.
 
 ### 2.2 Defense in Depth
-Security is layered:
-- network,
-- runtime,
-- application,
-- cognition,
-- data governance.
+Security layers operate at:
+- network segmentation,
+- container boundaries,
+- runtime isolation,
+- cognitive reasoning layers,
+- governance approval chain,
+- ledger anchoring.
 
-Each layer reinforces the previous.
+A compromise must pass multiple hardened layers.
 
-### 2.3 Least Privilege
-Every component—human or machine—has only the minimum permissions required.
+### 2.3 Least Privilege Enforcement
+All access rights are:
+- minimal,
+- contextual,
+- time‑bound,
+- revocable.
 
 ### 2.4 Immutable Auditability
-All critical operations must generate immutable, tamper-evident logs stored in the governance ledger.
+All critical actions generate:
+- signatures,
+- hashes,
+- ledger entries,
+- timestamped lineage.
 
-### 2.5 Secure-by-Design, Not Add-On
-Security is embedded directly into:
-- architecture,
-- data structures,
-- governance logic,
-- simulation and reasoning.
+No entry can be modified without detection.
+
+### 2.5 Secure‑by‑Design Cognition
+Security integrates directly into:
+- reasoning logic,
+- simulation workflows,
+- evolutionary mechanisms,
+- UNL parsing,
+- monitoring and feedback.
 
 ---
 
-## 3. Identity, Access, and Authentication
+## 3. Identity, Access, and Authorization
 
-### 3.1 Identity Requirements
-All actors must have secure, unique identities:
-- operators,
-- system agents,
-- containers,
-- governance nodes.
+### 3.1 Unified RBAC + ABAC Authorization Model
+Both models must be enforced.
 
-### 3.2 Authentication Protocols
-Must support:
-- MFA (multi-factor authentication),
-- cryptographic tokens,
-- certificate-based identity.
+**RBAC** (Role‑Based Access Control):
+Defines baseline permissions based on roles:
+- technician
+- engineer
+- supervisor
+- auditor
+- administrator
 
-### 3.3 Access Control
-Must use:
-- RBAC (Role-Based Access Control),
-- ACLs for fine-grained permissions,
-- temporal and contextual access rules.
+**ABAC** (Attribute‑Based Access Control):  
+Evaluates contextual attributes:
+- operator skill level,
+- equipment risk profile,
+- DataSpace / tenant identity,
+- device trust state,
+- environmental conditions,
+- safety mode (normal/emergency),
+- approval lineage.
 
-### 3.4 Emergency Access
-Governance may grant temporary escalating privileges.
-All emergency access must be: logged, justified, signed.
+A request is allowed only when:
+```ts
+RBAC(role) ∧ ABAC(attributes) ∧ Governance(policy) ∧ Safety(envelope)
+```
+
+### 3.2 Authentication Requirements
+Identities (human and machine) must support:
+- MFA,
+- signed tokens,
+- hardware‑backed credentials,
+- identity lineage tracking.
+
+### 3.3 Identity Lineage and Delegation
+Identity events must be:
+- timestamped,
+- signed,
+- anchored in the immutable ledger.
+
+Delegation requires:
+- multi‑signature approval,
+- revocation path,
+- lineage visibility.
 
 ---
 
 ## 4. Data Security and Integrity
 
-### 4.1 In-Transit Encryption
-All inter-node communication must use:
-- TLS 1.3 or higher,
-- mutual authentication where applicable.
+### 4.1 Encryption
+- **In transit:** TLS 1.3+
+- **At rest:** AES‑256 or stronger
 
-### 4.2 At-Rest Encryption
-Sensitive data such as genome archives, logs, and policies must be encrypted at rest.
-
-### 4.3 Integrity Verification
-All critical files must include:
-- checksums,
+### 4.2 Integrity Controls
+Critical artifacts must include:
+- cryptographic hashes (SHA‑256+),
 - digital signatures,
-- version stamps.
+- version signatures,
+- trust chain lineage.
+
+### 4.3 Key Management
+Keys must support:
+- rotation,
+- revocation,
+- threshold recovery,
+- multi‑party custody.
 
 ### 4.4 Data Minimization
-Only necessary data is collected, transmitted, or stored.
+Only essential data is collected and retained.
 
 ---
 
-## 5. Secure Cognitive Operation
+## 5. Multi‑Tenant Architecture and DataSpaces
 
-### 5.1 Cognitive Isolation
-Reasoning modules must run in confined compute environments to prevent:
-- unauthorized data access,
-- model tampering,
-- cross-node contamination.
+### 5.1 DataSpaces
+A **DataSpace** represents a cryptographically isolated tenant domain:
+- enterprise,
+- department,
+- project,
+- regulatory partition.
 
-### 5.2 Explainability as a Security Requirement
-All decisions must include rationale to:
-- detect tampering,
-- detect anomalous reasoning,
-- ensure trustworthiness of cognitive output.
+### 5.2 Hard Isolation
+Tenants cannot:
+- read each other’s data,
+- influence gene evolution across spaces,
+- affect cognition outside their domain.
 
-### 5.3 Safety-Governed Reasoning
-Security requires enforcing:
-- safety invariants,
-- governance rules,
-- forbidden behaviors.
+### 5.3 Cognitive Isolation
+Per‑tenant reasoning enclaves prevent:
+- strategy leakage,
+- inference contamination,
+- unintended cross‑tenant influence.
 
-### 5.4 Simulation Security
-Simulations must:
-- run in isolated sandboxes,
-- use signed models,
-- avoid unverified external data.
+### 5.4 Cross‑Tenant Governance
+Cross‑DataSpace operations require:
+- explicit cross‑signature approvals,
+- ledger‑anchored justification,
+- safety convergence checks.
 
 ---
 
-## 6. Execution and Deployment Security
+## 6. Ledger‑Anchored Integrity Principles
 
-### 6.1 Secure Containers
-Containers must be:
-- minimal,
-- immutable,
+### 6.1 Signature Requirements
+All critical events require:
+- initiator signature,
+- approver signature,
+- system signature,
+- ledger anchoring.
+
+### 6.2 Immutable Ledger Anchoring
+Every decision, mutation, evolution proposal, or execution outcome must be:
+- hashed,
 - signed,
-- scanned for vulnerabilities.
+- written to a tamper‑evident ledger,
+- timestamped with distributed trust.
 
-### 6.2 Network Segmentation
-Isolate:
-- governance traffic,
-- cognitive reasoning,
-- execution pathways,
-- telemetry streams.
+### 6.3 Proof of Cognition
+Every cognitive decision must include:
+- decision trace hash,
+- reasoning signature,
+- governance signature.
 
-### 6.3 Execution Gateway Security
-Execution commands must:
-- be authenticated,
-- be authorized,
-- include governance validation.
+### 6.4 Proof of Execution
+Execution plans and outcomes must include:
+- pre‑execution signature,
+- post‑execution signature,
+- monitoring hash,
+- outcome evaluation hash.
 
-### 6.4 Deployment Approval Workflow
-Deployment requires:
+### 6.5 Lineage Integrity
+Artifacts follow a verifiable ancestry:
+```
+creator → signer → approver → anchor → version
+```
+
+---
+
+## 7. Cognitive, Simulation, and Evolution Security
+
+### 7.1 Cognitive Isolation
+Reasoning modules operate inside sandboxed compute zones with:
+- network restrictions,
+- memory boundaries,
+- data source whitelisting.
+
+### 7.2 Simulation Sandbox
+Simulations must use:
+- signed models,
+- deterministic randomness (seeded),
+- controlled data inputs.
+
+### 7.3 Explainability as a Security Requirement
+Unexplainable cognition triggers:
+- anomaly classification,
+- governance review,
+- potential isolation.
+
+### 7.4 Evolution Security Controls
+Gene evolution proposals must include:
+- simulation evidence,
+- safety proofs,
 - governance approval,
-- policy compliance checks,
-- safety validation.
+- distributed signatures.
 
 ---
 
-## 7. Threat Model
+## 8. Execution and Deployment Security
 
-### 7.1 External Threats
-- network intrusion,
-- unauthorized access,
-- malicious actors,
-- denial-of-service attacks.
-
-### 7.2 Internal Threats
-- misconfigured access,
-- operator misuse,
-- compromised nodes.
-
-### 7.3 Cognitive Threats
-- biased simulations,
-- poisoned data,
-- malicious or unsafe gene variants.
-
-### 7.4 Governance Threats
-- unauthorized overrides,
-- policy tampering,
-- log manipulation attempts.
-
----
-
-## 8. Security Controls
-
-### 8.1 Mandatory Controls
-- end-to-end encryption,
-- cryptographic signatures,
-- RBAC enforcement,
-- immutable ledger logging,
-- anomaly detection.
-
-### 8.2 Optional Controls (Context-Dependent)
-- hardware security modules (HSMs),
-- air-gapped governance nodes,
-- trusted execution environments (TEEs).
-
-### 8.3 Forbidden Practices
-- hard-coded credentials,
-- unencrypted internal communication,
-- bypassing governance for convenience.
-
----
-
-## 9. Security Monitoring and Incident Response
-
-### 9.1 Continuous Monitoring
-Monitoring must detect:
-- intrusions,
-- abnormal patterns,
-- unauthorized access,
-- corrupted telemetry.
-
-### 9.2 Incident Classification
-Incidents categorized as:
-- low,
-- medium,
-- high,
-- critical.
-
-### 9.3 Response Procedures
-- isolate affected component,
-- activate failovers,
-- validate integrity,
-- analyze governance logs,
-- restore safe state.
-
-### 9.4 Post-Incident Review
-Every incident must include:
-- root-cause analysis,
-- corrective actions,
+### 8.1 Execution Gateway Enforcement
+All actions must pass:
+- identity validation,
+- RBAC + ABAC evaluation,
+- safety envelope checks,
 - governance approval.
 
+### 8.2 Secure Runtime Containers
+Runtime components must be:
+- minimal,
+- immutable,
+- vulnerability‑scanned,
+- signature‑verified.
+
+### 8.3 Network Segmentation
+Dedicated network zones for:
+- cognitive traffic,
+- execution signals,
+- telemetry streams,
+- governance ledger operations.
+
+### 8.4 Deployment Governance
+Updates require:
+- multi‑signature approval,
+- safety validation,
+- simulation alignment verification,
+- ledger anchoring.
+
 ---
 
-## 10. Summary
+## 9. Threat Model
 
-The **Security Principles** define a complete, integrated security posture for the Digital Genome Ecosystem.
+### 9.1 External Threats
+- intrusion attempts,
+- credential theft,
+- malicious input streams,
+- denial‑of‑service.
 
-Security is not optional or external — it is **embedded into the architecture**, governing:
-- cognition,
-- execution,
-- data flows,
-- governance,
-- deployment.
+### 9.2 Internal Threats
+- misuse of privileges,
+- compromised operators,
+- unsafe overrides.
 
-These principles ensure that the system remains safe, trustworthy, resilient, and resistan
+### 9.3 Cognitive Threats
+- tampered simulations,
+- distorted telemetry,
+- biased or malicious evolution variants.
+
+### 9.4 Governance Threats
+- unauthorized overrides,
+- policy tampering,
+- attempts to alter ledger entries.
+
+---
+
+## 10. Incident Monitoring and Response
+
+### 10.1 Continuous Monitoring
+Detects:
+- intrusions,
+- signature mismatches,
+- domain violations,
+- cognitive anomalies.
+
+### 10.2 Incident Response Flow
+```ts
+detect → classify → isolate → verify integrity → restore state → log → governance review
+```
+
+### 10.3 Recovery
+Recovery uses:
+- last valid anchor,
+- hash verification,
+- safety validation,
+- controlled reactivation.
+
+### 10.4 Post‑Incident Governance Review
+All incidents require:
+- root‑cause analysis,
+- integrity revalidation,
+- updated safety or governance rules.
+
+---
+
+## 11. Diagram References (PNG‑Ready)
+
+### 11.1 Security Architecture Overview
+`security-architecture-overview.png`
+A layered diagram showing zero trust, RBAC+ABAC, cognitive isolation, ledger anchoring.
+
+### 11.2 DataSpaces Isolation Model
+`security-dataspaces-isolation.png`
+Shows tenant boundaries, isolation controls, and cross‑tenant approval paths.
+
+### 11.3 Signature Lineage Flow
+`security-signature-lineage.png`
+Illustrates the chain: creator → signer → approver → anchor.
+
+### 11.4 Governance Approval Chain
+`security-governance-flow.png`
+Displays multi‑signature approvals, policy validation, and ledger anchoring.
+
+### 11.5 Cognitive Isolation Diagram
+`security-cognitive-isolation.png`
+Sandbox boundaries, reasoning enclaves, and data source restrictions.
+
+### 11.6 Execution Gateway Security Flow
+`security-execution-gateway.png`
+
