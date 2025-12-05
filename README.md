@@ -85,22 +85,29 @@ The genome is **alive**: it evolves through **Merism** (variation → evaluation
 
 ```bash
 digital-genome-specs/
-├── specs/                          # Formal specifications
-│   ├── codons/
-│   │   └── praxeological-codons.md
-│   ├── genes/
-│   │   └── operational-genes.md
-│   ├── genome/
-│   │   └── specification.md
-│   ├── cognitive-core/
-│   │   ├── specification.md
-│   │   ├── context-evaluator.md
-│   │   ├── inference-engine.md
-│   │   ├── simulation-engine.md
-│   │   ├── oracle-synthesizer.md
-│   │   ├── merism-evolution.md
-│   │   └── governance-interface.md
-│   ├── unl/
+├── specs/
+│   ├── foundations/                #  PHILOSOPHICAL & ARCHITECTURAL FOUNDATIONS
+│   │   ├── philosophical-foundations.md   # Why the system exists; epistemology
+│   │   ├── truth-architecture.md          # Foucauldian vs Platonic truth
+│   │   ├── neuron-ontology.md             # DNA as neurons; the distributed brain
+│   │   └── information-lifecycle.md       # Complete flow from experience to wisdom
+│   │
+│   ├── cognitive-core/             # THE REASONING ENGINE
+│   │   ├── specification.md               # Core architecture overview
+│   │   ├── parallel-motors.md             # Four motors operating simultaneously
+│   │   ├── craft-performance.md           # Convergence mathematics (product, not average)
+│   │   ├── meta-motor-meristic.md         # The Platonic philosopher
+│   │   ├── context-evaluator.md           # Context processing
+│   │   ├── inference-engine.md            # Reasoning and selection
+│   │   ├── simulation-engine.md           # Worldline/multiverse testing
+│   │   ├── oracle-synthesizer.md          # Final decision synthesis
+│   │   ├── merism-evolution.md            # Evolutionary mechanisms
+│   │   └── governance-interface.md        # Safety and compliance
+│   │
+│   ├── digital-genome/             # THE KNOWLEDGE ORGANISM
+│   │   └── specification.md               # Genome structure and operations
+│   │
+│   ├── unl/                        # UNIVERSAL NEUTRAL LANGUAGE
 │   │   ├── specification.md
 │   │   ├── semantic-ontology.md
 │   │   ├── intent-mapping.md
@@ -108,7 +115,8 @@ digital-genome-specs/
 │   │   ├── codification-rules.md
 │   │   ├── translation-engine.md
 │   │   └── diagrams.md
-│   └── system/
+│   │
+│   └── system/                     # OPERATIONAL SPECIFICATIONS
 │       ├── architecture-diagrams.md
 │       ├── execution-model.md
 │       ├── monitoring-model.md
@@ -116,7 +124,16 @@ digital-genome-specs/
 │       ├── governance-model.md
 │       ├── integration-contracts.md
 │       ├── operational-scenarios.md
+│       ├── reliability-model.md
+│       ├── deployment-model.md
+│       ├── failure-modes.md
 │       └── safety-invariants.md
+│
+├── codons/                         # Codon specifications
+│   └── praxeological-codons.md
+│
+├── genes/                          # Gene specifications  
+│   └── operational-genes.md
 │
 ├── src/                            # Reference implementation
 │   ├── digital_genome_core.py      # Core: Codons, Genes, Genome, Ribosome
@@ -125,11 +142,36 @@ digital-genome-specs/
 ├── examples/                       # Usage examples
 │   └── demo.py
 │
-├── diagrams/                       # Architecture diagrams
-│   └── (PNG/SVG files)
+├── schemas/                        # JSON Schema definitions
+│   └── digital-genome.schema.json
+│
+├── diagrams/                       # Architecture diagrams (SVG/PNG)
+│   └── (to be generated)
+│
+├── docs/                           # Supporting documentation
+│   ├── glossary.md
+│   ├── abbreviations.md
+│   ├── conventions-style-guide.md
+│   └── ...
 │
 └── README.md
 ```
+
+---
+
+## Start Here: The Foundational Documents
+
+If you are new to Operational Genomics, read the foundational documents in this order:
+
+1. **[Philosophical Foundations](specs/foundations/philosophical-foundations.md)** — Why the system exists; the epistemological architecture
+2. **[Truth Architecture](specs/foundations/truth-architecture.md)** — The dual truth system (registered vs synthesized)
+3. **[Parallel Motors](specs/cognitive-core/parallel-motors.md)** — How four cognitive perspectives evaluate simultaneously
+4. **[Craft Performance](specs/cognitive-core/craft-performance.md)** — The mathematics of convergence (product, not average)
+5. **[Meristic Meta-Motor](specs/cognitive-core/meta-motor-meristic.md)** — The Platonic philosopher that imagines improvements
+6. **[Neuron Ontology](specs/foundations/neuron-ontology.md)** — How DNA forms the distributed brain
+7. **[Information Lifecycle](specs/foundations/information-lifecycle.md)** — The complete flow from experience to wisdom
+
+These documents contain the **soul** of the system — the philosophical and architectural principles without which the technical specifications are mere mechanics.
 
 ---
 
