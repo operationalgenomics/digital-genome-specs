@@ -145,14 +145,53 @@ digital-genome-specs/
 ├── schemas/                        # JSON Schema definitions
 │   └── digital-genome.schema.json
 │
-├── diagrams/                       # Architecture diagrams (SVG/PNG)
-│   └── (to be generated)
+├── diagrams/
+│   ├── system/
+│   │   ├── architecture/           # High-level view, technology stacks, cognitive loops
+│   │   ├── execution/              # Orchestration layers, gateways, execution flows
+│   │   ├── monitoring/             # Telemetry pipelines, anomaly detection, observability
+│   │   ├── feedback/               # Feedback models, fitness loops, trigger mechanisms
+│   │   ├── reliability/            # Redundancy models, recovery strategies, degraded modes
+│   │   ├── failure/                # Failure pipelines, fallback trees, exception pathways
+│   │   ├── deployment/             # Rollout strategies, isolation layers, containerization
+│   │   ├── scenarios/              # Operational flows and scenario mapping
+│   │   └── integration/            # Integration contracts and interoperability flows
+│   ├── unl/
+│   │   ├── architecture/           # UNL architecture and interaction with Core components
+│   │   ├── flows/                  # Intent pipelines, encoding layers, translation paths
+│   │   ├── semantic/               # Ontologies, knowledge graphs, praxeological structures
+│   │   ├── context/                # Context layers, fusion mechanisms, contextual binding
+│   │   └── interaction/            # Operator interaction models, ambiguity-resolution loops
+│   ├── cognitive-core/  
+│   │   ├── architecture/           # Layered architecture and internal cognitive cycles
+│   │   ├── inference/              # Inference pipelines, selection mechanisms
+│   │   ├── simulation/             # Worldlines, multiverse modeling, safety funnels
+│   │   ├── context/                # Context evaluation, contextual bindings
+│   │   ├── evolution/              # Merism pipelines, mutation strategies, topology evolution
+│   │   ├── oracle/                 # Synthesis flows, decision funnels, scoring frameworks
+│   │   └── governance/             # Internal governance interfaces and control surfaces
+│   ├── digital-genome/    
+│   │   └── structure/              # Lifecycle, runtime stacks, federated components
+│   ├── security/                   # Security architecture, DataSpaces, signature protocols
+│   ├── docs/                       # High-level contextual diagrams
+│   └── api/                        # API topologies and interaction flows
 │
 ├── docs/                           # Supporting documentation
-│   ├── glossary.md
 │   ├── abbreviations.md
+│   ├── api-index.md
+│   ├── architecture-summary.md
+│   ├── changelog.md
+│   ├── codon-index.md
 │   ├── conventions-style-guide.md
-│   └── ...
+│   ├── file-index.md
+│   ├── gene-index.md
+│   ├── glossary.md
+│   ├── how-to-read-this-spec.md
+│   ├── overview.md
+│   ├── release-metadata.md
+│   ├── security-principles.md
+│   ├── system-context.md
+│   └── versioning-policy.md
 │
 └── README.md
 ```
