@@ -31,7 +31,7 @@ Life faced the challenge of encoding, transmitting, and expressing the informati
 
 **Expressivity**: From four letters, infinite complexity emerges. The same 20,000 genes produce Mozart and Einstein, oak trees and blue whales.
 
-Operational Genomics proposes that **industrial knowledge can be structured the same way**. Not as metaphor, but as functional isomorphism. The properties that make biological genomes work are exactly the properties that industrial knowledge systems need.
+Operational Genomics proposes that **industrial knowledge can be structured the same way**. Not as phor, but as functional isomorphism. The properties that make biological genomes work are exactly the properties that industrial knowledge systems need.
 
 ---
 
@@ -183,7 +183,7 @@ The complete brain exists everywhere simultaneously, with each local instance be
 
 ### 6.4 Emergent Properties
 
-The motors — Praxeological, Nash, Chaotic, Meta-Motor — are not separate modules. They are **emergent properties** of how DNA-neurons connect and fire together. Language does not exist "in" neurons — it emerges "between" them. Similarly, the motors emerge from the patterns of activation across the genome.
+The motors — Praxeological, Nash, Chaotic, Meristic — are not separate modules. They are **emergent properties** of how DNA-neurons connect and fire together. Language does not exist "in" neurons — it emerges "between" them. Similarly, the motors emerge from the patterns of activation across the genome.
 
 ---
 
