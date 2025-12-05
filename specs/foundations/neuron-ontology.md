@@ -137,7 +137,7 @@ The four motors of the Cognitive Core are analogous. They are not separate modul
 - **Praxeological Motor**: Emerges from patterns of intention-encoding and purpose-validation DNA
 - **Nash Motor**: Emerges from patterns of multi-agent interaction DNA
 - **Chaotic Motor**: Emerges from patterns of robustness-testing and perturbation-response DNA
-- **Meta-Motor**: Emerges from patterns of pattern-recognition and hypothesis-generating DNA
+- **Meristic Meta-Motor**: Emerges from patterns of pattern-recognition and hypothesis-generating DNA
 
 ### 5.2 Thinking as Activation
 
