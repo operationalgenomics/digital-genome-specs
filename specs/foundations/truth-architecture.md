@@ -66,7 +66,7 @@ When the system asks "What is the best way to close a valve?", it does not look 
 2. Processes them through the Praxeological Motor (which closures achieved their purpose?)
 3. Processes them through the Nash Motor (which closures worked well when multiple agents were involved?)
 4. Processes them through the Chaotic Motor (which closures were robust to perturbations?)
-5. Processes them through the Meta-Motor (what patterns emerge? what alternatives should exist?)
+5. Processes them through the Meristic Meta-Motor (what patterns emerge? what alternatives should exist?)
 6. Synthesizes a DNA that represents the best current approximation to the ideal valve closure
 
 ### 3.2 The Platonic Approximation
@@ -75,7 +75,7 @@ The synthesized DNA is not merely "the average of all experiences" or "the most 
 
 Plato taught that behind all imperfect chairs in the world of appearances, there exists the perfect Form of Chair — the ideal that all physical chairs imperfectly reflect. We never see the Form directly, but we can approach it through reason.
 
-The DNA is the Digital Genome's approach to the Form. It may encode an operation that no individual operator ever performed exactly — a synthesis that combines the wisdom of many, imagined improvements from the Meta-Motor, and rigorous validation from all four motors.
+The DNA is the Digital Genome's approach to the Form. It may encode an operation that no individual operator ever performed exactly — a synthesis that combines the wisdom of many, imagined improvements from the Meristic Meta-Motor, and rigorous validation from all four motors.
 
 ### 3.3 Plasticity
 
