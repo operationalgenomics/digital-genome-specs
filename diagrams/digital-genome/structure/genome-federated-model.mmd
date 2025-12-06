@@ -1,0 +1,65 @@
+%% ==============================================================================
+%% Federated Genome Model Diagram
+%% ==============================================================================
+%% Source File:     specs/digital-genome/structure-definition.md
+%%                  specs/digital-genome/lifecycle-manager.md
+%% Repository Path: diagrams/digital-genome/structure/genome-federated-model.png
+%% Description:     Visualizes the federated architecture: Master Genome (Core 
+%%                  Definitions) <-> Sync Protocol <-> Edge Genomes (Site-Specific
+%%                  Extensions).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef master fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef edge fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef sync fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef local fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. The Central Authority
+    subgraph HQ ["Central Authority (Cloud)"]
+        direction TB
+        Master[(Master Genome)]:::master
+        Policy[Global Policy]:::master
+        
+        Master --- Policy
+    end
+
+    %% 2. The Sync Channel
+    subgraph Channel ["Replication Layer"]
+        direction TB
+        Protocol{Sync Protocol}:::sync
+        
+        Master <-->|Push Updates| Protocol
+        Protocol <-->|Pull Telemetry| Master
+    end
+
+    %% 3. Edge Locations
+    subgraph Sites ["Distributed Edge Sites"]
+        direction LR
+        
+        %% Site A
+        subgraph SiteA ["Site A (Factory)"]
+            direction TB
+            EdgeA[(Edge Genome A)]:::edge
+            LocalA[Local Overrides]:::local
+            
+            EdgeA --- LocalA
+        end
+        
+        %% Site B
+        subgraph SiteB ["Site B (Offshore)"]
+            direction TB
+            EdgeB[(Edge Genome B)]:::edge
+            LocalB[Local Overrides]:::local
+            
+            EdgeB --- LocalB
+        end
+    end
+
+    %% Connections
+    Protocol <-->|Replicate| EdgeA
+    Protocol <-->|Replicate| EdgeB
+
+    %% Annotations
+    note1["Inherits Core Logic but can<br/>apply local safety constraints"]:::local -.-> LocalA
