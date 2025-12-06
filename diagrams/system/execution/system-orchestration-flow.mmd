@@ -1,0 +1,67 @@
+graph TD
+    %% Global Styles
+    classDef input fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef proc fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef out fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef art fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input Phase
+    subgraph "1. Cognitive Input"
+        direction TB
+        Plan[Execution Plan]:::input
+        Codons[Codon Sequence]:::art
+        
+        Plan -.->|Contains| Codons
+    end
+
+    %% 2. Processing Phase (The Engine)
+    subgraph "2. Orchestration Engine"
+        direction TB
+        
+        %% Step 1: Analyze Dependencies
+        DepCheck[Dependency Resolver]:::proc
+        Graph[Execution Graph]:::art
+        
+        %% Step 2: Convert to Steps
+        StepGen[Step Generator]:::proc
+        ExSteps[Abstract Steps]:::art
+        
+        %% Step 3: Bind to Reality
+        Binder[Action Binder]:::proc
+        Bound[Bound Actions]:::art
+        
+        %% Step 4: Schedule
+        Sched[Scheduler & Queue]:::proc
+        
+        %% Flow inside Engine
+        DepCheck -->|Builds| Graph
+        Graph --> StepGen
+        StepGen -->|Creates| ExSteps
+        ExSteps --> Binder
+        Binder -->|Maps to Actuators| Bound
+        Bound --> Sched
+    end
+
+    %% 3. Actuation Phase
+    subgraph "3. Actuation Layer"
+        direction TB
+        Dispatcher[Command Dispatcher]:::out
+        
+        TargetA["Actuator A (Physical)"]:::out
+        TargetB["Actuator B (Digital)"]:::out
+        
+        Dispatcher --> TargetA
+        Dispatcher --> TargetB
+    end
+
+    %% Main Flow
+    Codons --> DepCheck
+    Sched -->|Ready to Execute| Dispatcher
+
+    %% Logic Details
+    note1["Detects Serial vs<br/>Parallel Opportunities"]:::proc -.-> DepCheck
+    note2["Maps Semantic Action<br/>to Specific Device API"]:::proc -.-> Binder
+
+    %% Feedback Loop (Implicit)
+    TargetA -.->|Status/Result| Sched
+    TargetB -.->|Status/Result| Sched
