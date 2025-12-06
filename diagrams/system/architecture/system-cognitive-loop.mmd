@@ -1,0 +1,67 @@
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef meta fill:#eceff1,stroke:#455a64,stroke-width:2px,stroke-dasharray: 2 2,color:#000;
+
+    %% Phase 1: Intent & Context
+    subgraph Phase1 [Phase 1: Awareness]
+        direction TB
+        Intent[UNL Intent]:::unl
+        Context[Contextualization]:::cog
+        
+        Intent --> Context
+    end
+
+    %% Phase 2: Reasoning & Decision
+    subgraph Phase2 [Phase 2: Reasoning]
+        direction TB
+        Inference[Inference Engine]:::cog
+        Sim[Simulation Engine]:::cog
+        Oracle[Oracle Synthesizer]:::cog
+        
+        Context --> Inference
+        Inference -->|Candidate Genes| Sim
+        Sim -->|Worldlines| Oracle
+    end
+
+    %% Phase 3: Control
+    subgraph Phase3 [Phase 3: Control]
+        direction TB
+        GovGate{Governance Check}:::gov
+        
+        Oracle -->|Proposed Decision| GovGate
+    end
+
+    %% Phase 4: Action & Reality
+    subgraph Phase4 [Phase 4: Reality]
+        direction TB
+        Exec[Execution]:::sys
+        Mon[Monitoring]:::sys
+        
+        GovGate -->|Approved| Exec
+        Exec -->|Actuation| Mon
+    end
+
+    %% Phase 5: Evolution (The Loop)
+    subgraph Phase5 [Phase 5: Evolution]
+        direction TB
+        Fitness[Fitness Update]:::genome
+        Merism[Merism Evolution]:::genome
+        GenomeUpdate[Genome Update]:::genome
+        
+        Mon -->|Outcomes| Fitness
+        Fitness -->|Score Delta| Merism
+        Merism -->|Variants / Anti-Genes| GenomeUpdate
+    end
+
+    %% Closing the Loop
+    GenomeUpdate -.->|New Knowledge| Inference
+    GovGate -- Forbidden --> Stop((Halt)):::sys
+
+    %% Edge Labels
+    note1[Genome State T0]:::meta -.-> Inference
+    GenomeUpdate -.-> note2[Genome State T1]:::meta
