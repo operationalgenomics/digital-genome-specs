@@ -6,7 +6,7 @@ graph TD
     classDef shared fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
 
     %% Federation Layer
-    subgraph Federation [Global Federated Exchange]
+    subgraph Federation ["Global Federated Exchange"]
         direction LR
         Bus[Federation Bus / Ledger]:::fed
         SharedLib[Shared Gene Library]:::shared
@@ -14,7 +14,7 @@ graph TD
     end
 
     %% Organization A (Tenant A)
-    subgraph OrgA [Organization A (Sovereign Domain)]
+    subgraph OrgA ["Organization A (Sovereign Domain)"]
         direction TB
         GovA[Governance & Sovereignty A]:::gov
         GenomeA[Digital Genome A]:::genome
@@ -29,7 +29,7 @@ graph TD
     end
 
     %% Organization B (Tenant B)
-    subgraph OrgB [Organization B (Sovereign Domain)]
+    subgraph OrgB ["Organization B (Sovereign Domain)"]
         direction TB
         GovB[Governance & Sovereignty B]:::gov
         GenomeB[Digital Genome B]:::genome
@@ -44,7 +44,7 @@ graph TD
     end
 
     %% Organization C (Tenant C)
-    subgraph OrgC [Organization C (Sovereign Domain)]
+    subgraph OrgC ["Organization C (Sovereign Domain)"]
         direction TB
         GovC[Governance & Sovereignty C]:::gov
         GenomeC[Digital Genome C]:::genome
