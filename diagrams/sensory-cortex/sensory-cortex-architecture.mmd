@@ -1,0 +1,135 @@
+%% ==============================================================================
+%% Sensory Cortex Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/sensory-cortex/specification.md
+%% Repository Path: diagrams/sensory-cortex/sensory-cortex-architecture.mmd
+%% Description:     Visualizes the Sensory Cortex as the boundary between world
+%%                  and mind. Shows the abstraction hierarchy: Carrier -> Pattern
+%%                  -> Structure -> Proto-Agency -> Semantics. Enables processing
+%%                  of signals regardless of format, including formats that do
+%%                  not yet exist.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef world fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef carrier fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef pattern fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef structure fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef agency fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000;
+    classDef semantic fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef output fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef unknown fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% External World
+    subgraph "The World (External Reality)"
+        direction TB
+        
+        Known["Known Formats<br/>Text, Image, Audio, BIM, Sensor Data"]:::world
+        Novel["Novel Formats<br/>New industrial standards, exotic sensors"]:::world
+        Unknown["Unknown Signals<br/>Patterns not yet classified"]:::unknown
+    end
+
+    %% Level 0: Carrier Detection
+    subgraph "Level 0: CARRIER (The Substrate)"
+        direction TB
+        
+        CarrierQ["What carries the signal?"]:::carrier
+        
+        EM["Electromagnetic<br/>(light, radio, X-ray)"]:::carrier
+        Mech["Mechanical<br/>(sound, vibration, pressure)"]:::carrier
+        Chem["Chemical<br/>(molecular concentrations)"]:::carrier
+        Dig["Digital<br/>(bits in any encoding)"]:::carrier
+        Unk["UNKNOWN<br/>(detected but unclassified)"]:::unknown
+        
+        Known & Novel & Unknown --> CarrierQ
+        CarrierQ --> EM & Mech & Chem & Dig & Unk
+    end
+
+    %% Level 1: Pattern Extraction
+    subgraph "Level 1: PATTERN (Detectable Regularities)"
+        direction TB
+        
+        PatternQ["What regularities exist?"]:::pattern
+        
+        Spatial["Spatial<br/>(2D, 3D, nD)"]:::pattern
+        Temporal["Temporal<br/>(sequence, rhythm, frequency)"]:::pattern
+        Relational["Relational<br/>(graphs, hierarchies, networks)"]:::pattern
+        Hybrid["Hybrid<br/>(combinations)"]:::pattern
+        
+        EM & Mech & Chem & Dig & Unk --> PatternQ
+        PatternQ --> Spatial & Temporal & Relational & Hybrid
+    end
+
+    %% Level 2: Structure Analysis
+    subgraph "Level 2: STRUCTURE (Non-Randomness)"
+        direction TB
+        
+        StructQ["Is there non-random structure?"]:::structure
+        
+        Repeat["Repetition"]:::structure
+        Symmetry["Symmetry"]:::structure
+        Compress["Compressibility<br/>(entropy < noise)"]:::structure
+        Correlate["Internal Correlation"]:::structure
+        
+        Spatial & Temporal & Relational & Hybrid --> StructQ
+        StructQ --> Repeat & Symmetry & Compress & Correlate
+    end
+
+    %% Level 2.5: Proto-Agency Detection
+    subgraph "Level 2.5: PROTO-AGENCY (Suspicion of Agenda)"
+        direction TB
+        
+        AgencyQ["Is there an encoded agenda?"]:::agency
+        
+        FuncAsym["Functional Asymmetry<br/>(purposeful interruption)"]:::agency
+        OrientCompress["Oriented Compression<br/>(patterns that 'point')"]:::agency
+        TransInvariant["Transform Invariants<br/>(persists across carrier change)"]:::agency
+        Cost["Apparent Cost<br/>(too expensive for chance)"]:::agency
+        
+        Repeat & Symmetry & Compress & Correlate --> AgencyQ
+        AgencyQ --> FuncAsym & OrientCompress & TransInvariant & Cost
+    end
+
+    %% Level 3: Semantic Extraction
+    subgraph "Level 3: SEMANTICS (Meaning Emerges)"
+        direction TB
+        
+        SemQ["What does this ALLOW to be done?"]:::semantic
+        
+        Reference["Reference<br/>(points to something)"]:::semantic
+        Relation["Relation<br/>(connects things)"]:::semantic
+        Action["Action<br/>(describes transformation)"]:::semantic
+        Intent["Intention<br/>(encodes purpose)"]:::semantic
+        
+        FuncAsym & OrientCompress & TransInvariant & Cost --> SemQ
+        SemQ --> Reference & Relation & Action & Intent
+    end
+
+    %% Output Layer
+    subgraph "Praxeological Encapsulation"
+        direction TB
+        
+        Encap{Can form Codon?}:::output
+        
+        Reference & Relation & Action & Intent --> Encap
+        
+        Resolved["Resolved Intent<br/>(Entity | Action | Target-State)"]:::output
+        Unresolved["Unresolved Pattern<br/>(Structure detected, semantics pending)"]:::unknown
+        
+        Encap -->|Yes| Resolved
+        Encap -->|No| Unresolved
+        
+        Resolved --> Blockchain[(To Blockchain)]:::output
+        Unresolved --> Mystery[(To Mystery Zone<br/>for future analysis)]:::unknown
+    end
+
+    %% Annotations
+    note1["CARRIER AGNOSTIC<br/>Works across multiple<br/>technological eras"]:::meta -.-> CarrierQ
+    
+    note2["PROTO-AGENCY separates<br/>physical structure from<br/>structure carrying agenda"]:::meta -.-> AgencyQ
+    
+    note3["'FORMATS THAT DON'T YET EXIST'<br/>System can process novel signals<br/>by detecting structure before meaning"]:::meta -.-> Unk
+    
+    note4["THE BOUNDARY BETWEEN<br/>WORLD AND MIND"]:::meta -.-> SemQ
