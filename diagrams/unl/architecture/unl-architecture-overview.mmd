@@ -1,0 +1,98 @@
+%% ==============================================================================
+%% UNL High-Level Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/specification.md
+%% Repository Path: diagrams/unl/architecture/unl-architecture-overview.png
+%% Description:     Shows the full UNL system divided into four layers:
+%%                  Multimodal Input, Semantic Parser, Praxeological Intent,
+%%                  and Translation & Explanation, handling inbound (human)
+%%                  and outbound (Cognitive Core) flows.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef layer fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef component fill:#ffffff,stroke:#0277bd,stroke-width:1px,color:#000;
+
+    %% External Actors
+    Operator((Human Operator)):::human
+    CC[Cognitive Core]:::core
+
+    %% UNL System Boundary
+    subgraph UNL_System ["Universal Neutral Language (UNL) System"]
+        direction TB
+
+        %% Layer 1: Multimodal Input
+        subgraph L1 ["Layer 1: Multimodal Input"]
+            direction TB
+            Capture[Multimodal Capture]:::component
+            Fusion[Signal Fusion]:::component
+            Context[Context Collector]:::component
+            
+            Capture --> Fusion
+            Fusion --> Context
+        end
+
+        %% Layer 2: Semantic Parser
+        subgraph L2 ["Layer 2: Semantic Parser"]
+            direction TB
+            NLP[NLP Engine]:::component
+            FrameExt[Frame Extraction]:::component
+            Ambig[Ambiguity Detector]:::component
+            
+            NLP --> FrameExt
+            FrameExt --> Ambig
+        end
+
+        %% Layer 3: Praxeological Intent
+        subgraph L3 ["Layer 3: Praxeological Intent"]
+            direction TB
+            Mapper[Intent Mapper]:::component
+            Ontology[Semantic Ontology]:::component
+            Encoder[Codon Encoder]:::component
+            
+            Mapper <--> Ontology
+            Mapper --> Encoder
+        end
+
+        %% Layer 4: Translation & Explanation (Outbound)
+        subgraph L4 ["Layer 4: Translation & Explanation"]
+            direction TB
+            Render[Explanation Renderer]:::component
+            Trans[Translation Engine]:::component
+            MultiOut[Multimodal Output]:::component
+            
+            Render --> Trans
+            Trans --> MultiOut
+        end
+    end
+
+    %% Inbound Flow (Human -> Core)
+    Operator -->|Speech/Gesture/Gaze| Capture
+    Context -->|Raw Envelope| NLP
+    Ambig -->|Semantic Frame| Mapper
+    Encoder -->|UNLIntent| CC
+
+    %% Outbound Flow (Core -> Human)
+    CC -->|Cognitive Response| Render
+    MultiOut -->|Natural Language/Visuals| Operator
+
+    %% Feedback / Correction Loops
+    Ambig -.->|Clarification Request| MultiOut
+    Operator -.->|Clarification Response| Capture
+
+    %% Data Artifacts (Visualization)
+    Art1[RawInputEnvelope]:::artifact
+    Art2[SemanticFrame]:::artifact
+    Art3[UNLIntent]:::artifact
+    Art4[HumanExplanation]:::artifact
+
+    %% Artifact Association
+    Fusion --- Art1
+    Ambig --- Art2
+    Encoder --- Art3
+    Trans --- Art4
