@@ -1,0 +1,76 @@
+%% ==============================================================================
+%% Semantic Binding Map Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/context-evaluator.md
+%% Repository Path: diagrams/cognitive-core/context/cognitive-semantic-binding.png
+%% Description:     Visualizes the mapping logic where raw inputs (Tag IDs, 
+%%                  Natural Language) are resolved against the Ontology Registry
+%%                  to produce canonical Entity, Action, and State bindings.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef raw fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef engine fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef registry fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef output fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef meta fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Raw Input Sources
+    subgraph "1. Heterogeneous Inputs"
+        direction TB
+        Scada[SCADA Tag: 'P-101_VIB']:::raw
+        Log[SysLog: 'Err_Code_99']:::raw
+        NLP[User Text: 'Check the main pump']:::raw
+        
+        Scada & Log & NLP --> Binder
+    end
+
+    %% 2. The Binding Engine
+    subgraph "2. Semantic Binder"
+        direction TB
+        Binder{Binding Engine}:::engine
+        
+        %% Matching Logic
+        Lookup[Direct ID Lookup]:::engine
+        Fuzzy[Fuzzy Name Match]:::engine
+        ContextRes[Contextual Resolution]:::engine
+        
+        Binder --> Lookup
+        Binder --> Fuzzy
+        Binder --> ContextRes
+    end
+
+    %% 3. The Source of Truth
+    subgraph "3. Genome Registry (Ontology)"
+        direction TB
+        RegEnt[Entity Registry]:::registry
+        RegAct[Action Registry]:::registry
+        RegState[State Registry]:::registry
+        
+        Note1["Entity: Pump-401<br/>Alias: P-101, Main Pump"]:::meta -.-> RegEnt
+        Note2["State: ERROR_CRITICAL<br/>Code: 99"]:::meta -.-> RegState
+        
+        Lookup <--> RegEnt
+        Fuzzy <--> RegEnt
+        ContextRes <--> RegAct & RegState
+    end
+
+    %% 4. The Output
+    subgraph "4. Canonical Semantic Map"
+        direction TB
+        Map[SemanticBinding Object]:::output
+        
+        Row1["'P-101_VIB' -> Entity: Pump-401"]:::output
+        Row2["'Err_Code_99' -> State: CRITICAL"]:::output
+        Row3["'main pump' -> Entity: Pump-401"]:::output
+        
+        Lookup & Fuzzy & ContextRes --> Map
+        
+        Map --- Row1
+        Map --- Row2
+        Map --- Row3
+    end
+
+    %% Annotations
+    note3["Ensures Cognitive Core only sees<br/>standardized Genome IDs"]:::engine -.-> Map
