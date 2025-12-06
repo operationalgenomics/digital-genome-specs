@@ -1,0 +1,60 @@
+graph TD
+    %% Global Styles
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef real fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% 1. Source (Cognitive Core)
+    subgraph "1. Cognitive Core"
+        direction TB
+        Decision[Cognitive Decision]:::cog
+        Intent[Contextual Intent]:::cog
+        
+        Decision -.->|Contains| Intent
+    end
+
+    %% 2. Execution Pipeline
+    subgraph "2. Execution Model"
+        direction TB
+        Gateway[Execution Gateway]:::sys
+        Orch[Orchestration Engine]:::sys
+        Actuation[Actuation Layer]:::sys
+        
+        Gateway -->|Safety Check Passed| Orch
+        Orch -->|Step Sequencing| Actuation
+    end
+
+    %% 3. The World
+    subgraph "3. Reality"
+        World[Physical / Digital Environment]:::real
+    end
+
+    %% 4. Observation & Learning
+    subgraph "4. Monitoring & Feedback"
+        direction TB
+        Monitor[Monitoring Layer]:::mon
+        Feedback[Feedback Engine]:::mon
+        
+        Monitor -->|Telemetry & Anomalies| Feedback
+    end
+
+    %% Cross-cutting Governance
+    Gov[Governance & Safety Envelope]:::gov
+
+    %% Main Flow
+    Decision --> Gateway
+    Actuation -->|Commands| World
+    World -->|State Changes| Monitor
+    
+    %% Feedback Loop
+    Feedback -->|Outcome Evaluation| Decision
+    Feedback -->|Fitness Updates| Fitness[Digital Genome Fitness]:::cog
+
+    %% Governance Interventions
+    Gov -.->|Enforces| Gateway
+    Gov -.->|Audits| Feedback
+    
+    %% Internal Logic
+    Gateway -- Violation --> Block((Blocked)):::sys
