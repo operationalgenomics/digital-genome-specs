@@ -1,0 +1,75 @@
+%% ==============================================================================
+%% Security Signature Lineage Diagram
+%% ==============================================================================
+%% Source File:     specs/security/security-model.md
+%% Repository Path: diagrams/security/security-signature-lineage.png
+%% Description:     Visualizes the cryptographic chain of trust: Source Code
+%%                  (Dev Sig) -> Build Artifact (CI Sig) -> Approved Gene
+%%                  (Gov Sig) -> Runtime Verification.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef artifact fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef sig fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef verify fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% Stage 1: Creation
+    subgraph "Stage 1: Creation (Origin)"
+        direction TB
+        Dev((Developer)):::actor
+        Code[Source Code]:::artifact
+        Sig1[Sig: DevKey]:::sig
+        
+        Dev -->|Writes| Code
+        Dev -->|"Signs Hash(Code)"| Sig1
+        
+        Package1[Signed Source Package]:::artifact
+        Code & Sig1 --> Package1
+    end
+
+    %% Stage 2: Build
+    subgraph "Stage 2: Transformation (Build)"
+        direction TB
+        CI((CI/CD Bot)):::actor
+        Gene[Compiled Gene]:::artifact
+        Sig2[Sig: CIKey]:::sig
+        
+        Package1 -->|Input| CI
+        CI -->|Compiles| Gene
+        CI -->|"Signs Hash(Gene + Sig1)"| Sig2
+        
+        Package2[Signed Binary Package]:::artifact
+        Gene & Sig2 --> Package2
+    end
+
+    %% Stage 3: Governance
+    subgraph "Stage 3: Approval (Governance)"
+        direction TB
+        Admin((Gov Officer)):::actor
+        Sig3[Sig: GovKey]:::sig
+        
+        Package2 -->|Review| Admin
+        Admin -->|"Signs Hash(Sig2)"| Sig3
+        
+        FinalArtifact[Approved Artifact]:::artifact
+        Package2 & Sig3 --> FinalArtifact
+    end
+
+    %% Stage 4: Runtime Logic
+    subgraph "Stage 4: Runtime Verification"
+        direction TB
+        Loader{Secure Loader}:::verify
+        TrustStore[(Trusted Root Keys)]:::verify
+        
+        FinalArtifact --> Loader
+        TrustStore -.->|Validate Keys| Loader
+        
+        Loader -->|Chain Valid| Load[Load into Core]:::verify
+        Loader -->|Broken Chain| Reject[Reject & Alarm]:::reject
+    end
+
+    %% Annotations
+    note1["Each signature wraps the previous hash,<br/>creating an unbreakable chain."]:::sig -.-> Sig2
