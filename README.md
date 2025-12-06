@@ -146,6 +146,13 @@ digital-genome-specs/
 │   └── digital-genome.schema.json
 │
 ├── diagrams/
+│   ├── foundations/                # PHILOSOPHICAL FOUNDATIONS (NEW)
+│   │   ├── truth-architecture.mmd      # Foucauldian vs Platonic truth systems
+│   │   ├── neuron-ontology.mmd         # DNA as neurons, distributed brain
+│   │   └── information-lifecycle.mmd   # Complete flow from experience to wisdom
+│   ├── sensory-cortex/             # SENSORY CORTEX (NEW)
+│   │   ├── sensory-cortex-architecture.mmd  # Carrier->Pattern->Structure->Semantics
+│   │   └── sensory-cortex-examples.mmd      # Processing examples across time horizons
 │   ├── system/
 │   │   ├── architecture/           # High-level view, technology stacks, cognitive loops
 │   │   ├── execution/              # Orchestration layers, gateways, execution flows
@@ -164,6 +171,11 @@ digital-genome-specs/
 │   │   └── interaction/            # Operator interaction models, ambiguity-resolution loops
 │   ├── cognitive-core/  
 │   │   ├── architecture/           # Layered architecture and internal cognitive cycles
+│   │   ├── motors/                 # PARALLEL MOTORS (NEW)
+│   │   │   ├── parallel-motors-architecture.mmd  # Four motors operating simultaneously
+│   │   │   ├── craft-performance-calculation.mmd # CP as product, not sum
+│   │   │   ├── motor-convergence.mmd             # How motors converge to decisions
+│   │   │   └── meristic-meta-motor.mmd           # The Platonic philosopher
 │   │   ├── inference/              # Inference pipelines, selection mechanisms
 │   │   ├── simulation/             # Worldlines, multiverse modeling, safety funnels
 │   │   ├── context/                # Context evaluation, contextual bindings
