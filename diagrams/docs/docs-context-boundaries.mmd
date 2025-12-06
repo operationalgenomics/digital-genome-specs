@@ -1,0 +1,66 @@
+%% ==============================================================================
+%% Documentation Context Boundaries Diagram (C4 Container View)
+%% ==============================================================================
+%% Source File:     docs/architecture/context-view.md
+%%                  specs/security/security-model.md
+%% Repository Path: diagrams/docs/docs-context-boundaries.png
+%% Description:     A C4 Container view emphasizing trust boundaries. It shows the
+%%                  internal subsystems (UNL, Core, Genome, Execution) enclosed
+%%                  within the main system boundary, protected from external actors
+%%                  (Operators, Physical Plant, External IT) by specific API and
+%%                  Edge gateways.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef external fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef boundary fill:#f8f9fa,stroke:#444,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef internal fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef gate fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. External World (Untrusted)
+    subgraph External ["The Outside World"]
+        direction TB
+        Operators[Human Operators via UI]:::external
+        ExternalIT[External IT / Cloud Services]:::external
+        Physical[Physical Plant / IoT]:::external
+    end
+
+    %% 2. The System Boundary (Trust Zone)
+    subgraph System ["System Boundary: Autonomous Cognitive System"]
+        direction TB
+        
+        %% Boundary Gateways
+        subgraph Gates ["Boundary Security Gateways"]
+            Gate_API{"API Gateway (AuthN/Z)"}:::gate
+            Gate_Edge{"Edge Gateway (Safety)"}:::gate
+        end
+
+        %% Internal Containers
+        subgraph Internals ["Internal Trusted Subsystems"]
+            UNL[UNL Interaction Layer]:::internal
+            Core[Cognitive Core Engine]:::internal
+            Genome[(Digital Genome)]:::internal
+            Exec[Execution Layer]:::internal
+        end
+
+        %% Internal Connections
+        UNL <--> Core
+        Core <--> Genome
+        Core --> Exec
+        Exec -.->|Telemetry| Core
+    end
+
+    %% 3. Crossing the Boundary (Ingress/Egress)
+    Operators <-->|HTTPS/WSS| Gate_API
+    ExternalIT <-->|MTLS/API| Gate_API
+    
+    Gate_API <-->|Secure Internal Traffic| UNL
+    
+    Physical -->|Raw Sensor Data| Gate_Edge
+    Gate_Edge -->|Validated Commands| Physical
+    
+    Gate_Edge <-->|Secure Bus| Exec
+
+    %% Annotations
+    note1["The dotted line represents the hard trust boundary.<br/>Nothing crosses without going through a Gate."]:::boundary -.-> Gates
