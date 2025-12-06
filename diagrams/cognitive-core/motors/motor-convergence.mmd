@@ -1,0 +1,84 @@
+%% ==============================================================================
+%% Motor Convergence Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/parallel-motors.md
+%% Repository Path: diagrams/cognitive-core/motors/motor-convergence.mmd
+%% Description:     Visualizes how the four parallel motors converge (or diverge)
+%%                  and how divergence provides information for synthesis.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef conv fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef div fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef action fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef warn fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Motor Outputs
+    subgraph "Motor Evaluations"
+        SP[Score_P: 0.85]:::motor
+        SN[Score_N: 0.87]:::motor
+        SC[Score_C: 0.83]:::motor
+        SM[Score_M: 0.86]:::motor
+    end
+
+    %% Convergence Analysis
+    subgraph "Convergence Analysis"
+        direction TB
+        
+        Analyze{Analyze<br/>Distribution}:::div
+        
+        SP & SN & SC & SM --> Analyze
+        
+        %% Branch: High Convergence
+        HighConv["HIGH CONVERGENCE<br/>Scores: [0.85, 0.87, 0.83, 0.86]<br/>Variance: Low"]:::conv
+        
+        %% Branch: Low Convergence
+        LowConv["LOW CONVERGENCE<br/>Scores: [0.95, 0.30, 0.88, 0.75]<br/>Variance: High"]:::div
+        
+        Analyze -->|Similar Scores| HighConv
+        Analyze -->|Divergent Scores| LowConv
+    end
+
+    %% High Convergence Path
+    subgraph "Convergent Path"
+        direction TB
+        ConfidentCP["CP = 0.527<br/>High Confidence"]:::conv
+        Proceed[Proceed to Oracle]:::action
+        
+        HighConv --> ConfidentCP --> Proceed
+    end
+
+    %% Low Convergence Path
+    subgraph "Divergent Path (Information Rich)"
+        direction TB
+        
+        Diagnose{Diagnose<br/>Divergence}:::div
+        
+        LowConv --> Diagnose
+        
+        %% Divergence Options
+        WhichMotor["Which motor is low?"]:::div
+        TradeOff["Genuine trade-off?"]:::div
+        IncompleteInfo["Incomplete information?"]:::div
+        
+        Diagnose --> WhichMotor
+        Diagnose --> TradeOff
+        Diagnose --> IncompleteInfo
+        
+        %% Actions
+        SeekSynth["Seek Synthesis<br/>(Meta-Motor proposals)"]:::action
+        RequestData["Request More Data"]:::action
+        Escalate["Escalate to Human"]:::warn
+        
+        TradeOff --> SeekSynth
+        IncompleteInfo --> RequestData
+        WhichMotor -->|Fundamental incompatibility| Escalate
+    end
+
+    %% Annotations
+    note1["DIVERGENCE IS INFORMATION<br/>When motors disagree, we learn<br/>which aspects are problematic"]:::meta -.-> Diagnose
+    
+    note2["Example: Nash Motor low (0.30)<br/>indicates strategic instability<br/>that other virtues cannot mask"]:::meta -.-> WhichMotor
