@@ -1,0 +1,59 @@
+graph TD
+    %% Global Styles
+    classDef raw fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef sem fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef agg fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef feed fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Layer 1: Observation
+    subgraph "Layer 1: Observation (Raw Data)"
+        direction TB
+        Sensors[Physical Sensors]:::raw
+        Logs[System Logs]:::raw
+        Events[Workflow Events]:::raw
+    end
+
+    %% Layer 2: Interpretation
+    subgraph "Layer 2: Semantic Interpretation"
+        direction TB
+        Mapper[Semantic Mapper]:::sem
+        Classifier[Anomaly Classifier]:::sem
+        
+        %% Mapping Logic
+        Sensors & Logs & Events --> Mapper
+        Mapper -->|Classified Events| Classifier
+    end
+
+    %% Layer 3: Aggregation
+    subgraph "Layer 3: Aggregation & Correlation"
+        direction TB
+        Fusion[Multi-Sensor Fusion]:::agg
+        ContextRef[Context Correlation]:::agg
+        
+        Classifier --> Fusion
+        Fusion --> ContextRef
+    end
+
+    %% Layer 4: Feedback
+    subgraph "Layer 4: Cognitive Feedback"
+        direction TB
+        Router[Feedback Router]:::feed
+        
+        ContextRef --> Router
+    end
+
+    %% Destinations
+    Core[Cognitive Core]:::feed
+    Genome[Digital Genome]:::feed
+    Gov[Governance Ledger]:::gov
+    Safe[Safety System]:::gov
+
+    %% Routing
+    Router -->|Simulation Update| Core
+    Router -->|Fitness Score| Genome
+    Router -->|Audit Entry| Gov
+    Router -->|Hazard Trigger| Safe
+
+    %% Direct Safety Loop (Fast Path)
+    Classifier -.->|Critical Hazard| Safe
