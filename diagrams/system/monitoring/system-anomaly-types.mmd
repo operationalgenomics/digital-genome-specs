@@ -1,0 +1,39 @@
+graph TD
+    %% Global Styles
+    classDef root fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef cat fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef ex fill:#fff3e0,stroke:#e65100,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Root
+    Root("System Anomaly Classification"):::root
+
+    %% Categories
+    State("State Anomaly"):::cat
+    Metric("Metric Anomaly"):::cat
+    Behav("Behavioral Anomaly"):::cat
+    Cog("Cognitive Anomaly"):::cat
+
+    %% Connections
+    Root --> State
+    Root --> Metric
+    Root --> Behav
+    Root --> Cog
+
+    %% Details - State
+    State --> S1["Forbidden State Entry"]:::ex
+    State --> S2["Unexpected Transition"]:::ex
+    
+    %% Details - Metric
+    Metric --> M1["Threshold Violation"]:::ex
+    Metric --> M2["Spike / Drop"]:::ex
+    Metric --> M3["Value Out-of-Range"]:::ex
+
+    %% Details - Behavioral
+    Behav --> B1["Timing Violation"]:::ex
+    Behav --> B2["Sequence Deviation"]:::ex
+    Behav --> B3["Missing Confirmation"]:::ex
+
+    %% Details - Cognitive
+    Cog --> C1["Prediction Mismatch"]:::ex
+    Cog --> C2["Simulation Divergence"]:::ex
+    Cog --> C3["Intent/Outcome Gap"]:::ex
