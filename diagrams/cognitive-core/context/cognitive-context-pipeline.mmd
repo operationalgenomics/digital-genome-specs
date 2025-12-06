@@ -1,0 +1,97 @@
+%% ==============================================================================
+%% Context Processing Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/context-evaluator.md
+%% Repository Path: diagrams/cognitive-core/context/cognitive-context-pipeline.png
+%% Description:     Visualizes the data transformation pipeline: Raw Data Ingestion
+%%                  -> Normalization -> Semantic Binding -> Integrity Validation
+%%                  -> Feature Extraction -> Snapshot Assembly.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef layer fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef check fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef final fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. Ingestion Layer
+    subgraph "Layer 1: Ingestion"
+        direction TB
+        Source1[IoT Sensors]:::layer
+        Source2[System Logs]:::layer
+        Source3[UNL Input]:::layer
+        
+        Raw[Raw Data Stream]:::artifact
+        
+        Source1 & Source2 & Source3 --> Raw
+    end
+
+    %% 2. Normalization Layer
+    subgraph "Layer 2: Normalization"
+        direction TB
+        Clean[Data Cleansing]:::layer
+        Unit[Unit Standardization]:::layer
+        Time[Time Alignment]:::layer
+        
+        Raw --> Clean
+        Clean --> Unit
+        Unit --> Time
+    end
+
+    %% 3. Semantic Layer
+    subgraph "Layer 3: Semantic Binding"
+        direction TB
+        Bind[Entity & State Mapping]:::layer
+        Ontology[Genome Ontology]:::layer
+        
+        Time --> Bind
+        Ontology -.-> Bind
+        
+        Bound[Semantically Bound Data]:::artifact
+        Bind --> Bound
+    end
+
+    %% 4. Integrity Layer
+    subgraph "Layer 4: Integrity Validation"
+        direction TB
+        Validate{Integrity Check}:::check
+        
+        Bound --> Validate
+        
+        Validate -->|Valid| ValidData[Validated Data]:::artifact
+        Validate -->|Invalid| Flag[Log Data Issue]:::check
+    end
+
+    %% 5. Feature Layer
+    subgraph "Layer 5: Feature Extraction"
+        direction TB
+        Risk[Risk Scoring]:::layer
+        Load[System Load Calc]:::layer
+        Pattern[Pattern Recognition]:::layer
+        
+        ValidData --> Risk
+        ValidData --> Load
+        ValidData --> Pattern
+        
+        Feats[Derived Features]:::artifact
+        Risk & Load & Pattern --> Feats
+    end
+
+    %% 6. Assembly Layer
+    subgraph "Layer 6: Snapshot Assembly"
+        direction TB
+        Assemble[Snapshot Builder]:::layer
+        Snapshot[ContextSnapshot]:::final
+        
+        ValidData --> Assemble
+        Feats --> Assemble
+        Assemble --> Snapshot
+    end
+
+    %% Output
+    Snapshot --> Inference[Inference Engine]:::final
+
+    %% Annotations
+    note1["Maps raw IDs to Genome EntityIDs"]:::layer -.-> Bind
+    note2["Computes higher-level indicators<br/>like 'Risk Level'"]:::layer -.-> Risk
