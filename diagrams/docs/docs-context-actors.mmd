@@ -1,0 +1,59 @@
+%% ==============================================================================
+%% Documentation Context Actors Diagram
+%% ==============================================================================
+%% Source File:     docs/architecture/context-view.md
+%%                  specs/security/identity-management.md
+%% Repository Path: diagrams/docs/docs-context-actors.png
+%% Description:     Visualizes the hierarchy of actors: Primary Actors (Operator,
+%%                  Supervisor), Secondary Actors (Auditor, Maintenance), and 
+%%                  System Actors (IoT Grid, External Cloud).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef human fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef system fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef group fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Group 1: Operational Staff (Primary)
+    subgraph Ops ["Operational Actors"]
+        direction TB
+        L1[L1 Operator]:::human
+        L2[L2 Supervisor]:::human
+        
+        L1 -->|"View Status / Basic Ack"| ACS((System))
+        L2 -->|"Override / Config / Approve"| ACS
+    end
+
+    %% Group 2: Technical Staff (Support)
+    subgraph Tech ["Technical Actors"]
+        direction TB
+        Dev[Geneticist / Developer]:::human
+        Maint[Maintenance Tech]:::human
+        
+        Dev -->|"Evolve / Deploy Genes"| ACS
+        Maint -->|"Hardware Diagnostics"| ACS
+    end
+
+    %% Group 3: Governance (Oversight)
+    subgraph Gov ["Governance Actors"]
+        direction TB
+        Auditor[Compliance Auditor]:::human
+        CISO[Security Officer]:::human
+        
+        Auditor -->|"Read-Only Audit Logs"| ACS
+        CISO -->|"Policy Management"| ACS
+    end
+
+    %% Group 4: Non-Human Actors
+    subgraph Sys ["System Actors"]
+        direction TB
+        Sensor[IoT Sensor Grid]:::system
+        Cloud[External AI Service]:::system
+        
+        Sensor -->|"Push Telemetry"| ACS
+        ACS -->|"Query Model"| Cloud
+    end
+
+    %% Annotations
+    note1["Permissions are strictly scoped<br/>by Actor Role (RBAC)"]:::group -.-> Ops
