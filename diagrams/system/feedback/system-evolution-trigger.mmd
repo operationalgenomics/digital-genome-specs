@@ -1,0 +1,44 @@
+graph TD
+    %% Global Styles
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef alert fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef artifact fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Pattern Recognition (Sources)
+    subgraph "1. Pattern Recognition"
+        direction TB
+        Fail["Repeated Failures"]:::mon
+        Perf["Performance Plateau"]:::mon
+        Context["Contextual Shift"]:::mon
+        Safety["Safety Event"]:::alert
+    end
+
+    %% 2. Trigger Logic
+    subgraph "2. Trigger Evaluation"
+        direction TB
+        Eval{Trigger Logic}:::logic
+        Signal["Evolution Trigger Message"]:::artifact
+        
+        Fail -->|"> Threshold"| Eval
+        Perf -->|"Stagnation Detected"| Eval
+        Context -->|"New Conditions"| Eval
+        Safety -->|"Immediate Trigger"| Eval
+        
+        Eval --> Signal
+    end
+
+    %% 3. Evolutionary Response
+    subgraph "3. Merism Engine"
+        direction TB
+        Engine[Merism Evolution Engine]:::genome
+        
+        Signal --> Engine
+        
+        Engine -->|Optimization| Variant["Variant Proposal"]:::genome
+        Engine -->|Correction| AntiGene["Anti-Gene Proposal"]:::genome
+    end
+
+    %% Annotations
+    note1["Safe failures trigger optimization;<br/>Unsafe failures trigger anti-genes"]:::logic -.-> Engine
