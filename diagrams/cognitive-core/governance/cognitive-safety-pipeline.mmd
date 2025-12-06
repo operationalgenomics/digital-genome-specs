@@ -1,0 +1,66 @@
+%% ==============================================================================
+%% Cognitive Safety Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/governance-model.md
+%% Repository Path: diagrams/cognitive-core/governance/cognitive-safety-pipeline.mmd
+%% Description:     Visualizes the dedicated safety subsystem: Static Analysis 
+%%                  (Pre-Exec) -> Dynamic Monitoring (Runtime) -> Interlocks 
+%%                  (Hardware/Logic) -> Safe State Enforcement.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef danger fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef hardware fill:#eeeeee,stroke:#212121,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Phase 1: Pre-Execution
+    subgraph "1. Static Safety (Pre-Exec)"
+        direction TB
+        Intent[Planned Action]:::input
+        Static{Invariant Check}:::check
+        
+        Intent --> Static
+        Static -->|Violation| Block[Block Action]:::danger
+        Static -->|Safe| Phase2
+    end
+
+    %% 2. Phase 2: Runtime
+    subgraph "2. Dynamic Safety (Runtime)"
+        direction TB
+        Phase2[Execution Monitor]:::check
+        Context[Live Context]:::input
+        
+        Phase2 --- Context
+        
+        Phase2 -->|Limits Exceeded| Trip[Trigger Trip]:::danger
+        Phase2 -->|Normal| Phase3
+    end
+
+    %% 3. Phase 3: Hardware Interlocks
+    subgraph "3. Physical Safety (Interlocks)"
+        direction TB
+        Phase3[Hardware Gate]:::hardware
+        Lock{Physical Interlock}:::check
+        
+        Phase3 --> Lock
+        Lock -->|Lockout Active| Prevent[Hardware Prevention]:::danger
+        Lock -->|Clear| Actuator[Actuate Device]:::safe
+    end
+
+    %% 4. Recovery
+    subgraph "4. Safe State"
+        direction TB
+        SafeState[Safe State Logic]:::safe
+        
+        Block --> SafeState
+        Trip --> SafeState
+        Prevent --> SafeState
+        
+        SafeState -->|Execute| Fallback[Emergency Stop / Isolate]:::safe
+    end
+
+    %% Annotations
+    note1["Layered defense ensures safety<br/>even if Cognitive Core fails"]:::check -.-> Phase2
