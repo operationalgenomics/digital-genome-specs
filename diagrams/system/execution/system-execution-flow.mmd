@@ -1,0 +1,51 @@
+graph TD
+    %% Global Styles
+    classDef plan fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef orch fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef sys fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef feed fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. The Plan
+    subgraph "1. Cognitive Output"
+        direction TB
+        Plan[Action Plan]:::plan
+    end
+
+    %% 2. Orchestration
+    subgraph "2. Orchestration Layer"
+        direction TB
+        OrchEng[Orchestration Engine]:::orch
+        
+        Plan -->|Dispatch| OrchEng
+    end
+
+    %% 3. Actuation (The Reality)
+    subgraph "3. Execution Domain"
+        direction TB
+        Phy[Physical Systems]:::sys
+        Dig[Digital Systems]:::sys
+        
+        OrchEng -->|Commands| Phy
+        OrchEng -->|API Calls| Dig
+    end
+
+    %% 4. Observation
+    subgraph "4. Monitoring Layer"
+        direction TB
+        Monitor[Monitoring System]:::mon
+        
+        Phy -->|Telemetry| Monitor
+        Dig -->|Logs & Events| Monitor
+    end
+
+    %% 5. Feedback
+    subgraph "5. Feedback Loop"
+        direction TB
+        Outcome[Outcome Evaluation]:::feed
+        
+        Monitor -->|Observed State| Outcome
+    end
+
+    %% Closing the Loop
+    Outcome -->|Success/Failure| Plan
