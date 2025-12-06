@@ -1,0 +1,81 @@
+%% ==============================================================================
+%% Context Fusion Engine Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/context-model.md
+%% Repository Path: diagrams/unl/context/unl-context-fusion-engine.png
+%% Description:     Visualizes the three-phase fusion process: Bottom-Up 
+%%                  Aggregation -> Top-Down Praxeological Structuring -> 
+%%                  Coherence & Safety Filtering.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef phase fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef check fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef memory fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input Vectors
+    subgraph "1. Input Vectors"
+        direction TB
+        Frame[Semantic Frame]:::input
+        Multi[Multimodal Signals]:::input
+        Env[Environment State]:::input
+        
+        Note1["Voice, Gesture, Gaze"]:::input -.-> Multi
+    end
+
+    %% 2. The Fusion Engine
+    subgraph "2. Fusion Engine"
+        direction TB
+        
+        %% Phase A: Bottom-Up
+        subgraph PhaseA ["Phase A: Bottom-Up Aggregation"]
+            Agg[Signal Aggregator]:::phase
+            Feat[Feature Extraction]:::phase
+            
+            Multi & Env --> Agg
+            Agg --> Feat
+        end
+        
+        %% Phase B: Top-Down
+        subgraph PhaseB ["Phase B: Top-Down Structuring"]
+            Goal[Goal Inference]:::phase
+            Work[Workflow Alignment]:::phase
+            
+            Frame --> Goal
+            Feat --> Goal
+            Goal --> Work
+        end
+        
+        %% Phase C: Filtering
+        subgraph PhaseC ["Phase C: Coherence & Safety"]
+            Filter{Safety Filter}:::check
+            Coh{Semantic Coherence}:::check
+            
+            Work --> Coh
+            Coh --> Filter
+        end
+    end
+
+    %% 3. Contextual Memory Support
+    subgraph "Memory & Profile"
+        direction TB
+        Hist[Historical Patterns]:::memory
+        Prof[Operator Profile]:::memory
+        
+        Hist -.-> Goal
+        Prof -.-> Filter
+    end
+
+    %% 4. Output
+    subgraph "4. Output"
+        Result[Contextualized UNLIntent]:::output
+        
+        Filter -->|Approved| Result
+        Filter -->|Rejected| Ambiguity[Trigger Clarification]:::check
+    end
+
+    %% Annotations
+    note2["Resolves 'Do this' into\n'Isolate Valve 401' based on gaze"]:::phase -.-> PhaseB
