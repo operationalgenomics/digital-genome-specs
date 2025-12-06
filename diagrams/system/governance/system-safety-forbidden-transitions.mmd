@@ -1,0 +1,64 @@
+%% ==============================================================================
+%% Forbidden Transition Graph
+%% ==============================================================================
+%% Source File:     specs/system/safety-invariants.md
+%% Repository Path: diagrams/system/governance/system-safety-forbidden-transitions.png
+%% Description:     Visualizes the state transition logic, highlighting specifically
+%%                  prohibited paths (e.g., Running -> Open) and mandatory safety
+%%                  gates (e.g., Isolated -> Running requires Clearance).
+%% ==============================================================================
+
+stateDiagram-v2
+    %% Global Styles
+    classDef normal fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
+    classDef critical fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000
+    
+    %% States
+    state "Running (Energized)" as Running
+    state "Stopped (De-energized)" as Stopped
+    state "Open / Accessible" as Open
+    state "Isolated (Safe)" as Isolated
+    state "Critical Alarm" as Alarm
+    state "Auto-Restart" as Restart
+
+    %% Style Application
+    class Running, Stopped, Restart normal
+    class Open, Alarm critical
+    class Isolated safe
+
+    %% Initial State
+    [*] --> Stopped
+
+    %% Valid Transitions
+    Stopped --> Running : Command - Start
+    Running --> Stopped : Command - Stop
+    Stopped --> Isolated : Command - Isolate
+    Isolated --> Stopped : Command - De-isolate
+    Stopped --> Open : Manual Access
+    Open --> Stopped : Close and Secure
+
+    %% ---------------------------------------------------------
+    %% FORBIDDEN TRANSITIONS (Safety Invariants)
+    %% ---------------------------------------------------------
+    
+    %% Invariant 1: Cannot open while running
+    Running --> Open : FORBIDDEN (Risk Exposure)
+    note right of Running
+        Invariant: State Running cannot 
+        transition to Open directly.
+    end note
+
+    %% Invariant 2: Cannot start while isolated without clearance
+    Isolated --> Running : FORBIDDEN (Risk Locked Tagged Out)
+    
+    %% Invariant 3: Cannot auto-restart from critical alarm
+    Alarm --> Restart : FORBIDDEN (Risk Unresolved Hazard)
+    
+    %% Invariant 4: Alarm handling
+    Running --> Alarm : Failure Event
+    Alarm --> Stopped : Emergency Stop (Mandatory)
+    
+    %% Conditional / Guarded Transitions
+    Isolated --> Stopped : Requires Clearance Ticket
+    Stopped --> Running : Requires Pre-Start Check
