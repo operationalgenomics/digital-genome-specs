@@ -1,0 +1,66 @@
+%% ==============================================================================
+%% Dataspaces Isolation Diagram
+%% ==============================================================================
+%% Source File:     specs/security/dataspaces-definition.md
+%% Repository Path: diagrams/security/security-dataspaces-isolation.png
+%% Description:     Visualizes the four isolation levels of data storage: Public
+%%                  (Open), Private (User-Specific), Sensitive (System-Critical),
+%%                  and Protected (Genome/Core), along with the gateways that 
+%%                  control flow between them.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef public fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef private fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef sensitive fill:#ffecb3,stroke:#ff6f00,stroke-width:2px,color:#000;
+    classDef protected fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef gate fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+
+    %% Zone 1: Public Data
+    subgraph Space1 ["Level 1: Public Dataspace"]
+        direction TB
+        PubDocs[Documentation]:::public
+        PubLogs[Status Indicators]:::public
+    end
+
+    %% Zone 2: Private Data
+    subgraph Space2 ["Level 2: Private Dataspace"]
+        direction TB
+        UserProfile[User Profiles]:::private
+        Session[Session State]:::private
+    end
+
+    %% Zone 3: Sensitive Data
+    subgraph Space3 ["Level 3: Sensitive Dataspace"]
+        direction TB
+        OpLogs[Detailed Ops Logs]:::sensitive
+        Config[Runtime Config]:::sensitive
+    end
+
+    %% Zone 4: Protected Data
+    subgraph Space4 ["Level 4: Protected Dataspace"]
+        direction TB
+        Genome[(Digital Genome)]:::protected
+        Keys[Cryptographic Keys]:::protected
+    end
+
+    %% The Gates
+    GateA{Auth Gate}:::gate
+    GateB{RBAC Gate}:::gate
+    GateC{Privilege Gate}:::gate
+
+    %% Flow
+    User((User)) --> Space1
+    
+    Space1 --> GateA
+    GateA -->|Authenticated| Space2
+    
+    Space2 --> GateB
+    GateB -->|Role: Operator| Space3
+    
+    Space3 --> GateC
+    GateC -->|Role: Admin + MFA| Space4
+
+    %% Annotations
+    note1["No direct access from L1 to L4.\nMust traverse all gates."]:::gate -.-> GateC
