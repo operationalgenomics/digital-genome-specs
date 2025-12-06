@@ -1,0 +1,86 @@
+%% ==============================================================================
+%% UNL Intent Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/intent-mapping.md
+%% Repository Path: diagrams/unl/flows/unl-intent-pipeline.png
+%% Description:     Visualizes the intent processing pipeline: Raw Input -> 
+%%                  Semantic Frame -> Context Fusion -> Ambiguity Resolution -> 
+%%                  UNLIntent -> Governance Check -> Cognitive Core.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. Input Phase
+    subgraph "Phase 1: Reception"
+        direction TB
+        Operator((Human Operator)):::actor
+        Capture[Multimodal Capture]:::process
+        Raw[RawInputEnvelope]:::artifact
+        
+        Operator -->|Speech / Gesture / Text| Capture
+        Capture --> Raw
+    end
+
+    %% 2. Parsing Phase
+    subgraph "Phase 2: Semantic Parsing"
+        direction TB
+        Parser[Semantic Parser]:::process
+        Frame[SemanticFrame]:::artifact
+        
+        Raw --> Parser
+        Parser --> Frame
+    end
+
+    %% 3. Contextualization Phase
+    subgraph "Phase 3: Context & Ambiguity"
+        direction TB
+        Fusion[Context Fusion]:::process
+        Context[Context Model]:::process
+        Check{Ambiguity Check}:::decision
+        Clarify[Clarification Loop]:::process
+        
+        Frame --> Fusion
+        Context -.-> Fusion
+        Fusion --> Check
+        
+        Check -->|Ambiguous| Clarify
+        Clarify -->|New Input| Capture
+        Check -->|Clear| Enriched[Enriched Intent]:::artifact
+    end
+
+    %% 4. Mapping Phase
+    subgraph "Phase 4: Praxeological Mapping"
+        direction TB
+        Mapper[Praxeological Mapper]:::process
+        Ontology[Semantic Ontology]:::process
+        Intent[UNLIntent]:::artifact
+        
+        Enriched --> Mapper
+        Ontology -.-> Mapper
+        Mapper --> Intent
+    end
+
+    %% 5. Control Phase
+    subgraph "Phase 5: Governance Gate"
+        direction TB
+        GovCheck{Authorization}:::gov
+        
+        Intent --> GovCheck
+    end
+
+    %% Output
+    CC[Cognitive Core]:::core
+    
+    GovCheck -->|Approved| CC
+    GovCheck -->|Rejected| Clarify
+
+    %% Annotations
+    note1["Intent must be fully deterministic<br/>before leaving this pipeline"]:::process -.-> Intent
