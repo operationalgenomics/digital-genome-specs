@@ -1,0 +1,76 @@
+%% ==============================================================================
+%% UNL + Cognitive Core Interaction Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%% Repository Path: diagrams/unl/architecture/unl-architecture-unl-cc.png
+%% Description:     Depicts the interaction: UNLIntent -> Cognitive Core,
+%%                  CognitiveResponse -> Translation Engine, with Governance
+%%                  intercepts and Safety filters.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Subsystem 1: UNL Outbound
+    subgraph "UNL Outbound (Intent)"
+        direction TB
+        Mapper[Praxeological Mapper]:::unl
+        Intent[UNLIntent Object]:::artifact
+        
+        Mapper -->|Generates| Intent
+    end
+
+    %% Subsystem 2: The Bridge (Control)
+    subgraph "Interaction Bridge"
+        direction TB
+        GovCheck{Governance Intercept}:::gov
+        SafeFilter{Safety Filter}:::safe
+        
+        Intent --> GovCheck
+        
+        GovCheck -->|Approved| SafeFilter
+        GovCheck -->|Forbidden| Reject1[Rejection Signal]:::gov
+        
+        SafeFilter -->|Safe| ToCore[Dispatch to Core]:::unl
+        SafeFilter -->|Unsafe| Reject2[Safety Halt]:::safe
+    end
+
+    %% Subsystem 3: Cognitive Core Processing
+    subgraph "Cognitive Core"
+        direction TB
+        Inference[Inference Engine]:::cog
+        Oracle[Oracle Synthesizer]:::cog
+        Decision[Cognitive Response]:::artifact
+        
+        ToCore --> Inference
+        Inference --> Oracle
+        Oracle -->|Synthesized Decision| Decision
+    end
+
+    %% Subsystem 4: UNL Inbound (Explanation)
+    subgraph "UNL Inbound (Response)"
+        direction TB
+        Trans[Translation Engine]:::unl
+        Explain[Explanation Generator]:::unl
+        Output[Human Narrative]:::artifact
+        
+        Decision --> Explain
+        Explain --> Trans
+        Trans --> Output
+        
+        Reject1 --> Trans
+        Reject2 --> Trans
+    end
+
+    %% Flows
+    Mapper -.->|Context| Inference
+    Oracle -.->|Trace Data| Explain
+
+    %% Annotations
+    note1["Intent must be fully formed<br/>before leaving UNL"]:::unl -.-> Intent
+    note2["Response includes reasoning<br/>trace for explainability"]:::cog -.-> Decision
