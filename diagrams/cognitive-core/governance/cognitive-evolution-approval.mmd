@@ -1,0 +1,76 @@
+%% ==============================================================================
+%% Evolution Approval Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/governance-model.md
+%%                  specs/cognitive-core/evolution-engine.md
+%% Repository Path: diagrams/cognitive-core/governance/cognitive-evolution-approval.mmd
+%% Description:     Visualizes the approval chain for evolutionary changes: 
+%%                  Sandbox Validation -> Policy Compliance -> Regression Testing
+%%                  -> Final Approval (Human/Auto) -> Genome Commit.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef gene fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef commit fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input: The Mutant
+    subgraph "1. Candidate Variant"
+        direction TB
+        Variant[Evolved Gene Candidate]:::gene
+        Stats[Simulated Fitness Stats]:::gene
+        
+        Variant --- Stats
+    end
+
+    %% 2. Validation Chain
+    subgraph "2. Validation Sandbox"
+        direction TB
+        
+        %% Step A: Regression
+        Regress{Regression Test}:::check
+        Variant --> Regress
+        Regress -->|Degrades Performance| Kill1[Reject: Regression]:::reject
+        Regress -->|Pass| Policy
+        
+        %% Step B: Policy
+        Policy{Static Analysis}:::check
+        Policy -->|Forbidden Logic| Kill2[Reject: Illegal Code]:::reject
+        Policy -->|Pass| Sand
+        
+        %% Step C: Sandbox
+        Sand{Sandbox Execution}:::check
+        Sand -->|Runtime Error| Kill3[Reject: Unstable]:::reject
+        Sand -->|Stable| Gate
+    end
+
+    %% 3. The Approval Gate
+    subgraph "3. Change Management"
+        direction TB
+        Gate{Approval Authority}:::check
+        
+        %% Auto-Approve for minor opts
+        Gate -->|Impact < Threshold| Auto[Auto-Approve]:::commit
+        
+        %% Human Review for logic shifts
+        Gate -->|Impact > Threshold| Human[Request Review]:::check
+        Human -->|Denied| Kill4[Reject: Veto]:::reject
+        Human -->|Approved| Signed[Signed Release]:::commit
+    end
+
+    %% 4. Deployment
+    subgraph "4. Genome Integration"
+        direction TB
+        Merge[Merge to Genome]:::commit
+        Version[Increment Version]:::meta
+        
+        Auto --> Merge
+        Signed --> Merge
+        Merge --> Version
+    end
+
+    %% Annotations
+    note1["Ensures evolution does not<br/>break existing functionality"]:::check -.-> Regress
