@@ -1,0 +1,71 @@
+%% ==============================================================================
+%% Anomaly Path Diagram
+%% ==============================================================================
+%% Source File:     specs/system/operational-scenarios.md
+%% Repository Path: diagrams/system/scenarios/system-operational-anomaly.png
+%% Description:     Visualizes the propagation of an anomaly through the system:
+%%                  Human/Context -> UNL -> Core -> Execution -> Monitoring
+%%                  (Anomaly Detection) -> Feedback (Safe Failure) -> Evolution.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef feed fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef evo fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. Initiation
+    subgraph "1. Initiation"
+        direction TB
+        Human((Human/Context)):::human
+        UNL[UNL Interpretation]:::unl
+        Core[Cognitive Reasoning]:::core
+        
+        Human -->|Expression| UNL
+        UNL -->|Intent| Core
+    end
+
+    %% 2. Execution & Deviation
+    subgraph "2. Execution & Deviation"
+        direction TB
+        Exec[Execution Layer]:::sys
+        Mon[Monitoring Layer]:::mon
+        Anomaly{Anomaly Detected}:::mon
+        
+        Core -->|Plan Dispatch| Exec
+        Exec -->|Actuation| Mon
+        Mon -->|Telemetry Analysis| Anomaly
+    end
+
+    %% 3. Reaction
+    subgraph "3. System Reaction"
+        direction TB
+        Feedback[Feedback Model]:::feed
+        Eval[Outcome: Safe Failure]:::feed
+        
+        Anomaly -->|Deviation Signal| Feedback
+        Feedback -->|Classification| Eval
+    end
+
+    %% 4. Adaptation
+    subgraph "4. Evolutionary Adaptation"
+        direction TB
+        Evo[Evolution Engine]:::evo
+        AntiGene[Anti-Gene Generation]:::evo
+        Genome[Genome Update]:::evo
+        
+        Eval -->|Trigger| Evo
+        Evo -->|Mitigation Strategy| AntiGene
+        AntiGene -->|Integrate| Genome
+    end
+
+    %% Closing the Loop
+    Genome -.->|Improved Logic| Core
+
+    %% Annotations
+    note1["Unexpected state change<br/>or metric violation"]:::mon -.-> Anomaly
+    note2["Prevents recurrence of<br/>the specific failure mode"]:::evo -.-> AntiGene
