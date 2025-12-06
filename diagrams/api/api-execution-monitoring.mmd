@@ -1,0 +1,64 @@
+%% ==============================================================================
+%% Execution Monitoring API Diagram
+%% ==============================================================================
+%% Source File:     specs/api/telemetry-api.md
+%% Repository Path: diagrams/api/api-execution-monitoring.png
+%% Description:     Visualizes the monitoring topology: Cognitive Core -> Event Bus
+%%                  -> Stream Processor -> API Websocket Push -> Client Dashboard.
+%% ==============================================================================
+
+graph LR
+    %% Global Styles
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef bus fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef proc fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef api fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef client fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+
+    %% 1. The Source
+    subgraph "1. System Core"
+        direction TB
+        Core[Cognitive Core]:::source
+        Actuators[Actuators]:::source
+    end
+
+    %% 2. The Transport
+    subgraph "2. Event Transport"
+        direction TB
+        Bus((Event Bus / Kafka)):::bus
+    end
+
+    %% 3. The Processing
+    subgraph "3. Telemetry Service"
+        direction TB
+        Filter{Stream Filter}:::proc
+        Aggregator[Metrics Aggregator]:::proc
+        
+        Bus --> Filter
+        Filter --> Aggregator
+    end
+
+    %% 4. The Delivery
+    subgraph "4. API Edge"
+        direction TB
+        SocketAPI{WebSocket Gateway}:::api
+    end
+
+    %% 5. The Consumer
+    subgraph "5. Client Side"
+        direction TB
+        Dash[Live Dashboard]:::client
+        Alert[Watchdog Service]:::client
+    end
+
+    %% Flow Connections
+    Core -->|"State Changes"| Bus
+    Actuators -->|"Feedback Loop"| Bus
+    
+    Aggregator --> SocketAPI
+    
+    SocketAPI -->|"Push: JSON Stream"| Dash
+    SocketAPI -->|"Push: Alert Event"| Alert
+
+    %% Annotations
+    note1["Low-latency push updates for\nreal-time observability"]:::api -.-> SocketAPI
