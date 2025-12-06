@@ -1,0 +1,66 @@
+%% ==============================================================================
+%% Documentation Context Deployment Diagram (C4 Deployment)
+%% ==============================================================================
+%% Source File:     docs/architecture/deployment-view.md
+%% Repository Path: diagrams/docs/docs-context-deployment.png
+%% Description:     Visualizes the tiered deployment architecture: Cloud Plane
+%%                  (Management & Analytics) <-> Edge Plane (Real-time Cognitive 
+%%                  Core) <-> Field Plane (Sensors & Actuators).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef cloud fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef edge fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef field fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef link fill:#ffffff,stroke:#000000,stroke-width:1px,color:#000;
+
+    %% 1. Cloud Layer (Central HQ)
+    subgraph Cloud ["Cloud Layer (Central Management)"]
+        direction TB
+        MasterDB[(Master Genome DB)]:::cloud
+        Dashboard[Web Dashboard UI]:::cloud
+        Analytics[Big Data Analytics]:::cloud
+        
+        MasterDB --- Dashboard
+        Dashboard --- Analytics
+    end
+
+    %% Link: Internet / WAN
+    Link1((WAN / HTTPS)):::link
+
+    %% 2. Edge Layer (The Brains)
+    subgraph Edge ["Edge Layer (On-Premise Node)"]
+        direction TB
+        CogCore[Cognitive Core Runtime]:::edge
+        LocalDB[(Local Cache / Logs)]:::edge
+        SecureGW[Security Gateway]:::edge
+        
+        SecureGW --> CogCore
+        CogCore --- LocalDB
+    end
+
+    %% Link: Local Network
+    Link2((LAN / Fieldbus)):::link
+
+    %% 3. Field Layer (The Physical World)
+    subgraph Field ["Field Layer (Sensors & Actuators)"]
+        direction TB
+        Sensors[IoT Sensor Array]:::field
+        PLC[PLC / Controllers]:::field
+        Actuators[Physical Motors/Valves]:::field
+        
+        Sensors --> PLC
+        PLC --> Actuators
+    end
+
+    %% Connections
+    MasterDB <-->|Sync| Link1
+    Link1 <-->|Sync| SecureGW
+    
+    CogCore <-->|Command/Control| Link2
+    Link2 <-->|I/O| PLC
+
+    %% Annotations
+    note1["High latency tolerance;<br/>manages global state"]:::cloud -.-> Link1
+    note2["Low latency requirement;<br/>autonomous operation"]:::edge -.-> CogCore
