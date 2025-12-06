@@ -1,0 +1,73 @@
+%% ==============================================================================
+%% Security Governance Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/security/governance-model.md
+%% Repository Path: diagrams/security/security-governance-flow.png
+%% Description:     Visualizes the ABAC (Attribute-Based Access Control) flow:
+%%                  Request -> Enforcement Point (PEP) -> Decision Point (PDP)
+%%                  fetching Rules & Context -> Final Enforcement (Allow/Deny).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef flow fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef engine fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef store fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef result fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef deny fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Administration (Async)
+    subgraph "1. Policy Administration"
+        direction TB
+        Admin((Security Admin)):::actor
+        Repo[(Policy Repository)]:::store
+        
+        Admin -->|Define Rules| Repo
+    end
+
+    %% 2. The Request Flow
+    subgraph "2. Interception Layer"
+        direction TB
+        User((User/System)):::actor
+        PEP{Policy Enforcement Point}:::flow
+        Target[Protected Resource]:::result
+        
+        User -->|Request Access| PEP
+    end
+
+    %% 3. The Decision Engine
+    subgraph "3. Policy Decision Point (PDP)"
+        direction TB
+        PDP{Decision Engine}:::engine
+        PIP[Policy Information Point]:::flow
+        Context[Live Context Data]:::store
+        
+        %% Flow
+        PEP -->|XACML/JSON Request| PDP
+        PDP <-->|Fetch Rules| Repo
+        PDP -->|Fetch Attributes| PIP
+        PIP <-->|Query State| Context
+    end
+
+    %% 4. Outcomes
+    subgraph "4. Enforcement"
+        direction TB
+        Allow[Permit]:::result
+        Block[Deny]:::deny
+        Log[Audit Trail]:::store
+        
+        PDP -->|Decision| Allow
+        PDP -->|Decision| Block
+        
+        Allow --> PEP
+        Block --> PEP
+        
+        PEP -->|If Permit| Target
+        PEP -->|If Deny| Reject[Return 403 Forbidden]:::deny
+        
+        PEP -.->|Log Decision| Log
+    end
+
+    %% Annotations
+    note1["Decouples business logic from security logic"]:::engine -.-> PDP
