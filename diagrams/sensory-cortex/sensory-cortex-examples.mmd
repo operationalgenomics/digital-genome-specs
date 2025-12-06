@@ -1,0 +1,97 @@
+%% ==============================================================================
+%% Sensory Cortex Examples Diagram
+%% ==============================================================================
+%% Source File:     specs/sensory-cortex/specification.md
+%% Repository Path: diagrams/sensory-cortex/sensory-cortex-examples.mmd
+%% Description:     Shows concrete examples of how different signal types are
+%%                  processed through the Sensory Cortex hierarchy: a technical
+%%                  drawing (today), an operator gesture (tomorrow), and an
+%%                  unknown signal (future).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef today fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef tomorrow fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef future fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef level fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef output fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Example 1: Technical Drawing (Today - Layer 1)
+    subgraph "Example A: Technical Drawing (Industry Today)"
+        direction TB
+        
+        DrawIn["Input: DWG/PDF File"]:::today
+        
+        DrawL0["L0 Carrier: Digital (file)"]:::level
+        DrawL1["L1 Pattern: Spatial 2D + text annotations"]:::level
+        DrawL2["L2 Structure: Lines form closed entities,<br/>dimensions follow standards"]:::level
+        DrawL25["L2.5 Proto-Agency: Symbols indicate<br/>manufacturing intent, tolerances present"]:::level
+        DrawL3["L3 Semantics: Object to be fabricated<br/>with specific constraints"]:::level
+        
+        DrawIn --> DrawL0 --> DrawL1 --> DrawL2 --> DrawL25 --> DrawL3
+        
+        DrawOut["Codon: [Part-X | Fabricate | To-Spec]"]:::output
+        DrawL3 --> DrawOut
+    end
+
+    %% Example 2: Operator Gesture (Tomorrow - Layer 2)
+    subgraph "Example B: Operator Gesture (Autonomous Systems)"
+        direction TB
+        
+        GestIn["Input: Camera Capture"]:::tomorrow
+        
+        GestL0["L0 Carrier: Optical (video stream)"]:::level
+        GestL1["L1 Pattern: Temporal-spatial<br/>(hand movement trajectory)"]:::level
+        GestL2["L2 Structure: Trajectory with<br/>accelerations, pauses, directions"]:::level
+        GestL25["L2.5 Proto-Agency: Movement seems<br/>intentional, not random motion"]:::level
+        GestL3["L3 Semantics: 'Stop that machine'<br/>or 'Increase speed'"]:::level
+        
+        GestIn --> GestL0 --> GestL1 --> GestL2 --> GestL25 --> GestL3
+        
+        GestOut["Codon: [Machine-Y | Stop | Idle]"]:::output
+        GestL3 --> GestOut
+    end
+
+    %% Example 3: Unknown Signal (Future - Layer 3+)
+    subgraph "Example C: Unknown Signal (The Horizon)"
+        direction TB
+        
+        UnkIn["Input: Detected Pattern<br/>(source/type unknown)"]:::future
+        
+        UnkL0["L0 Carrier: Detected but unclassified"]:::level
+        UnkL1["L1 Pattern: Structure present?<br/>(entropy analysis)"]:::level
+        UnkL2["L2 Structure: Regularities detected?<br/>(compressibility test)"]:::level
+        UnkL25["L2.5 Proto-Agency: Non-random?<br/>Too costly for chance?"]:::level
+        
+        UnkBranch{Agency<br/>Detected?}:::level
+        
+        UnkIn --> UnkL0 --> UnkL1 --> UnkL2 --> UnkL25 --> UnkBranch
+        
+        UnkYes["L3 Semantics: Attempt interpretation<br/>via cross-domain analogy"]:::level
+        UnkNo["Unresolved Pattern:<br/>Store for future analysis"]:::future
+        
+        UnkBranch -->|Yes| UnkYes
+        UnkBranch -->|No| UnkNo
+        
+        UnkOut["Potential Codon or<br/>Mystery Zone Entry"]:::output
+        UnkYes --> UnkOut
+        UnkNo --> UnkOut
+    end
+
+    %% The Principle
+    subgraph "The Unifying Principle"
+        direction TB
+        
+        Principle["The system does not ask 'WHAT is this?'<br/>It asks 'What does this ALLOW to be done?'"]:::meta
+        
+        Shift["Semantics emerges from<br/>ACTION POSSIBLE, not classification"]:::meta
+        
+        Principle --> Shift
+    end
+
+    %% Annotations
+    note1["Today: Interpret industrial formats"]:::today -.-> DrawIn
+    note2["Tomorrow: Interpret human embodiment"]:::tomorrow -.-> GestIn
+    note3["Future: Interpret the unknown"]:::future -.-> UnkIn
