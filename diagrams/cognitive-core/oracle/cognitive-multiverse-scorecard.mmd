@@ -1,0 +1,63 @@
+%% ==============================================================================
+%% Multiverse Scorecard Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/oracle-synthesizer.md
+%% Repository Path: diagrams/cognitive-core/oracle/cognitive-multiverse-scorecard.mmd
+%% Description:     Visualizes the "Scorecard" artifact: A comparison of simulation
+%%                  metrics (Success Rate, Resource Cost, Side Effects) across
+%%                  different worldline clusters (Baseline vs. Stress).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef card fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef metric fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef pass fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef warn fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% The Scorecard Container
+    subgraph Scorecard ["Oracle Scorecard: Gene-X"]
+        direction TB
+        
+        %% Scenario 1: Baseline
+        subgraph S1 ["Scenario A: Baseline (Normal Ops)"]
+            direction LR
+            M1["Success Rate: 99%"]:::pass
+            M2["Latency: 12ms"]:::pass
+            M3["Side Effects: None"]:::pass
+        end
+
+        %% Scenario 2: Stress
+        subgraph S2 ["Scenario B: High Load (Stress)"]
+            direction LR
+            M4["Success Rate: 92%"]:::pass
+            M5["Latency: 45ms"]:::warn
+            M6["Side Effects: Heat Spike"]:::warn
+        end
+
+        %% Scenario 3: Failure Mode
+        subgraph S3 ["Scenario C: Sensor Failure"]
+            direction LR
+            M7["Success Rate: 75%"]:::fail
+            M8["Latency: N/A"]:::pass
+            M9["Side Effects: Safety Halt"]:::pass
+        end
+    end
+
+    %% Aggregation Logic
+    subgraph Final ["Final Assessment"]
+        direction TB
+        Weight{Weighted Average}:::card
+        
+        S1 & S2 & S3 --> Weight
+        
+        Score["Global Confidence: 0.88"]:::metric
+        Verdict["Verdict: APPROVED (With Warnings)"]:::pass
+        
+        Weight --> Score
+        Score --> Verdict
+    end
+
+    %% Annotations
+    note1["Scenario C triggers safety halt,\nwhich is considered a 'Safe' outcome"]:::pass -.-> M9
