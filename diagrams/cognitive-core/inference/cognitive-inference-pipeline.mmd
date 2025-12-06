@@ -3,72 +3,98 @@
 %% ==============================================================================
 %% Source File:     specs/cognitive-core/inference-engine.md
 %% Repository Path: diagrams/cognitive-core/inference/cognitive-inference-pipeline.png
-%% Description:     Visualizes the sequential inference pipeline: Intent/Context
-%%                  Prep -> Safety Filter -> Governance Filter -> Applicability
-%%                  Check -> Predictive Simulation -> Ranking -> Selection.
+%% Description:     Visualizes the inference pipeline with PARALLEL motor
+%%                  evaluation: Sensory Cortex -> Parallel Motors -> Convergence
+%%                  -> Simulation -> Oracle Selection.
 %% ==============================================================================
 
 graph TD
     %% Global Styles
     classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
-    classDef proc fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
-    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef sensory fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef conv fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
     classDef action fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
     classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
 
-    %% 1. Preparation Phase
-    subgraph "1. Interpretation & Normalization"
+    %% 1. Input Processing
+    subgraph "1. Sensory Cortex"
         direction TB
-        RawIntent[HighLevelIntent]:::input
-        RawContext[ContextSnapshot]:::input
+        RawSignal[Raw Signal]:::input
+        Context[Context Snapshot]:::input
         
-        IntProc[Intent Interpreter]:::proc
-        CtxNorm[Context Normalizer]:::proc
+        Carrier[Carrier Detection]:::sensory
+        Pattern[Pattern Extraction]:::sensory
+        Structure[Structure Analysis]:::sensory
+        Semantics[Semantic Extraction]:::sensory
         
-        RawIntent --> IntProc
-        RawContext --> CtxNorm
+        RawSignal --> Carrier --> Pattern --> Structure --> Semantics
+        Context --> Structure
     end
 
-    %% 2. Filtering Phase (The Funnel)
-    subgraph "2. Exclusion Layers"
+    %% 2. Parallel Motor Evaluation
+    subgraph "2. Parallel Motor Evaluation (Simultaneous)"
         direction TB
-        Safe{Safety Filter}:::check
-        Gov{Governance Filter}:::check
-        App{Applicability Engine}:::check
         
-        IntProc & CtxNorm --> Safe
+        Dist{Distribute to<br/>All Motors}:::conv
+        Semantics --> Dist
         
-        Safe -->|Pass| Gov
-        Safe -->|Violates Invariant| RejSafe[Reject: Safety Risk]:::reject
+        Prax[Praxeological Motor]:::motor
+        Nash[Nash Motor]:::motor
+        Chaos[Chaotic Motor]:::motor
+        Meta[Meristic Meta-Motor]:::motor
         
-        Gov -->|Pass| App
-        Gov -->|Forbidden| RejGov[Reject: Policy]:::reject
+        Dist --> Prax & Nash & Chaos & Meta
         
-        App -->|Valid| Set[Applicability Set]:::action
-        App -->|Invalid Context| RejApp[Discard: Mismatch]:::reject
+        %% Scores
+        SP["Score_P"]:::motor
+        SN["Score_N"]:::motor
+        SC["Score_C"]:::motor
+        SM["Score_M"]:::motor
+        
+        Prax --> SP
+        Nash --> SN
+        Chaos --> SC
+        Meta --> SM
     end
 
-    %% 3. Evaluation Phase
-    subgraph "3. Predictive Evaluation"
+    %% 3. Convergence
+    subgraph "3. Convergence & CP Calculation"
         direction TB
-        Sim[Predictive Simulation]:::proc
-        Rank[Ranking Engine]:::proc
         
-        Set --> Sim
-        Sim -->|Predicted Outcomes| Rank
+        Conv{Convergence<br/>Function}:::conv
+        SP & SN & SC & SM --> Conv
+        
+        CP["CP = P x N x C x M"]:::conv
+        Conv --> CP
+        
+        %% Veto Check
+        Veto{Any score = 0?}:::reject
+        CP --> Veto
+        
+        Veto -->|Yes| Reject[Reject: Veto Active]:::reject
+        Veto -->|No| Proceed[Proceed with CP]:::action
     end
 
-    %% 4. Selection Phase
-    subgraph "4. Final Decision"
+    %% 4. Simulation & Selection
+    subgraph "4. Simulation & Selection"
         direction TB
-        Select{Selection Engine}:::action
-        Result[Selected Gene]:::action
+        Sim[Multiverse Simulation]:::action
+        Rank[Ranking by CP]:::action
+        Select[Oracle Selection]:::action
+        
+        Proceed --> Sim --> Rank --> Select
+    end
+
+    %% 5. Output
+    subgraph "5. Output"
+        direction TB
+        Gene[Selected Gene]:::action
         Trace[Rationale Trace]:::input
         
-        Rank -->|Scored Candidates| Select
-        Select -->|Best Score| Result
-        Select -->|Explain| Trace
+        Select --> Gene
+        Select --> Trace
     end
 
-    %% Scoring Logic Annotation
-    note1["Scoring Weights:\nSafety > Governance > Fit > Intent"]:::proc -.-> Rank
+    %% Annotations
+    note1["PARALLEL, NOT SEQUENTIAL<br/>All motors evaluate simultaneously<br/>Product function ensures convergence"]:::conv -.-> Dist
