@@ -1,0 +1,68 @@
+%% ==============================================================================
+%% Governance Output Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/translation-engine.md
+%% Repository Path: diagrams/unl/interaction/unl-governance-output.png
+%% Description:     Visualizes the rendering logic for governance outputs:
+%%                  Decision Mode -> Template Selection -> User Interface
+%%                  Artifact (Notification, Prompt, or Alert).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef engine fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef auto fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef review fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef block fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Governance Input
+    subgraph "1. Governance Decision"
+        direction TB
+        Dec[Decision Object]:::gov
+        Mode{Check Mode}:::gov
+        
+        Dec --> Mode
+    end
+
+    %% 2. Translation Logic
+    subgraph "2. Translation Engine"
+        direction TB
+        Sel[Template Selector]:::engine
+        
+        Mode -->|Status: AUTO| Path1[Select: Info Template]:::auto
+        Mode -->|Status: REVIEW| Path2[Select: Action Template]:::review
+        Mode -->|Status: FORBIDDEN| Path3[Select: Alert Template]:::block
+        
+        Path1 & Path2 & Path3 --> Sel
+    end
+
+    %% 3. Rendered Artifacts
+    subgraph "3. User Interface Output"
+        direction TB
+        
+        %% Auto Output
+        Notif[Success Notification]:::auto
+        Txt1["'Action authorized and executing...'"]:::auto
+        
+        %% Review Output
+        Prompt[Approval Prompt]:::review
+        Txt2["'High Risk: Operator confirmation required'"]:::review
+        Btn2["[Approve] [Deny]"]:::review
+        
+        %% Forbidden Output
+        Alert[Blocking Alert]:::block
+        Txt3["'Action blocked by Policy #104'"]:::block
+        
+        Sel -->|Render| Notif
+        Sel -->|Render| Prompt
+        Sel -->|Render| Alert
+        
+        Notif --- Txt1
+        Prompt --- Txt2
+        Prompt --- Btn2
+        Alert --- Txt3
+    end
+
+    %% Annotations
+    note1["Language must be neutral but<br/>convey urgency levels clearly"]:::engine -.-> Sel
