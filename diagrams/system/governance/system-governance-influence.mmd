@@ -1,0 +1,78 @@
+%% ==============================================================================
+%% Governance Influence Map
+%% ==============================================================================
+%% Source File:     specs/system/governance-model.md
+%% Repository Path: diagrams/system/governance/system-governance-influence.png
+%% Description:     Visualizes the cross-cutting influence of the Governance
+%%                  Matrix, showing specific intervention points (Identity,
+%%                  Policy, Safety, Ledger) across all major subsystems.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef sub fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef point fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% The Central Governance Authority
+    Gov((Governance Matrix)):::gov
+
+    %% Subsystem 1: UNL (Intent)
+    subgraph "1. UNL Subsystem"
+        direction TB
+        UNL[Intent Interpretation]:::sub
+        P1[Point: Operator Auth]:::point
+        P2[Point: Ambiguity Check]:::point
+        
+        UNL --- P1 & P2
+    end
+
+    %% Subsystem 2: Cognitive Core (Reasoning)
+    subgraph "2. Cognitive Core"
+        direction TB
+        Core[Decision Making]:::sub
+        P3[Point: Gene Allowed?]:::point
+        P4[Point: Policy Override]:::point
+        
+        Core --- P3 & P4
+    end
+
+    %% Subsystem 3: Execution (Action)
+    subgraph "3. Execution Layer"
+        direction TB
+        Exec[Actuation]:::sub
+        P5[Point: Forbidden State]:::point
+        P6[Point: Human Approval]:::point
+        
+        Exec --- P5 & P6
+    end
+
+    %% Subsystem 4: Monitoring (Observation)
+    subgraph "4. Monitoring & Feedback"
+        direction TB
+        Mon[Telemetry Analysis]:::sub
+        P7[Point: Safety Trigger]:::point
+        P8[Point: Audit Logging]:::point
+        
+        Mon --- P7 & P8
+    end
+
+    %% Subsystem 5: Evolution (Change)
+    subgraph "5. Evolution Engine"
+        direction TB
+        Evo[Genome Mutation]:::sub
+        P9[Point: Update Validation]:::point
+        P10[Point: Anti-Gene Check]:::point
+        
+        Evo --- P9 & P10
+    end
+
+    %% Influence Lines
+    Gov == Enforces ==> P1 & P2
+    Gov == Enforces ==> P3 & P4
+    Gov == Enforces ==> P5 & P6
+    Gov == Enforces ==> P7 & P8
+    Gov == Enforces ==> P9 & P10
+
+    %% Annotation
+    note1["Governance is ubiquitous;<br/>no layer is exempt"]:::gov -.-> Gov
