@@ -1,0 +1,62 @@
+%% ==============================================================================
+%% Multi-Entity Expansion Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/codification-rules.md
+%% Repository Path: diagrams/unl/flows/unl-multi-entity-expansion.png
+%% Description:     Visualizes the expansion of a single multi-entity intent
+%%                  (e.g., "Stop pumps A, B, and C") into a deterministic
+%%                  sequence of atomic codons.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef process fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef codon fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef seq fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. The Input Intent
+    subgraph "1. Input Intent"
+        direction TB
+        Intent[UNL Intent]:::input
+        Entities["Entities: [Pump A, Pump B, Pump C]"]:::input
+        Action["Action: STOP"]:::input
+        
+        Intent --- Entities
+        Intent --- Action
+    end
+
+    %% 2. Expansion Logic
+    subgraph "2. Expansion Engine"
+        direction TB
+        Iterator{Entity Iterator}:::process
+        Rule[Atomic Rule]:::process
+        
+        Intent --> Iterator
+        Iterator -->|Next Entity| Rule
+    end
+
+    %% 3. Output Sequence (Codons)
+    subgraph "3. Codon Generation"
+        direction TB
+        C1["Codon 1: Pump A | STOP"]:::codon
+        C2["Codon 2: Pump B | STOP"]:::codon
+        C3["Codon 3: Pump C | STOP"]:::codon
+        
+        Rule -->|Generate| C1
+        Rule -->|Generate| C2
+        Rule -->|Generate| C3
+    end
+
+    %% 4. Final Sequence
+    subgraph "4. Execution Sequence"
+        direction LR
+        Seq[Ordered Sequence]:::seq
+        
+        C1 --> Seq
+        C2 --> Seq
+        C3 --> Seq
+    end
+
+    %% Annotations
+    note1["Single Intent -> Multiple Atomic Actions"]:::process -.-> Iterator
