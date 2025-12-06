@@ -1,0 +1,79 @@
+%% ==============================================================================
+%% Governance Enforcement Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/system/governance-model.md
+%% Repository Path: diagrams/system/governance/system-governance-pipeline.png
+%% Description:     Visualizes the sequential governance check: Identity Validation
+%%                  -> Policy Matching -> Safety Threshold -> Decision Mode
+%%                  Resolution -> Ledger Recording.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef event fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef proc fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef crit fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef term fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% 1. Input
+    subgraph "Stage 1: Reception"
+        direction TB
+        Event[Incoming Event]:::event
+        Note1["Intent, Decision,<br/>Plan, or Alert"]:::term
+        
+        Event --- Note1
+    end
+
+    %% 2. Identity
+    subgraph "Stage 2: Identity & Access"
+        direction TB
+        Auth{Identity Check}:::check
+        RBAC{Permission Check}:::check
+        
+        Event --> Auth
+        Auth -->|Valid Signature| RBAC
+        
+        Auth -->|Invalid| DenyID[Reject: Auth Fail]:::crit
+        RBAC -->|Unauthorized| DenyPerm[Reject: No Permission]:::crit
+    end
+
+    %% 3. Policy & Safety
+    subgraph "Stage 3: Policy & Safety"
+        direction TB
+        Match[Policy Matching]:::proc
+        Safe{Safety Threshold}:::check
+        
+        RBAC -->|Authorized| Match
+        Match -->|Policies Found| Safe
+        
+        Safe -->|Hazard Detected| DenySafe[Reject: Safety Risk]:::crit
+    end
+
+    %% 4. Decision Mode
+    subgraph "Stage 4: Resolution"
+        direction TB
+        Mode{Decision Mode}:::check
+        
+        Safe -->|Inside Envelope| Mode
+        
+        Mode -->|Auto| App[Approved: Auto]:::proc
+        Mode -->|Review| Rev[Hold: Human Review]:::gov
+        Mode -->|Forbidden| Forb[Block: Forbidden]:::crit
+    end
+
+    %% 5. Ledger
+    subgraph "Stage 5: Compliance"
+        direction TB
+        Ledger[Immutable Ledger]:::gov
+        
+        App & Rev & Forb --> Ledger
+        DenyID & DenyPerm & DenySafe --> Ledger
+    end
+
+    %% Final Output
+    Ledger -->|Hash Token| Output[System Action]:::event
+
+    %% Annotations
+    note2["Every outcome is signed<br/>and anchored in the ledger"]:::gov -.-> Ledger
