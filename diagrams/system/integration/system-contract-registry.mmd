@@ -1,0 +1,71 @@
+%% ==============================================================================
+%% Contract Registry Diagram
+%% ==============================================================================
+%% Source File:     specs/system/integration-contracts.md
+%% Repository Path: diagrams/system/integration/system-contract-registry.png
+%% Description:     Visualizes the lifecycle and management of system integration
+%%                  contracts, including registration, versioning (SemVer),
+%%                  deprecation, and lookup by subsystems.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef reg fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef process fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Actors
+    Dev((Architect / Developer)):::actor
+    Gov((Governance Body)):::actor
+
+    %% The Registry System
+    subgraph "Contract Registry System"
+        direction TB
+        Registry[("Contract Registry\n(Single Source of Truth)")]:::reg
+        Validator{Schema Validator}:::process
+        VerMan{Version Manager}:::process
+        
+        Registry <--> Validator
+        Registry <--> VerMan
+    end
+
+    %% Processes
+    subgraph "Lifecycle Operations"
+        direction TB
+        RegNew[Register New Contract]:::sys
+        Update[Update Contract]:::sys
+        Deprecate[Deprecate Version]:::sys
+    end
+
+    %% Consumers
+    subgraph "Runtime Consumers"
+        direction TB
+        Core[Cognitive Core]:::actor
+        Exec[Execution Layer]:::actor
+        UNL[UNL Subsystem]:::actor
+    end
+
+    %% Flows - Management
+    Dev -->|Defines API| RegNew
+    Dev -->|Modifies API| Update
+    Gov -->|Approves| RegNew
+    Gov -->|Approves| Update
+    Gov -->|Mandates| Deprecate
+
+    RegNew --> Validator
+    Update --> VerMan
+    Deprecate --> VerMan
+
+    %% Validation Logic
+    Validator -->|Check Schema| Registry
+    VerMan -->|Enforce SemVer| Registry
+
+    %% Flows - Consumption
+    Core & Exec & UNL -->|Lookup Contract| Registry
+    Registry -->|Return JSON Schema| Core & Exec & UNL
+
+    %% Metadata
+    Meta1["SemVer: MAJOR.MINOR.PATCH"]:::meta -.-> VerMan
+    Meta2["Attributes: Owner, Status,<br>Changelog, Hash"]:::meta -.-> Registry
