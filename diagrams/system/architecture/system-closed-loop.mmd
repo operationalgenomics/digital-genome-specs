@@ -1,0 +1,37 @@
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Central Governance Hub
+    Gov((Governance & Safety)):::gov
+
+    %% The Loop Nodes
+    subgraph Loop [The Closed Cognitive Loop]
+        direction TB
+        Input[1. Intent & Context]:::unl
+        Core[2. Cognition & Reasoning]:::cog
+        Exec[3. Execution & Action]:::sys
+        Mon[4. Observation & Monitoring]:::mon
+        Learn[5. Evolution & Learning]:::cog
+    end
+
+    %% Cyclic Connections
+    Input -->|Parsed Intent| Core
+    Core -->|Execution Plan| Exec
+    Exec -->|State Change| Mon
+    Mon -->|Outcomes & Metrics| Learn
+    Learn -->|New Genes / Fitness| Core
+    
+    %% Feedback for Next Intent (closing the loop back to input context)
+    Mon -.->|System State Update| Input
+
+    %% Governance Interactions (Radial Constraints)
+    Gov -.->|Validation| Input
+    Gov -.->|Policy Check| Core
+    Gov -.->|Safety Envelope| Exec
+    Gov -.->|Audit Logging| Mon
+    Gov -.->|Change Approval| Learn
