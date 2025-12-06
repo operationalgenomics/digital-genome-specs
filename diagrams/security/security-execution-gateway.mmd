@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Security Execution Gateway Diagram
+%% ==============================================================================
+%% Source File:     specs/security/security-model.md
+%% Repository Path: diagrams/security/security-execution-gateway.png
+%% Description:     Visualizes the "Last Mile" security: A hardware/firmware 
+%%                  gateway that verifies digital signatures and checks physical
+%%                  interlocks before energizing actuators.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef sw fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef fw fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef hw fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef act fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef block fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. The Request (Software Layer)
+    subgraph "1. Software Layer"
+        direction TB
+        Core[Cognitive Core]:::sw
+        Cmd["Command: 'OPEN_VALVE'"]:::sw
+        Sig[DigSig: RSA-2048]:::sw
+        
+        Core --> Cmd
+        Core --> Sig
+    end
+
+    %% 2. The Gateway (Firmware Layer)
+    subgraph "2. Execution Gateway (Firmware)"
+        direction TB
+        Gate{Security Controller}:::fw
+        
+        %% Check A: Signature
+        Verify{Verify Signature}:::fw
+        
+        %% Check B: Safety Logic
+        Interlock{Safety Interlock}:::fw
+        
+        Cmd & Sig --> Gate
+        Gate --> Verify
+        
+        Verify -->|Invalid| Log1[Audit: Spoof Attempt]:::block
+        Verify -->|Valid| Interlock
+    end
+
+    %% 3. The Physical Reality
+    subgraph "3. Physical Layer"
+        direction TB
+        Sensor[Pressure Sensor]:::hw
+        State["Status: < MaxLimit"]:::hw
+        
+        Sensor --- State
+        State --> Interlock
+    end
+
+    %% 4. The Action
+    subgraph "4. Actuation"
+        direction TB
+        Driver[Motor Driver]:::act
+        Valve[Physical Valve]:::act
+        
+        Interlock -->|Unsafe State| Log2[Audit: Safety Trip]:::block
+        Interlock -->|Safe| Driver
+        Driver --> Valve
+    end
+
+    %% Annotations
+    note1["Hardware-enforced safety rules override<br/>any software command"]:::hw -.-> Interlock
