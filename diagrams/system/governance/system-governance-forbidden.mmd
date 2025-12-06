@@ -1,0 +1,64 @@
+%% ==============================================================================
+%% Forbidden Action Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/system/governance-model.md
+%% Repository Path: diagrams/system/governance/system-governance-forbidden.png
+%% Description:     Visualizes the blocking logic for forbidden actions:
+%%                  Decision Attempt -> Policy Conflict -> Immediate Block ->
+%%                  Audit Logging -> Rejection Feedback.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef attempt fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef block fill:#ffcdd2,stroke:#c62828,stroke-width:3px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef sys fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+
+    %% 1. The Attempt
+    subgraph "1. Action Attempt"
+        direction TB
+        Source[Cognitive Core]:::sys
+        Intent[Proposed Action]:::attempt
+        
+        Source --> Intent
+    end
+
+    %% 2. The Check
+    subgraph "2. Governance Evaluation"
+        direction TB
+        Policy{Policy Match}:::check
+        Safety{Safety Check}:::check
+        
+        Intent --> Policy
+        Policy -->|Match Found| Safety
+    end
+
+    %% 3. The Block (Forbidden State)
+    subgraph "3. Enforcement"
+        direction TB
+        Violation[Policy Violation Detected]:::block
+        Halt((STOP)):::block
+        
+        Safety -->|Critical Risk| Violation
+        Policy -->|Explicitly Forbidden| Violation
+        
+        Violation --> Halt
+    end
+
+    %% 4. The Consequence
+    subgraph "4. Governance Response"
+        direction TB
+        Ledger[Immutable Ledger]:::gov
+        Alert[Security Alert]:::gov
+        
+        Halt -->|Log Incident| Ledger
+        Halt -->|Notify Admin| Alert
+    end
+
+    %% Feedback
+    Halt -.->|Rejection Error| Source
+
+    %% Annotations
+    note1["Forbidden actions are non-negotiable<br/>and bypass human review"]:::block -.-> Violation
