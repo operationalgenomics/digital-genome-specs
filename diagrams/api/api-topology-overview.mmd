@@ -1,0 +1,65 @@
+%% ==============================================================================
+%% API Topology Overview Diagram
+%% ==============================================================================
+%% Source File:     specs/api/api-gateway.md
+%% Repository Path: diagrams/api/api-topology-overview.png
+%% Description:     Visualizes the API surface area: Management APIs (Admin/Config),
+%%                  Cognitive APIs (Intent/Feedback), and Data APIs (Telemetry/Logs),
+%%                  all fronted by a unified Gateway.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef gate fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef rest fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef socket fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef stream fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef client fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% Clients
+    subgraph Clients ["API Consumers"]
+        direction TB
+        AdminUI[Admin Dashboard]:::client
+        ChatUI["Chat/Voice Interface"]:::client
+        ExtSystem[External Analytics]:::client
+    end
+
+    %% The Gateway
+    Gateway{Unified API Gateway}:::gate
+    
+    Clients -->|"HTTPS / WSS"| Gateway
+
+    %% API Domain 1: Management (REST)
+    subgraph Mgmt ["1. Management Domain (REST)"]
+        direction TB
+        ConfigAPI["/v1/config"]:::rest
+        SecurityAPI["/v1/auth"]:::rest
+        GenomeAPI["/v1/genome"]:::rest
+        
+        Gateway --> ConfigAPI
+        Gateway --> SecurityAPI
+        Gateway --> GenomeAPI
+    end
+
+    %% API Domain 2: Interaction (Real-time)
+    subgraph Interact ["2. Interaction Domain (WebSocket)"]
+        direction TB
+        IntentSocket["/ws/intent"]:::socket
+        NotifSocket["/ws/notifications"]:::socket
+        
+        Gateway --> IntentSocket
+        Gateway --> NotifSocket
+    end
+
+    %% API Domain 3: Data (Stream)
+    subgraph Data ["3. Data Domain (gRPC/Stream)"]
+        direction TB
+        TelemStream["/stream/telemetry"]:::stream
+        LogStream["/stream/audit"]:::stream
+        
+        Gateway --> TelemStream
+        Gateway --> LogStream
+    end
+
+    %% Annotations
+    note1["Handles Auth, Rate Limiting, and Routing"]:::gate -.-> Gateway
