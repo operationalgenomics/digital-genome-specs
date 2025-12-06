@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% UNL Ontology Kernel Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/semantic-ontology.md
+%% Repository Path: diagrams/unl/semantic/unl-ontology-kernel.png
+%% Description:     Visualizes the five core semantic classes (Entity, Action,
+%%                  State, Modifier, Constraint) and their permissible
+%%                  structural relationships.
+%% ==============================================================================
+
+classDiagram
+    %% Global Styles
+    classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef mod fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef const fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% The 5 Fundamental Classes
+    class Entity {
+        +EntityId id
+        +string type
+        +attributes
+        +acts_on()
+    }
+    
+    class Action {
+        +ActionId id
+        +string verb
+        +category
+        +execute()
+    }
+    
+    class State {
+        +StateId id
+        +string condition
+        +category
+        +validate()
+    }
+    
+    class Modifier {
+        +string key
+        +value
+        +type (quant/qual)
+    }
+    
+    class Constraint {
+        +string rule
+        +severity
+        +parameters
+    }
+
+    %% Apply Styles
+    class Entity, Action, State core
+    class Modifier mod
+    class Constraint const
+
+    %% Relationships (Edges defined in Spec Sec 4.2)
+    Entity "1" --> "*" Action : can_perform
+    Entity "1" --> "*" State : has_state
+    
+    Action "1" --> "1" State : transitions_to
+    Action "1" --> "*" Constraint : limited_by
+    Action "1" --> "*" Modifier : refined_by
+    
+    State "1" --> "*" Constraint : requires_condition
+    State "1" --> "*" Modifier : refined_by
+
+    %% Annotations
+    note for Entity "Who/What acts"
+    note for Action "What is done"
+    note for State "Resulting condition"
