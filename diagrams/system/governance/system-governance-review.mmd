@@ -1,0 +1,81 @@
+%% ==============================================================================
+%% Human Review Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/system/governance-model.md
+%% Repository Path: diagrams/system/governance/system-governance-review.png
+%% Description:     Visualizes the human-in-the-loop review process: Trigger
+%%                  (Review Required) -> Request Generation -> Operator
+%%                  Interaction (UNL) -> Decision (Approve/Reject) -> Execution
+%%                  or Halt.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef success fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. The Trigger
+    subgraph "1. Governance Trigger"
+        direction TB
+        Input[Cognitive Decision]:::sys
+        Policy{Policy Check}:::gov
+        
+        Input --> Policy
+        Policy -->|Mode: Review| Trigger[Review Request Trigger]:::gov
+    end
+
+    %% 2. Request Construction
+    subgraph "2. Request Construction"
+        direction TB
+        Context[Context Assembler]:::sys
+        Risk[Risk & Alternatives]:::sys
+        Package[Review Package]:::unl
+        
+        Trigger --> Context
+        Trigger --> Risk
+        Context & Risk --> Package
+    end
+
+    %% 3. Human Interaction
+    subgraph "3. Operator Decision"
+        direction TB
+        UNL[UNL Interface]:::unl
+        Operator((Human Operator)):::human
+        Choice{Operator Action}:::decision
+        
+        Package -->|Render| UNL
+        UNL -->|Display| Operator
+        Operator -->|Input| Choice
+    end
+
+    %% 4. Outcomes
+    subgraph "4. Execution Path"
+        direction TB
+        Approve[Approved]:::success
+        Reject[Rejected]:::fail
+        Override[Safety Override]:::gov
+        
+        Choice -->|"Approve"| Approve
+        Choice -->|"Deny"| Reject
+        Choice -->|"Escalate"| Override
+    end
+
+    %% 5. Compliance
+    subgraph "5. Audit"
+        direction TB
+        Ledger[Governance Ledger]:::gov
+        Exec[Execution Gateway]:::sys
+        
+        Approve -->|Signed Token| Exec
+        Override -->|Emergency Token| Exec
+        
+        Approve & Reject & Override --> Ledger
+    end
+
+    %% Annotations
+    note1["Requires Multi-Factor Auth<br>for high-risk approvals"]:::gov -.-> Operator
