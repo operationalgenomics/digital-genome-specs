@@ -1,0 +1,73 @@
+%% ==============================================================================
+%% Contextual Intent Transformation Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/context-model.md
+%% Repository Path: diagrams/unl/context/unl-contextual-intent.png
+%% Description:     Visualizes the transformation of an initial intent into a
+%%                  Contextualized UNLIntent through enrichment (constraints,
+%%                  urgency) and reinterpretation (action shifts based on state).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef context fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef result fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Initial State
+    subgraph "1. Initial Input"
+        direction TB
+        BaseIntent[Base Intent]:::input
+        Example1["Expression: 'Check this pump'"]:::meta
+        
+        BaseIntent --- Example1
+    end
+
+    %% 2. Context Injection
+    subgraph "2. Context Injection"
+        direction TB
+        Env[Environmental Context]:::context
+        Sit[Situational Context]:::context
+        Gov[Governance Context]:::context
+        
+        Env -->|Alarm Active| Logic1
+        Sit -->|Urgency: High| Logic2
+        Gov -->|Safety Policy| Logic3
+    end
+
+    %% 3. Transformation Logic
+    subgraph "3. Intent Transformation"
+        direction TB
+        
+        %% Logic 1: Reinterpretation
+        Logic1{State Check}:::logic
+        BaseIntent --> Logic1
+        Logic1 -->|Normal| PathA[Action: INSPECT]:::input
+        Logic1 -->|Alarm| PathB[Action: DIAGNOSE]:::result
+        
+        %% Logic 2: Constraint Injection
+        Logic2{Urgency Check}:::logic
+        PathB --> Logic2
+        Logic2 -->|High Urgency| AddConst[Add: IMMEDIATE]:::result
+        
+        %% Logic 3: Safety Expansion
+        Logic3{Safety Check}:::logic
+        AddConst --> Logic3
+        Logic3 -->|Risk Detected| AddSafe[Insert: ISOLATE]:::result
+    end
+
+    %% 4. Final Output
+    subgraph "4. Final Output"
+        direction TB
+        Final[Contextualized UNLIntent]:::result
+        Example2["[ Entity: Pump-01 | Action: DIAGNOSE | State: ISOLATED ]\n[ Constraints: Immediate ]"]:::meta
+        
+        AddSafe --> Final
+        PathA --> Final
+        Final --- Example2
+    end
+
+    %% Annotations
+    note1["Meaning shifts based on environment:<br/>'Check' becomes 'Diagnose' under alarm"]:::logic -.-> Logic1
