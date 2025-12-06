@@ -1,0 +1,77 @@
+%% ================================================
+%% Reliability Architecture Diagram
+%% Source File: specs/system/reliability-model.md
+%% 
+%% Repository Path: diagrams/system/reliability/system-reliability-architecture.png
+%% 
+%% Description: Visualizes the five reliability domains (Data, Compute, Execution, Monitoring, Governance) and their redundancy/resilience mechanisms.
+%% ================================================
+graph TD
+    %% Global Styles
+    classDef domain fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000;
+    classDef prim fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef redun fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef mech fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+
+    %% 1. Governance Reliability Domain (The Anchor)
+    subgraph "1. Governance Reliability Domain"
+        direction TB
+        GovPrim[Primary Ledger Node]:::gov
+        GovRep[Ledger Replica]:::redun
+        
+        GovPrim <-->|Consensus Sync| GovRep
+    end
+
+    %% 2. Compute Reliability Domain (The Brain)
+    subgraph "2. Compute Reliability Domain"
+        direction TB
+        LB{Load Balancer}:::mech
+        CorePrim[Primary Cognitive Node]:::prim
+        CoreSb[Hot-Standby Node]:::redun
+        SimCluster[Simulation Cluster]:::prim
+        
+        LB -->|Traffic| CorePrim
+        LB -.->|Failover| CoreSb
+        CorePrim <-->|State Sync| CoreSb
+    end
+
+    %% 3. Monitoring Reliability Domain (The Senses)
+    subgraph "3. Monitoring Reliability Domain"
+        direction TB
+        StreamA[Telemetry Stream A]:::prim
+        StreamB[Telemetry Stream B]:::redun
+        Buffer[Event Buffer / Queue]:::mech
+        
+        StreamA & StreamB --> Buffer
+    end
+
+    %% 4. Execution Reliability Domain (The Action)
+    subgraph "4. Execution Reliability Domain"
+        direction TB
+        ActPrim[Primary Actuator]:::prim
+        ActMirror[Mirrored Actuator]:::redun
+        
+        ActPrim -.->|Safety Interlock| ActMirror
+    end
+
+    %% 5. Data Reliability Domain (The Memory)
+    subgraph "5. Data Reliability Domain"
+        direction TB
+        WAL[Write-Ahead Log]:::mech
+        StorePrim[Distributed Storage]:::prim
+        StoreBack[Geo-Redundant Backup]:::redun
+        
+        WAL --> StorePrim
+        StorePrim -.->|Replication| StoreBack
+    end
+
+    %% Cross-Domain Connections
+    GovPrim -.->|Enforces Policy| LB
+    CorePrim -->|Commands| ActPrim
+    Buffer -->|Feeds| CorePrim
+    CorePrim -->|Persists State| WAL
+
+    %% Reliability Logic
+    note1["High Availability Target:\n99.99% for Critical Path"]:::mech -.-> CorePrim
+    note2["Immutable Audit Trail\npreserves state consistency"]:::mech -.-> GovPrim
