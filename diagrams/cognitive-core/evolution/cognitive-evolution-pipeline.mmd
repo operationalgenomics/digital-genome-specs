@@ -1,0 +1,77 @@
+%% ==============================================================================
+%% Evolution Pipeline Diagram (Merism Engine)
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/evolution-engine.md
+%% Repository Path: diagrams/cognitive-core/evolution/cognitive-evolution-pipeline.png
+%% Description:     Visualizes the evolutionary lifecycle: Trigger (Feedback Gap)
+%%                  -> Variation (Mutation/Crossover) -> Selection (Simulation)
+%%                  -> Safety Check -> Integration (Genome Update).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Evolution Trigger
+    subgraph "1. Evolutionary Trigger"
+        direction TB
+        Feedback[Feedback Loop]:::input
+        Gap{Performance Gap?}:::check
+        
+        Feedback --> Gap
+        Gap -->|"Yes (Fit < Threshold)"| Start[Initiate Merism]:::process
+        Gap -->|No| Wait[Standby]:::safe
+    end
+
+    %% 2. Variation Generation
+    subgraph "2. Variation Engine"
+        direction TB
+        Parent[Parent Gene]:::input
+        Mutator[Mutation Engine]:::process
+        Cross[Crossover Engine]:::process
+        
+        Start --> Parent
+        Parent --> Mutator
+        Parent --> Cross
+        
+        Mutator --> Cand1[Variant A]:::input
+        Cross --> Cand2[Variant B]:::input
+    end
+
+    %% 3. Selection (Simulation)
+    subgraph "3. Natural Selection"
+        direction TB
+        Sim[Multiverse Simulation]:::process
+        FitCalc{Fitness Function}:::check
+        
+        Cand1 & Cand2 --> Sim
+        Sim --> FitCalc
+        
+        FitCalc -->|Low Score| Die[Discard]:::reject
+        FitCalc -->|High Score| Survivor[Survivor Candidate]:::safe
+    end
+
+    %% 4. Safety & Integration
+    subgraph "4. Integration Gate"
+        direction TB
+        SafeCheck{Safety Invariant}:::check
+        GovCheck{Governance Policy}:::check
+        Genome[(Digital Genome)]:::safe
+        
+        Survivor --> SafeCheck
+        
+        SafeCheck -->|Unsafe| Kill["Reject: Dangerous"]:::reject
+        SafeCheck -->|Safe| GovCheck
+        
+        GovCheck -->|Approved| Update[Commit to Genome]:::safe
+        GovCheck -->|Denied| Block["Reject: Policy"]:::reject
+        
+        Update --> Genome
+    end
+
+    %% Annotations
+    note1["Evolution only occurs when performance<br/>drops below the fitness threshold"]:::check -.-> Gap
