@@ -1,0 +1,79 @@
+%% ==============================================================================
+%% Deployment Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/system/deployment-model.md
+%% Repository Path: diagrams/system/deployment/system-deployment-architecture.png
+%% Description:     Visualizes the three primary runtime domains (Edge, Cloud,
+%%                  Governance) and their components, ensuring secure,
+%%                  fault-tolerant, and governed execution.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef domain fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000;
+    classDef edge fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef cloud fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef storage fill:#e0e0e0,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Domain 1: Edge Runtime (The Action)
+    subgraph Edge ["1. Edge Runtime Domain (Deterministic)"]
+        direction TB
+        UNL[UNL Interface]:::edge
+        Gateway[Execution Gateway]:::edge
+        SafeLogic[Safety Logic]:::edge
+        RTMon[Real-Time Monitoring]:::edge
+        
+        UNL --> Gateway
+        Gateway --> SafeLogic
+        SafeLogic --> RTMon
+    end
+
+    %% Domain 2: Cognitive Cloud (The Brain)
+    subgraph Cloud ["2. Cognitive Cloud Runtime Domain (Scalable)"]
+        direction TB
+        Core[Cognitive Core Nodes]:::cloud
+        Sim[Simulation Engine]:::cloud
+        Oracle[Oracle Synthesizer]:::cloud
+        Evo[Evolution Engine]:::cloud
+        
+        StoreG[(Genome Storage)]:::storage
+        
+        Core <--> Sim
+        Sim --> Oracle
+        Core <--> StoreG
+        Evo --> StoreG
+    end
+
+    %% Domain 3: Governance & Persistence (The Law)
+    subgraph GovDomain ["3. Governance & Persistence Domain (Immutable)"]
+        direction TB
+        Ledger[Governance Ledger]:::gov
+        Policy[Policy Engine]:::gov
+        Audit[(Audit Storage)]:::storage
+        
+        Ledger --> Audit
+        Policy --> Ledger
+    end
+
+    %% Cross-Domain Connections
+    UNL <-->|Intent & Explanation| Core
+    Oracle -->|Synthesized Decision| Gateway
+    
+    %% Monitoring Feedback
+    RTMon -->|Telemetry Stream| Core
+    RTMon -->|Safety Events| Evo
+
+    %% Governance Enforcement
+    Policy -.->|Constraints| Gateway
+    Policy -.->|Validation| Core
+    Policy -.->|Approval| Evo
+    
+    %% Audit Logging
+    Gateway -.->|Execution Log| Ledger
+    Core -.->|Decision Trace| Ledger
+    Evo -.->|Evolution Log| Ledger
+
+    %% Annotations
+    note1["Edge ensures low latency<br>and safety continuity"]:::edge -.-> SafeLogic
+    note2["Cloud handles heavy compute<br>and simulation scaling"]:::cloud -.-> Sim
