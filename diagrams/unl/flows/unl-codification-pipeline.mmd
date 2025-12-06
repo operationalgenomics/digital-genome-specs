@@ -1,0 +1,77 @@
+%% ==============================================================================
+%% Codification Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/codification-rules.md
+%% Repository Path: diagrams/unl/flows/unl-codification-pipeline.png
+%% Description:     Visualizes the detailed steps from Semantic Frame to Codon
+%%                  Sequence: Normalization (Synonyms, Units) -> Praxeological
+%%                  Structuring (Entity, Action, State) -> Codon Encoding.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef ontology fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% Input
+    Input[Semantic Frame]:::artifact
+
+    %% Stage 1: Normalization
+    subgraph "Stage 1: Semantic Normalization"
+        direction TB
+        Norm[Normalization Engine]:::process
+        OntRef[Ontology Alignment]:::ontology
+        Synonyms[Synonym Resolver]:::process
+        Units[Unit Converter]:::process
+        
+        Input --> Norm
+        Norm <--> OntRef
+        Norm --> Synonyms
+        Norm --> Units
+        
+        Synonyms -->|Canonical Terms| NormOut[Normalized Meaning]:::artifact
+    end
+
+    %% Stage 2: Structuring
+    subgraph "Stage 2: Praxeological Structuring"
+        direction TB
+        Struct[Structure Builder]:::process
+        
+        NormOut --> Struct
+        
+        Struct -->|Identify| Ent[Entity Set]:::process
+        Struct -->|Identify| Act[Action Verb]:::process
+        Struct -->|Identify| State[Target State]:::process
+        Struct -->|Identify| Mod[Modifiers & Constraints]:::process
+        
+        Ent & Act & State & Mod --> Prax[Praxeological Structure]:::artifact
+    end
+
+    %% Stage 3: Encoding
+    subgraph "Stage 3: Codon-Level Encoding"
+        direction TB
+        Encoder[Codon Encoder]:::process
+        Rules[Encoding Rules]:::ontology
+        
+        Prax --> Encoder
+        Rules -.-> Encoder
+        
+        Encoder -->|Decompose| Atomic[Atomic Actions]:::process
+        Encoder -->|Sequence| Ordered[Ordered Sequence]:::process
+        
+        Atomic --> Ordered
+    end
+
+    %% Output
+    Output[Codon Sequence]:::artifact
+    Ordered --> Output
+    
+    %% Destination
+    Output --> CC[Cognitive Core]:::core
+
+    %% Annotations
+    note1["Maps natural language<br/>to canonical IDs"]:::ontology -.-> OntRef
+    note2["Ensures [Entity | Action | State]<br/>triplet structure"]:::process -.-> Encoder
