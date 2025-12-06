@@ -1,0 +1,65 @@
+%% ==============================================================================
+%% Disaster Recovery Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/system/deployment-model.md
+%% Repository Path: diagrams/system/deployment/system-deployment-recovery.png
+%% Description:     Visualizes the recovery pipeline: Detection -> Failover (HA)
+%%                  -> Restoration (Backups) -> Resynchronization ->
+%%                  Operational Resume.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef trigger fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef action fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef success fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef storage fill:#e0e0e0,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Event
+    Event((Critical Failure)):::trigger
+
+    %% 2. Response Strategy
+    subgraph "Phase 1: Immediate Response"
+        direction TB
+        Detect[Failure Detection]:::check
+        Strategy{Recovery Tier?}:::check
+        
+        Event --> Detect
+        Detect --> Strategy
+        
+        Strategy -->|Tier 1: Edge| EdgeFail[Edge Failover]:::action
+        Strategy -->|Tier 2: Cognitive| CogFail[Switch to Hot-Standby]:::action
+        Strategy -->|Tier 3: Evolution| Pause[Pause Evolution]:::action
+    end
+
+    %% 3. Restoration
+    subgraph "Phase 2: State Restoration"
+        direction TB
+        Restore{Data Integrity?}:::check
+        
+        EdgeFail & CogFail --> Restore
+        
+        Restore -->|Intact| Resync[State Resynchronization]:::action
+        Restore -->|Corrupted| Backup[Load from Immutable Backup]:::storage
+        
+        Backup --> Resync
+    end
+
+    %% 4. Validation
+    subgraph "Phase 3: Validation & Resume"
+        direction TB
+        Val{Consistency Check}:::check
+        Resume[Resume Operations]:::success
+        
+        Resync --> Val
+        Val -->|Pass| Resume
+        Val -->|Fail| Manual[Escalate to Human Recovery]:::trigger
+    end
+
+    %% Feedback Loop
+    Manual -.->|Resolved| Resume
+
+    %% Annotations
+    note1["Tier 1 (Edge) recovery must be<br/>instant to preserve safety"]:::action -.-> EdgeFail
+    note2["Backups are geographically<br/>distributed and immutable"]:::storage -.-> Backup
