@@ -1,0 +1,126 @@
+%% ==============================================================================
+%% Information Lifecycle Diagram
+%% ==============================================================================
+%% Source File:     specs/foundations/information-lifecycle.md
+%% Repository Path: diagrams/foundations/information-lifecycle.mmd
+%% Description:     Visualizes the complete journey of information through the
+%%                  Digital Genome: Experience -> Registration -> Motor Observation
+%%                  -> Pattern Recognition -> Synthesis -> Validation -> Integration
+%%                  -> Expression -> Action -> (loop back to Experience)
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef exp fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef reg fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef pattern fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef synth fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef valid fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef integ fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef action fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef time fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Experience
+    subgraph "1. EXPERIENCE"
+        direction TB
+        World[Something happens<br/>in the world]:::exp
+        Observe[Multi-channel observation]:::exp
+        World --> Observe
+    end
+
+    %% 2. Registration
+    subgraph "2. REGISTRATION"
+        direction TB
+        Capture[Encode as<br/>Registered Truth]:::reg
+        BC[(Blockchain<br/>Crystallization)]:::reg
+        Observe --> Capture --> BC
+    end
+
+    %% 3. Motor Observation
+    subgraph "3. MOTOR OBSERVATION"
+        direction TB
+        Watch[Continuous Monitoring]:::motor
+        MP[Praxeological<br/>tagging]:::motor
+        MN[Nash<br/>tagging]:::motor
+        MC[Chaotic<br/>tagging]:::motor
+        MM[Meristic<br/>accumulation]:::motor
+        
+        BC --> Watch
+        Watch --> MP & MN & MC & MM
+    end
+
+    %% 4. Pattern Recognition
+    subgraph "4. PATTERN RECOGNITION"
+        direction TB
+        Accumulate[Patterns emerge<br/>across truths]:::pattern
+        Micro[Micro scale]:::pattern
+        Meso[Meso scale]:::pattern
+        Macro[Macro scale]:::pattern
+        
+        MP & MN & MC & MM --> Accumulate
+        Accumulate --> Micro & Meso & Macro
+    end
+
+    %% 5. Synthesis Proposal
+    subgraph "5. SYNTHESIS PROPOSAL"
+        direction TB
+        Trigger{Trigger<br/>conditions met?}:::synth
+        Variants[Generate Variants]:::synth
+        AntiGenes[Generate Anti-Genes]:::synth
+        Hypotheses[Articulate Hypotheses]:::synth
+        
+        Micro & Meso & Macro --> Trigger
+        Trigger -->|Yes| Variants & AntiGenes & Hypotheses
+    end
+
+    %% 6. Validation
+    subgraph "6. VALIDATION"
+        direction TB
+        FourMotor[Four-Motor<br/>Evaluation]:::valid
+        Simulate[Simulation<br/>Testing]:::valid
+        Govern[Governance<br/>Review]:::valid
+        Safety[Safety<br/>Verification]:::valid
+        
+        Variants & AntiGenes & Hypotheses --> FourMotor
+        FourMotor --> Simulate --> Govern --> Safety
+    end
+
+    %% 7. DNA Integration
+    subgraph "7. DNA INTEGRATION"
+        direction TB
+        Grow[Neuron Growth]:::integ
+        Connect[Synapse Formation]:::integ
+        Pathway[Pathway Integration]:::integ
+        
+        Safety -->|Approved| Grow --> Connect --> Pathway
+    end
+
+    %% 8. Expression
+    subgraph "8. EXPRESSION"
+        direction TB
+        Activate[DNA Activation]:::action
+        Propagate[Propagation through<br/>synaptic connections]:::action
+        Converge[Motor Convergence]:::action
+        Decide[Oracle Decision]:::action
+        Act[ACTION in world]:::action
+        
+        Pathway --> Activate --> Propagate --> Converge --> Decide --> Act
+    end
+
+    %% The Loop
+    Act -->|Creates new experience| World
+
+    %% Time Scales
+    subgraph "Time Scales"
+        direction TB
+        T1["Expression: Milliseconds"]:::time
+        T2["Registration: Seconds-Minutes"]:::time
+        T3["Pattern Recognition: Hours-Days"]:::time
+        T4["Synthesis: Days-Weeks"]:::time
+        T5["Integration: Weeks-Months"]:::time
+        T6["Evolution: Months-Years"]:::time
+    end
+
+    %% Annotations
+    note1["THE CONTINUOUS LOOP<br/>Every action creates new experience<br/>The genome is ALIVE in this cycle"]:::time -.-> Act
