@@ -1,0 +1,82 @@
+%% ==============================================================================
+%% Cognitive Decision Cycle Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/specification.md
+%% Repository Path: diagrams/cognitive-core/decision/cognitive-decision-cycle.png
+%% Description:     Visualizes the 10-step cognitive decision cycle, from Intent
+%%                  Acquisition to Explanation Delivery, highlighting the closed
+%%                  feedback loop via Evolution Proposal.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef reasoning fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef action fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef feedback fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% External
+    Operator((Operator / Agent)):::human
+    Genome[(Digital Genome)]:::reasoning
+
+    %% The Cycle
+    subgraph "Phase 1: Input & Context"
+        direction TB
+        S1[1. Intent Acquisition]:::input
+        S2[2. Context Binding]:::input
+        
+        S1 --> S2
+    end
+
+    subgraph "Phase 2: Reasoning & Selection"
+        direction TB
+        S3[3. Gene Retrieval]:::reasoning
+        S4[4. Applicability Filtering]:::reasoning
+        S5[5. Simulation & Ranking]:::reasoning
+        S6[6. Selection]:::reasoning
+        
+        S3 --> S4
+        S4 --> S5
+        S5 --> S6
+    end
+
+    subgraph "Phase 3: Execution Output"
+        direction TB
+        S7[7. Execution Advisory]:::action
+        S10[10. Explanation Delivery]:::action
+    end
+
+    subgraph "Phase 4: Feedback & Evolution"
+        direction TB
+        S8[8. Monitoring & Evaluation]:::feedback
+        S9[9. Evolution Proposal]:::feedback
+        
+        S8 --> S9
+    end
+
+    %% Flow Connections
+    Operator -->|Intent| S1
+    S2 --> S3
+    
+    %% Genome Interactions
+    Genome <-->|Query| S3
+    S6 -->|Selected Gene| S7
+    
+    %% Execution Loop
+    S7 -->|Execute Plan| S8
+    
+    %% Evolution Loop
+    S9 -.->|Update Proposals| Genome
+    S9 -.->|Feedback| S2
+    
+    %% Explanation
+    S6 --> S10
+    S10 -->|Trace| Operator
+
+    %% Logic Filters
+    S4 -.->|Reject Unsafe| S10
+    S5 -.->|Reject Low Fitness| S10
+
+    %% Annotations
+    note1["Cycle is deterministic\nand fully traceable"]:::human -.-> S10
