@@ -1,0 +1,67 @@
+%% ==============================================================================
+%% Operational Scenario Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/system/operational-scenarios.md
+%% Repository Path: diagrams/system/scenarios/system-operational-scenario-flow.png
+%% Description:     Visualizes the canonical 10-step architectural flow for
+%%                  operational scenarios, from Initial Context to Evolution
+%%                  Signals.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef context fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef exec fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% The 10-Step Flow
+    subgraph "Phase 1: Input & Interpretation"
+        direction TB
+        S1[1. Initial Context]:::context
+        S2[2. Human Expression]:::human
+        S3[3. UNL Interpretation]:::unl
+        
+        S1 --> S2
+        S2 --> S3
+    end
+
+    subgraph "Phase 2: Reasoning & Control"
+        direction TB
+        S4[4. Cognitive Reasoning]:::cog
+        S5{5. Governance Check}:::gov
+        
+        S3 --> S4
+        S4 --> S5
+    end
+
+    subgraph "Phase 3: Action & Observation"
+        direction TB
+        S6[6. Execution Plan]:::exec
+        S7[7. Monitoring Signals]:::mon
+        
+        S5 -->|Approved| S6
+        S6 --> S7
+    end
+
+    subgraph "Phase 4: Learning & Evolution"
+        direction TB
+        S8[8. Outcome Evaluation]:::mon
+        S9[9. Feedback Injection]:::cog
+        S10[10. Evolution Signals]:::cog
+        
+        S7 --> S8
+        S8 --> S9
+        S9 --> S10
+    end
+
+    %% Rejection Path
+    S5 -->|Forbidden| Stop((Halt)):::gov
+
+    %% Annotations
+    note1["Environment, Operator,<br/>System State"]:::context -.-> S1
+    note2["Telemetry, Anomalies,<br/>State Transitions"]:::mon -.-> S7
+    note3["Triggers for Variants<br/>or Anti-Genes"]:::cog -.-> S10
