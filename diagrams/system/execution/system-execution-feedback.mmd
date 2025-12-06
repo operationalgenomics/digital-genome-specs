@@ -1,0 +1,68 @@
+graph TD
+    %% Global Styles
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Action
+    subgraph "1. Operational Reality"
+        direction TB
+        Exec[Execution Layer]:::sys
+        Reality[Physical/Digital State]:::sys
+        
+        Exec -->|Actuates| Reality
+    end
+
+    %% 2. The Observation
+    subgraph "2. Observation Layer"
+        direction TB
+        Mon[Monitoring System]:::mon
+        Events[Telemetry & Events]:::artifact
+        
+        Reality -->|Emits| Events
+        Events --> Mon
+    end
+
+    %% 3. The Evaluation
+    subgraph "3. Feedback Engine"
+        direction TB
+        Eval[Outcome Evaluator]:::mon
+        Class{Outcome Class}:::mon
+        
+        Mon -->|Raw Data| Eval
+        Eval --> Class
+        
+        Class -->|Success| Pos[Positive Signal]:::artifact
+        Class -->|Safe Failure| NegSafe["Negative Signal (Safe)"]:::artifact
+        Class -->|Unsafe Failure| NegCrit["Negative Signal (Critical)"]:::artifact
+    end
+
+    %% 4. The Update
+    subgraph "4. Cognitive Update"
+        direction TB
+        Fitness[Fitness Engine]:::genome
+        SimUpdate[Simulation Calibration]:::cog
+        
+        Pos & NegSafe & NegCrit --> Fitness
+        Pos & NegSafe & NegCrit --> SimUpdate
+    end
+
+    %% 5. The Evolution
+    subgraph "5. Evolutionary Impact"
+        direction TB
+        Genome[Digital Genome]:::genome
+        Merism[Merism Evolution]:::genome
+        
+        Fitness -->|Update Score| Genome
+        
+        %% Trigger Logic
+        NegCrit -->|Immediate Trigger| Merism
+        Fitness -.->|Trend Trigger| Merism
+        
+        Merism -->|New Variants| Genome
+    end
+
+    %% Closing the Loop
+    Genome -.->|Next Cycle| Exec
