@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Context Reinterpretation Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/context-model.md
+%% Repository Path: diagrams/unl/context/unl-context-reinterpretation.png
+%% Description:     Visualizes how the Context Model resolves semantic polysemy,
+%%                  transforming a generic input (e.g., "Check") into specific,
+%%                  distinct actions (Inspect, Diagnose, Verify) based on
+%%                  environmental states.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef context fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef action fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Expression
+    subgraph "1. Natural Expression"
+        direction TB
+        Expr[Input: 'Check Valve 101']:::input
+        Polysemy["Ambiguity: High<br>(Polysemous Verb)"]:::meta
+        
+        Expr --- Polysemy
+    end
+
+    %% 2. The Context Lens
+    subgraph "2. Contextual Lens"
+        direction TB
+        Lens{Context State?}:::context
+        
+        Expr --> Lens
+    end
+
+    %% 3. Semantic Splitting (The Logic)
+    subgraph "3. Semantic Reinterpretation"
+        direction TB
+        
+        %% Scenario A: Normal
+        Lens -->|State: Normal Ops| PathA[Context: Routine]:::logic
+        PathA --> ActA["Action: INSPECT (Visual)"]:::action
+        
+        %% Scenario B: Alarm
+        Lens -->|State: Active Alarm| PathB[Context: Fault]:::logic
+        PathB --> ActB["Action: DIAGNOSE (Root Cause)"]:::action
+        
+        %% Scenario C: Maintenance
+        Lens -->|State: Lockout/Tagout| PathC[Context: Safety]:::logic
+        PathC --> ActC["Action: VERIFY_ISOLATION"]:::action
+        
+        %% Scenario D: Emergency
+        Lens -->|State: Critical| PathD[Context: Hazard]:::logic
+        PathD --> ActD["Action: CONFIRM_SAFE_STATE"]:::action
+    end
+
+    %% 4. The Output
+    subgraph "4. Deterministic Intent"
+        direction TB
+        Final[Mapped Action ID]:::input
+        
+        ActA --> Final
+        ActB --> Final
+        ActC --> Final
+        ActD --> Final
+    end
+
+    %% Annotations
+    note1["The same word ('Check') triggers<br>different codons based on safety state"]:::meta -.-> Lens
