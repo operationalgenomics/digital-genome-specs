@@ -1,0 +1,44 @@
+%% ==============================================================================
+%% Semantic Relationships Graph Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/semantic-ontology.md
+%% Repository Path: diagrams/unl/semantic/unl-semantic-graph.png
+%% Description:     Visualizes the semantic graph structure, showing relationships
+%%                  between Entities, Actions, States, Modifiers, and Constraints.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef entity fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef action fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef state fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef const fill:#ffcdd2,stroke:#c62828,stroke-width:1px,color:#000;
+    classDef mod fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Nodes (The 5 Classes)
+    E(Entity):::entity
+    A(Action):::action
+    S(State):::state
+    C(Constraint):::const
+    M(Modifier):::mod
+
+    %% Core Operational Logic (The Triangle)
+    E -->|Can Perform| A
+    A -->|Results In| S
+    E -->|Possesses| S
+
+    %% Boundary Logic
+    A -->|Restricted By| C
+    S -->|Requires| C
+
+    %% Refinement Logic
+    A -.->|Refined By| M
+    S -.->|Refined By| M
+
+    %% Recursive/Composite Relationships (These are the self-loops)
+    E -.->|Contains| E
+    A -.->|Triggers| A
+
+    %% Annotations
+    note1["Acyclic structure ensures<br/>deterministic logic"]:::entity -.-> E
+    note2["Valid Intent = Path from<br/>Entity -> Action -> State"]:::action -.-> A
