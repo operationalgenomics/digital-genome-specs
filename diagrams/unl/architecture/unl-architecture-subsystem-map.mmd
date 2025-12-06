@@ -1,0 +1,71 @@
+%% ==============================================================================
+%% UNL Subsystem Map
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/specification.md
+%% Repository Path: diagrams/unl/architecture/unl-architecture-subsystem-map.png
+%% Description:     Detailed view of the UNL subsystems: Intent Mapping, Semantic
+%%                  Ontology, Context Model, Codification Rules, and Translation
+%%                  Engine, showing their structural dependencies.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef data fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef ext fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% External Interfaces
+    Input((Multimodal Input)):::ext
+    Output((Human Output)):::ext
+    CC[Cognitive Core]:::core
+
+    %% The UNL System
+    subgraph UNL_Architecture ["UNL Internal Architecture"]
+        direction TB
+
+        %% Central Knowledge Base
+        subgraph "1. Semantic Foundation"
+            Ontology[Semantic Ontology]:::unl
+            OntData[Entities / Actions / States]:::data
+            Ontology --- OntData
+        end
+
+        %% Interpretation Pipeline
+        subgraph "2. Interpretation Pipeline"
+            Mapper[Intent Mapping]:::unl
+            Context[Context Model]:::unl
+            Codifier[Codification Rules]:::unl
+            
+            Mapper -->|Semantic Frame| Context
+            Context -->|Enriched Intent| Codifier
+        end
+
+        %% Expression Pipeline
+        subgraph "3. Expression Pipeline"
+            Trans[Translation Engine]:::unl
+            Explainer[Explanation Logic]:::unl
+            
+            Explainer -->|Narrative Structure| Trans
+        end
+    end
+
+    %% Internal Dependencies
+    Mapper <-->|Validation| Ontology
+    Context <-->|Situational Rules| Ontology
+    Codifier <-->|Praxeological Structure| Ontology
+    Trans <-->|Lexical Mapping| Ontology
+
+    %% Context Sharing
+    Context -.->|User Profile / History| Trans
+
+    %% Main Flows
+    Input --> Mapper
+    Codifier -->|UNLIntent| CC
+    
+    CC -->|Cognitive Response| Explainer
+    Trans --> Output
+
+    %% Annotations
+    note1["Ontology is the shared vocabulary<br/>for all subsystems"]:::data -.-> Ontology
