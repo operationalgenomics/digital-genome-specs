@@ -1,0 +1,71 @@
+%% ==============================================================================
+%% Worldline Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/simulation-engine.md
+%% Repository Path: diagrams/cognitive-core/simulation/cognitive-sim-worldline.png
+%% Description:     Visualizes a single Worldline evolution: State(t0) -> 
+%%                  Transition Logic (Deterministic Model + Stochastic Noise) -> 
+%%                  State(t1) -> ... -> State(tN) -> Final Outcome.
+%% ==============================================================================
+
+graph LR
+    %% Global Styles
+    classDef state fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef noise fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef result fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% Initial State
+    S0((State t0)):::state
+
+    %% Transition 1
+    subgraph T1 ["Transition (t0 → t1)"]
+        direction TB
+        Det1[Deterministic Model]:::logic
+        Stoch1[Stochastic Noise]:::noise
+        
+        Det1 --> Comb1((+))
+        Stoch1 --> Comb1
+    end
+
+    %% State 1
+    S1((State t1)):::state
+
+    %% Transition 2
+    subgraph T2 ["Transition (t1 → t2)"]
+        direction TB
+        Det2[Deterministic Model]:::logic
+        Stoch2[Stochastic Noise]:::noise
+        
+        Det2 --> Comb2((+))
+        Stoch2 --> Comb2
+    end
+
+    %% State 2
+    S2((State t2)):::state
+
+    %% Transition N
+    subgraph TN ["Transition (t... → tN)"]
+        direction TB
+        DetN[Deterministic Model]:::logic
+        StochN[Stochastic Noise]:::noise
+        
+        DetN --> CombN((+))
+        StochN --> CombN
+    end
+
+    %% Final State
+    SN((State tN)):::result
+    Outcome[Worldline Metric]:::result
+
+    %% Main Flow
+    S0 --> Det1
+    Comb1 --> S1
+    S1 --> Det2
+    Comb2 --> S2
+    S2 -.-> DetN
+    CombN --> SN
+    SN --> Outcome
+
+    %% Annotations
+    note1["A Worldline is one specific path<br/>through the probability space"]:::state -.-> S0
