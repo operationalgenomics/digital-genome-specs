@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Explanation Rendering Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/translation-engine.md
+%%                  specs/unl/diagrams.md
+%% Repository Path: diagrams/unl/interaction/unl-explanation-rendering.png
+%% Description:     Visualizes the transformation of a raw Cognitive Response
+%%                  into a structured Human Explanation, decomposing the trace
+%%                  into Narrative, Codons, Risks, and Alternatives.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef engine fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef component fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef risk fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Input
+    subgraph "1. Cognitive Source"
+        direction TB
+        Response[Cognitive Response]:::input
+        Trace[Decision Trace]:::input
+        
+        Response --> Trace
+    end
+
+    %% 2. The Engine
+    subgraph "2. Explanation Engine"
+        direction TB
+        Decomp{Trace Decomposer}:::engine
+        
+        Trace --> Decomp
+        
+        %% Components
+        Comp1[Narrative Builder]:::component
+        Comp2[Codon Visualizer]:::component
+        Comp3[Risk Highlighter]:::risk
+        Comp4[Alternatives Lister]:::component
+        
+        Decomp -->|"Why?"| Comp1
+        Decomp -->|"What?"| Comp2
+        Decomp -->|"Safe?"| Comp3
+        Decomp -->|"What else?"| Comp4
+    end
+
+    %% 3. Rendering Logic
+    subgraph "3. Layout Composition"
+        direction TB
+        Layout[Layout Manager]:::engine
+        
+        Comp1 -->|Main Text| Layout
+        Comp2 -->|Step List| Layout
+        Comp3 -->|Warnings| Layout
+        Comp4 -->|Collapsible List| Layout
+    end
+
+    %% 4. Final Output
+    subgraph "4. Human Artifact"
+        direction TB
+        Expl[Final Explanation Object]:::output
+        
+        Layout --> Expl
+    end
+
+    %% Example Data Flow
+    note1["'Gene selected because vibration > limit'"]:::input -.-> Comp1
+    note2["'Isolate -> Stop -> Inspect'"]:::input -.-> Comp2
+    note3["'Active Alarms: High Pressure'"]:::risk -.-> Comp3
