@@ -1,0 +1,87 @@
+%% ==============================================================================
+%% Safety Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/system/safety-invariants.md
+%% Repository Path: diagrams/system/governance/system-safety-architecture.png
+%% Description:     Visualizes the cross-layer safety architecture, showing how
+%%                  invariants are enforced across Cognition, Execution, and
+%%                  Evolution via the Safety Enforcement Pipeline.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef layer fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000;
+    classDef safety fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef action fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Central Safety Authority
+    subgraph "Safety Enforcement Core"
+        direction TB
+        Inv[Safety Invariants Database]:::safety
+        Detect[Safety Detection Layer]:::safety
+        
+        Inv -->|Rules| Detect
+    end
+
+    %% Layer 1: Cognitive Safety
+    subgraph "Layer 1: Cognitive Safety"
+        direction TB
+        Core[Cognitive Core]:::layer
+        Sim[Simulation Engine]:::layer
+        Safe1{Plan Validation}:::check
+        
+        Core -->|Proposed Plan| Sim
+        Sim -->|Predicted Outcome| Safe1
+        Safe1 -->|Safe| ValidPlan[Valid Plan]:::layer
+        Safe1 -->|Unsafe| Reject1[Reject & Refine]:::action
+        
+        Detect -.->|Context Constraints| Safe1
+    end
+
+    %% Layer 2: Execution Safety
+    subgraph "Layer 2: Execution Safety"
+        direction TB
+        Exec[Execution Gateway]:::layer
+        Safe2{Envelope Check}:::check
+        Act[Actuation]:::layer
+        
+        ValidPlan --> Exec
+        Exec --> Safe2
+        Safe2 -->|Inside Envelope| Act
+        Safe2 -->|Outside Envelope| Halt[Emergency Halt]:::action
+        
+        Detect -.->|Real-time Limits| Safe2
+    end
+
+    %% Layer 3: Evolution Safety
+    subgraph "Layer 3: Evolution Safety"
+        direction TB
+        Evo[Evolution Engine]:::layer
+        Safe3{Mutation Check}:::check
+        Genome[Digital Genome]:::layer
+        
+        Evo -->|Variant Proposal| Safe3
+        Safe3 -->|Safe| Genome
+        Safe3 -->|Unsafe| Discard[Discard Variant]:::action
+        
+        Detect -.->|History & Risk| Safe3
+    end
+
+    %% Monitoring Feedback Loop
+    subgraph "Observation"
+        direction TB
+        Mon[Monitoring Layer]:::layer
+        
+        Act -->|Telemetry| Mon
+        Mon -->|State Data| Detect
+    end
+
+    %% Governance Oversight
+    Gov[Governance Matrix]:::gov
+    Gov -.->|Audit| Detect
+    Gov -.->|Policy Update| Inv
+
+    %% Annotations
+    note1["Safety Invariants are<br/>non-negotiable and override<br/>all optimization goals"]:::safety -.-> Inv
