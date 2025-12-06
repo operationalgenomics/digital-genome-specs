@@ -1,0 +1,56 @@
+%% ==============================================================================
+%% Praxeological Intent Structure Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/intent-mapping.md
+%%                  specs/unl/semantic-ontology.md
+%% Repository Path: diagrams/unl/semantic/unl-praxeology-structure.png
+%% Description:     Visualizes the hierarchical structure of a Praxeological
+%%                  Intent, showing how entities, actions, and states combine
+%%                  with constraints to form a deterministic instruction.
+%% ==============================================================================
+
+classDiagram
+    %% Global Styles
+    classDef root fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef comp fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef attr fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000;
+
+    %% Main Structure
+    class UNLIntent {
+        +UUID intentId
+        +Timestamp created
+        +int ambiguityLevel
+        +validate()
+    }
+
+    %% Core Components
+    class CoreTriad {
+        +EntityId entity
+        +ActionId action
+        +StateId targetState
+    }
+
+    %% Contextual Wrappers
+    class Constraints {
+        +List safetyRules
+        +List timeLimits
+    }
+
+    class Modifiers {
+        +Map parameters
+        +Map intensity
+    }
+
+    %% Apply Styles
+    class UNLIntent root
+    class CoreTriad comp
+    class Constraints attr
+    class Modifiers attr
+
+    %% Relationships
+    UNLIntent *-- CoreTriad : contains
+    UNLIntent o-- Constraints : bounded_by
+    UNLIntent o-- Modifiers : refined_by
+
+    %% Detail
+    note for CoreTriad "The minimal executable atom:<br>[ Who | What | Result ]"
