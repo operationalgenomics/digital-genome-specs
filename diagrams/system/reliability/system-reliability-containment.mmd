@@ -1,0 +1,72 @@
+%% ==============================================================================
+%% Failure Containment Diagram
+%% ==============================================================================
+%% Source File:     specs/system/reliability-model.md
+%% Repository Path: diagrams/system/reliability/system-reliability-containment.png
+%% Description:     Visualizes the isolation boundaries (bulkheads) that prevent
+%%                  failure propagation across cognitive, execution, and
+%%                  monitoring modules.
+%% 
+%% Governance:      Critical Safety Artifact
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef zone fill:#fafafa,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef component fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef mech fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000;
+    classDef gov fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. Cognitive Containment Zone
+    subgraph Zone1 ["Zone 1: Cognitive Containment"]
+        direction TB
+        Reason[Reasoning Module]:::fail
+        Backup[Backup Reasoner]:::safe
+        Breaker{Circuit Breaker}:::mech
+        
+        Reason -->|Failure Signal| Breaker
+        Breaker -->|Redirect| Backup
+        
+        %% Internal Isolation
+        Reason -.->|Isolate & Reset| Reason
+    end
+
+    %% 2. Execution Containment Zone
+    subgraph Zone2 ["Zone 2: Execution Containment"]
+        direction TB
+        ActA["Actuator A (Faulty)"]:::fail
+        ActB["Actuator B (Operational)"]:::safe
+        Interlock{Safety Interlock}:::mech
+        
+        ActA -->|Error State| Interlock
+        Interlock -->|Halt Subsystem A| ActA
+        Interlock -->|Maintain Load| ActB
+    end
+
+    %% 3. Monitoring Containment Zone
+    subgraph Zone3 ["Zone 3: Monitoring Containment"]
+        direction TB
+        TelemPrim[Primary Telemetry]:::fail
+        TelemSec[Secondary Path]:::safe
+        Watchdog{Silence Detector}:::mech
+        
+        TelemPrim -->|Timeout| Watchdog
+        Watchdog -->|Failover| TelemSec
+    end
+
+    %% Bulkheads (The Isolation Barriers)
+    Zone1 -.->|BLOCK: Cascading Logic| Zone2
+    Zone2 -.->|BLOCK: State Corruption| Zone3
+    
+    %% Governance Oversight (Cross-Cutting)
+    Gov[Governance Oversight]:::gov
+    
+    Gov -.->|Audit Isolation| Zone1
+    Gov -.->|Audit Isolation| Zone2
+    Gov -.->|Audit Isolation| Zone3
+
+    %% Annotations
+    note1["Failures are contained within zones; 
+    Only validated signals cross boundaries."]:::mech
