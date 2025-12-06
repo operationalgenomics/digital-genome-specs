@@ -1,0 +1,64 @@
+%% ==============================================================================
+%% Explanation Trace Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/oracle-synthesizer.md
+%% Repository Path: diagrams/cognitive-core/oracle/cognitive-explanation-trace.png
+%% Description:     Visualizes the "Decision Trace" artifact, showing the causal
+%%                  chain of reasoning (Context -> Selection -> Safety Check -> 
+%%                  Outcome) that allows the system to explain WHY it made a 
+%%                  specific decision.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef step fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef final fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Request
+    subgraph "Step 1: Context"
+        direction TB
+        Input[Trigger: 'Vibration Alarm']:::step
+        Ctx[State: CRITICAL]:::step
+        
+        Input --- Ctx
+    end
+
+    %% 2. The Consideration
+    subgraph "Step 2: Alternatives"
+        direction TB
+        OptA[Option A: Ignore]:::reject
+        OptB[Option B: Shutdown]:::step
+        OptC[Option C: Reduce Speed]:::reject
+        
+        ReasonA["Rejected: Safety Violation"]:::reject
+        ReasonC["Rejected: Insufficient Impact"]:::reject
+        
+        Input --> OptA & OptB & OptC
+        OptA --- ReasonA
+        OptC --- ReasonC
+    end
+
+    %% 3. The Selection
+    subgraph "Step 3: Reasoning"
+        direction TB
+        Sim[Simulation: 99% Success]:::logic
+        Safe[Safety Check: PASSED]:::logic
+        
+        OptB --> Sim
+        Sim --> Safe
+    end
+
+    %% 4. The Output
+    subgraph "Step 4: Conclusion"
+        direction TB
+        Action[Execute: SHUTDOWN]:::final
+        Explain["Because vibration is critical\nand shutdown is the safest path."]:::final
+        
+        Safe --> Action
+        Action --- Explain
+    end
+
+    %% Annotations
+    note1["Traceability ensures<br>accountability"]:::final -.-> Explain
