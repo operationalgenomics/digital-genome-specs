@@ -1,0 +1,65 @@
+graph TD
+    %% Global Styles
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef fed fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px,color:#000;
+    classDef shared fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% Federation Layer
+    subgraph Federation [Global Federated Exchange]
+        direction LR
+        Bus[Federation Bus / Ledger]:::fed
+        SharedLib[Shared Gene Library]:::shared
+        MetaEvo[Global Evolution Metrics]:::shared
+    end
+
+    %% Organization A (Tenant A)
+    subgraph OrgA [Organization A (Sovereign Domain)]
+        direction TB
+        GovA[Governance & Sovereignty A]:::gov
+        GenomeA[Digital Genome A]:::genome
+        CoreA[Cognitive Core A]:::genome
+        
+        GenomeA --> CoreA
+        CoreA --> GenomeA
+        
+        %% Sovereignty Check
+        GenomeA -.->|Export Candidate| GovA
+        GovA -.->|Import Validation| GenomeA
+    end
+
+    %% Organization B (Tenant B)
+    subgraph OrgB [Organization B (Sovereign Domain)]
+        direction TB
+        GovB[Governance & Sovereignty B]:::gov
+        GenomeB[Digital Genome B]:::genome
+        CoreB[Cognitive Core B]:::genome
+        
+        GenomeB --> CoreB
+        CoreB --> GenomeB
+        
+        %% Sovereignty Check
+        GenomeB -.->|Export Candidate| GovB
+        GovB -.->|Import Validation| GenomeB
+    end
+
+    %% Organization C (Tenant C)
+    subgraph OrgC [Organization C (Sovereign Domain)]
+        direction TB
+        GovC[Governance & Sovereignty C]:::gov
+        GenomeC[Digital Genome C]:::genome
+    end
+
+    %% Inter-Domain Connections via Federation
+    GovA <==>|Signed Gene Exchange| Bus
+    GovB <==>|Signed Gene Exchange| Bus
+    GovC <==>|Signed Gene Exchange| Bus
+
+    %% Data Flow
+    Bus <--> SharedLib
+    Bus <--> MetaEvo
+
+    %% Annotation
+    noteA[Sovereignty Barrier:<br/>Only approved genes enter/exit]:::gov
+    noteA -.-> GovA
+    noteA -.-> GovB
