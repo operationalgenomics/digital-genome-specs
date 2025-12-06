@@ -1,0 +1,73 @@
+%% ==============================================================================
+%% Craft Performance Calculation Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/craft-performance.md
+%% Repository Path: diagrams/cognitive-core/motors/craft-performance-calculation.mmd
+%% Description:     Visualizes the mathematical calculation of Craft Performance
+%%                  as a PRODUCT (not sum) of the four motor scores. Shows the
+%%                  veto property where any zero collapses the entire score.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef score fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef calc fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef veto fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef good fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef platonic fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Four Motor Scores
+    subgraph "1. Motor Scores [0,1]"
+        direction TB
+        SP["Score_P (Praxeological)<br/>e.g., 0.92"]:::score
+        SN["Score_N (Nash)<br/>e.g., 0.88"]:::score
+        SC["Score_C (Chaotic)<br/>e.g., 0.85"]:::score
+        SM["Score_M (Meristic)<br/>e.g., 0.90"]:::score
+    end
+
+    %% 2. The Product Operation
+    subgraph "2. Product Function (NOT Sum)"
+        direction TB
+        Mult{Multiplication}:::calc
+        
+        SP & SN & SC & SM --> Mult
+        
+        Formula["CP = Score_P × Score_N × Score_C × Score_M"]:::calc
+        Mult --> Formula
+    end
+
+    %% 3. The Result
+    subgraph "3. Craft Performance"
+        direction TB
+        Result["CP = 0.92 × 0.88 × 0.85 × 0.90"]:::calc
+        Final["CP = 0.619"]:::good
+        
+        Formula --> Result --> Final
+    end
+
+    %% 4. The Veto Property
+    subgraph "4. Veto Property (Critical)"
+        direction TB
+        VetoEx["If ANY motor = 0:"]:::veto
+        VetoCalc["CP = 0.95 × 0.88 × 0 × 0.92"]:::veto
+        VetoResult["CP = 0 (Absolute Rejection)"]:::veto
+        
+        VetoEx --> VetoCalc --> VetoResult
+    end
+
+    %% 5. Interpretation Scale
+    subgraph "5. The Platonic Scale"
+        direction TB
+        Zero["0 = Void<br/>(At least one motor rejects)"]:::veto
+        Low["0.01-0.40 = Problematic<br/>(Significant concerns)"]:::veto
+        Med["0.41-0.60 = Moderate<br/>(Acceptable with monitoring)"]:::calc
+        High["0.61-0.80 = Good<br/>(Approved for execution)"]:::good
+        Excel["0.81-0.99 = Excellent<br/>(Candidate for core DNA)"]:::good
+        One["1.0 = Platonic Form<br/>(Theoretical ideal, never achieved)"]:::platonic
+    end
+
+    %% Annotations
+    note1["WHY PRODUCT, NOT SUM?<br/>Excellence requires ALL motors to agree.<br/>No amount of excellence in three dimensions<br/>can compensate for failure in one."]:::meta -.-> Mult
+    
+    note2["The interval [0,1] contains infinite<br/>gradations - it is fractal, not binary.<br/>Improvement is always possible."]:::meta -.-> One
