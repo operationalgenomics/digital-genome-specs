@@ -1,0 +1,67 @@
+%% ==============================================================================
+%% Genome Intent Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/digital-genome/structure-definition.md
+%% Repository Path: diagrams/digital-genome/structure/genome-intent-flow.png
+%% Description:     Visualizes the traversal path of an intent through the Genome:
+%%                  Semantic Resolution (Ontology) -> Capability Matching 
+%%                  (Praxeology) -> Gene Retrieval -> Parameter Binding.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef ontology fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef prax fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef result fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Request
+    subgraph "1. Input Request"
+        direction TB
+        Intent[Normalized Intent]:::input
+        Desc["Target: 'Start Pump 101'"]:::meta
+        
+        Intent --- Desc
+    end
+
+    %% 2. Ontology Resolution (The 'What')
+    subgraph "2. Ontology Layer"
+        direction TB
+        Resolver{Semantic Resolver}:::ontology
+        EntityReg[Entity Registry]:::ontology
+        ActionReg[Action Registry]:::ontology
+        
+        Intent --> Resolver
+        Resolver <-->|Map ID| EntityReg
+        Resolver <-->|Map Verb| ActionReg
+        
+        Resolved[Canonical Request]:::ontology
+        Resolver --> Resolved
+    end
+
+    %% 3. Praxeology Lookup (The 'How')
+    subgraph "3. Praxeology Layer"
+        direction TB
+        Index{Capability Index}:::prax
+        GenePool[Gene Repository]:::prax
+        
+        Resolved --> Index
+        Index -->|Match Capability| GenePool
+        
+        Gene[Selected Gene Template]:::prax
+        GenePool --> Gene
+    end
+
+    %% 4. Binding Output
+    subgraph "4. Output"
+        direction TB
+        Bound[Bound Executable]:::result
+        
+        Gene --> Bound
+        Resolved -.->|Inject Params| Bound
+    end
+
+    %% Annotations
+    note1["Maps 'Pump 101' to<br>UUID: 550e8400..."]:::ontology -.-> EntityReg
+    note2["Finds gene capable of<br>'START' on 'PUMP'"]:::prax -.-> Index
