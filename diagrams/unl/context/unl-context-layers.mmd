@@ -1,0 +1,86 @@
+%% ==============================================================================
+%% Context Layer Stack Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/context-model.md
+%%                  specs/unl/diagrams.md
+%% Repository Path: diagrams/unl/context/unl-context-layers.png
+%% Description:     Visualizes the six specific context layers (Environmental,
+%%                  Situational, Historical, Personal, Multimodal, Governance)
+%%                  that merge to form the Unified UNL Context.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef env fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef sit fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef hist fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef pers fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef multi fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef unified fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% The Unified Target
+    Unified("Unified UNLContext"):::unified
+
+    %% Layer 1: Environmental
+    subgraph L1 ["1. Environmental Context"]
+        direction TB
+        E1[System State]:::env
+        E2[Active Alarms]:::env
+        E3[Physical Location]:::env
+        E4[Op Mode]:::env
+    end
+
+    %% Layer 2: Situational
+    subgraph L2 ["2. Situational Context"]
+        direction TB
+        S1[Active Task]:::sit
+        S2[Recent Events]:::sit
+        S3[Urgency Level]:::sit
+    end
+
+    %% Layer 3: Historical
+    subgraph L3 ["3. Historical Context"]
+        direction TB
+        H1[Past Intents]:::hist
+        H2[Known Issues]:::hist
+        H3[Usage Patterns]:::hist
+    end
+
+    %% Layer 4: Personal
+    subgraph L4 ["4. Personal Context"]
+        direction TB
+        P1[Operator ID]:::pers
+        P2[Skill Level]:::pers
+        P3[Safety Clearance]:::pers
+    end
+
+    %% Layer 5: Multimodal
+    subgraph L5 ["5. Multimodal Context"]
+        direction TB
+        M1[Speech Features]:::multi
+        M2[Gesture Vectors]:::multi
+        M3[Gaze Tracking]:::multi
+        M4[Affect/Emotion]:::multi
+    end
+
+    %% Layer 6: Governance
+    subgraph L6 ["6. Governance Context"]
+        direction TB
+        G1[Decision Mode]:::gov
+        G2[Active Policies]:::gov
+        G3[Safety Flags]:::gov
+    end
+
+    %% Integration Flow
+    L1 --> Unified
+    L2 --> Unified
+    L3 --> Unified
+    L4 --> Unified
+    L5 --> Unified
+    L6 --> Unified
+
+    %% Annotations
+    note1["Defines 'Where' & 'What'"]:::env -.-> L1
+    note2["Defines 'Who' & 'How'"]:::pers -.-> L4
+    note3["Defines 'Constraints'"]:::gov -.-> L6
