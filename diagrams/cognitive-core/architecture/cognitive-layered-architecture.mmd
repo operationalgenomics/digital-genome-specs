@@ -3,71 +3,82 @@
 %% ==============================================================================
 %% Source File:     specs/cognitive-core/specification.md
 %% Repository Path: diagrams/cognitive-core/architecture/cognitive-layered-architecture.png
-%% Description:     Visualizes the four layers of the Cognitive Core: Input
-%%                  Interpretation, Contextual Reasoning, Gene Selection, and
-%%                  Evolution & Feedback, along with inputs (UNL, Context) and
-%%                  outputs (Selected Gene, Explanation).
+%% Description:     Visualizes the layers of the Cognitive Core including the
+%%                  Sensory Cortex input, four parallel motors for evaluation,
+%%                  and evolution & feedback. Shows parallel motor processing.
 %% ==============================================================================
 
 graph TD
     %% Global Styles
-    classDef layer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
-    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
-    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef sensory fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef prax fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef nash fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef chaos fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000;
+    classDef meta fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef conv fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef output fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
     classDef ext fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
 
     %% External Inputs
-    subgraph Inputs [External Inputs]
+    subgraph Inputs ["External Inputs"]
         direction TB
-        UNL[UNL Intent]:::input
-        RawData[Raw Context Data]:::input
+        Signals[Multimodal Signals]:::sensory
+        Context[Context Data]:::sensory
     end
 
-    %% Layer 1: Input Interpretation
-    subgraph L1 ["Layer 1: Input Interpretation"]
+    %% Layer 1: Sensory Cortex
+    subgraph L1 ["Layer 1: Sensory Cortex"]
         direction TB
-        IntentProc[Intent Processor]:::layer
-        Norm[Context Normalizer]:::layer
+        Carrier[Carrier Detection]:::sensory
+        Pattern[Pattern Extraction]:::sensory
+        Structure[Structure Analysis]:::sensory
+        ProtoAgency[Proto-Agency Detection]:::sensory
+        Semantics[Semantic Extraction]:::sensory
         
-        UNL --> IntentProc
-        RawData --> Norm
+        Signals --> Carrier --> Pattern --> Structure --> ProtoAgency --> Semantics
+        Context --> Structure
     end
 
-    %% Layer 2: Contextual Reasoning
-    subgraph L2 ["Layer 2: Contextual Reasoning"]
+    %% Layer 2: Parallel Motor Evaluation
+    subgraph L2 ["Layer 2: Parallel Motor Evaluation (Simultaneous)"]
         direction TB
-        ContextEval[Context Evaluator]:::layer
-        SafetyFilter{Safety Filter}:::layer
         
-        Norm --> ContextEval
-        IntentProc --> SafetyFilter
-        ContextEval --> SafetyFilter
+        Dist{Parallel<br/>Distribution}:::conv
+        Semantics --> Dist
+        
+        Prax[Praxeological Motor<br/>Intent realization]:::prax
+        Nash[Nash Motor<br/>Strategic equilibrium]:::nash
+        Chaos[Chaotic Motor<br/>Robustness]:::chaos
+        Meta[Meristic Meta-Motor<br/>Pattern imagination]:::meta
+        
+        Dist --> Prax & Nash & Chaos & Meta
+        
+        Conv[Convergence: CP = P x N x C x M]:::conv
+        Prax & Nash & Chaos & Meta --> Conv
     end
 
-    %% Layer 3: Gene Selection
-    subgraph L3 ["Layer 3: Gene Selection Engine"]
+    %% Layer 3: Decision Synthesis
+    subgraph L3 ["Layer 3: Decision Synthesis"]
         direction TB
-        Inference[Inference Engine]:::layer
-        Sim[Simulation Engine]:::layer
-        Oracle[Oracle Synthesizer]:::layer
+        Oracle[Oracle Synthesizer]:::conv
+        Sim[Simulation Engine]:::conv
         
-        SafetyFilter -->|Validated Intent| Inference
-        Inference -->|Candidate Genes| Sim
-        Sim -->|Worldline Results| Oracle
+        Conv --> Sim --> Oracle
     end
 
     %% Layer 4: Evolution & Feedback
     subgraph L4 ["Layer 4: Evolution & Feedback"]
         direction TB
-        Merism[Merism Evolution Engine]:::layer
-        Fitness[Fitness Tracker]:::layer
+        Merism[Merism Evolution Engine]:::output
+        Fitness[Fitness Tracker]:::output
         
         Oracle -.->|Outcome Data| Fitness
         Fitness --> Merism
     end
 
     %% Outputs
-    subgraph Outputs [System Outputs]
+    subgraph Outputs ["System Outputs"]
         direction TB
         Gene[Selected Operational Gene]:::output
         Explain[Explanation Artifact]:::output
@@ -80,7 +91,7 @@ graph TD
     Merism --> Evolution
 
     %% Feedback Loop
-    Evolution -.->|Updates Genome| Inference
+    Evolution -.->|Updates Genome| L2
 
     %% Annotations
-    note1["Layers operate sequentially for decisions<br/>but parallel for evolution"]:::ext -.-> L3
+    note1["CRITICAL: Motors operate SIMULTANEOUSLY<br/>Not sequentially - all perspectives at once"]:::ext -.-> L2
