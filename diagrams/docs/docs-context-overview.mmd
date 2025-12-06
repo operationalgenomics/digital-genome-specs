@@ -1,0 +1,50 @@
+%% ==============================================================================
+%% Documentation Context Overview Diagram (C4 Context)
+%% ==============================================================================
+%% Source File:     docs/architecture/context-view.md
+%% Repository Path: diagrams/docs/docs-context-overview.png
+%% Description:     A C4 System Context diagram illustrating the Autonomous System,
+%%                  its primary users (Operator, Developer, Auditor), and its
+%%                  external dependencies (IoT Grid, Legacy ERP, Cloud AI).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef system fill:#1168bd,stroke:#0b4884,stroke-width:2px,color:#fff;
+    classDef person fill:#08427b,stroke:#052e56,stroke-width:2px,color:#fff;
+    classDef external fill:#999999,stroke:#666666,stroke-width:2px,color:#fff;
+    classDef boundary fill:#ffffff,stroke:#444444,stroke-width:1px,stroke-dasharray: 5 5,color:#444;
+
+    %% 1. The Core System
+    subgraph Enterprise ["Enterprise Boundary"]
+        direction TB
+        ACS[Autonomous Cognitive System]:::system
+    end
+
+    %% 2. The People (Actors)
+    Operator[System Operator]:::person
+    Dev[Developer / Geneticist]:::person
+    Auditor[Compliance Auditor]:::person
+
+    %% 3. External Systems
+    IoT[IoT Sensor Grid]:::external
+    ERP[Legacy ERP System]:::external
+    Cloud[Cloud AI Services]:::external
+    
+    %% Relationships - People
+    Operator -->|Monitors & Commands| ACS
+    Dev -->|Evolves Genome| ACS
+    Auditor -->|Inspects Logs| ACS
+
+    %% Relationships - Systems
+    ACS -->|Reads Telemetry| IoT
+    IoT -->|Sends Alerts| ACS
+    
+    ACS -->|Syncs Inventory| ERP
+    ERP -->|Provides Orders| ACS
+    
+    ACS -.->|Offloads Training| Cloud
+    Cloud -.->|Returns Models| ACS
+
+    %% Annotations
+    note1["The Central Hub of Decision Making"]:::system -.-> ACS
