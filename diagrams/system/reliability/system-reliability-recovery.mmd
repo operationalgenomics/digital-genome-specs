@@ -1,0 +1,68 @@
+%% ==============================================================================
+%% Recovery State Machine Diagram
+%% ==============================================================================
+%% Source File:     specs/system/reliability-model.md
+%% Repository Path: diagrams/system/reliability/system-reliability-recovery.png
+%% Description:     Visualizes the deterministic recovery lifecycle: Failure
+%%                  Detection -> Isolation -> Strategy Selection -> State
+%%                  Restoration -> Validation -> Resumption.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef state fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef critical fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef action fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef success fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% 1. Detection & Isolation
+    subgraph "1. Containment Phase"
+        direction TB
+        Fail[Failure Detected]:::critical
+        Isolate[Isolate Subsystem]:::action
+        
+        Fail -->|Trigger| Isolate
+    end
+
+    %% 2. Strategy Selection
+    subgraph "2. Strategy Selection"
+        direction TB
+        Assess{Severity Assessment}:::decision
+        
+        Isolate --> Assess
+        
+        Assess -->|Low Severity| Auto[Automatic Recovery]:::state
+        Assess -->|Medium Severity| Assist[Assisted Recovery]:::state
+        Assess -->|High/Critical| Manual[Manual Recovery]:::critical
+    end
+
+    %% 3. Restoration
+    subgraph "3. Restoration Phase"
+        direction TB
+        Restore[Restore State]:::action
+        Resync[Re-Synchronization]:::action
+        
+        Auto --> Restore
+        Assist -->|Operator Approval| Restore
+        Manual -->|Human Intervention| Restore
+        
+        Restore -->|State Consistent| Resync
+    end
+
+    %% 4. Validation
+    subgraph "4. Validation Phase"
+        direction TB
+        Validate{Validation Check}:::decision
+        
+        Resync --> Validate
+        
+        Validate -->|Pass| Resume[Resume Operation]:::success
+        Validate -->|Fail| Escalate[Escalate Severity]:::critical
+    end
+
+    %% Feedback Loop
+    Escalate --> Manual
+
+    %% Annotations
+    note1["Cognitive Core and UNL context\nmust be re-synced after recovery"]:::action -.-> Resync
