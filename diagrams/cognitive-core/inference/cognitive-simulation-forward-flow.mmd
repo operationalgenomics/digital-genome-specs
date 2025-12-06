@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Predictive Simulation Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/inference-engine.md
+%% Repository Path: diagrams/cognitive-core/inference/cognitive-simulation-forward-flow.png
+%% Description:     Visualizes the predictive simulation loop for a candidate gene:
+%%                  Codon Sequence Expansion -> State Transition Prediction ->
+%%                  Risk Estimation -> Context Alignment -> Fitness Prediction.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sim fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef result fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef risk fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Input: Applicability Set
+    subgraph "1. Input Candidates"
+        direction TB
+        Set[Applicability Set]:::input
+        Gene[Candidate Gene]:::input
+        Context[Current Context]:::input
+        
+        Set -->|Iterate| Gene
+        Context -.->|Bound To| Gene
+    end
+
+    %% 2. The Simulation Engine Loop
+    subgraph "2. Predictive Simulation"
+        direction TB
+        
+        %% Step A: Expansion
+        Expand[Codon Expansion]:::process
+        Seq[Codon Sequence]:::sim
+        
+        Gene --> Expand
+        Expand --> Seq
+        
+        %% Step B: Forward Projection
+        Project{State Projection}:::sim
+        Seq --> Project
+        
+        %% Step C: Impact Analysis
+        Trans[State Transitions]:::process
+        Risk[Risk Estimation]:::risk
+        Align[Context Alignment]:::process
+        
+        Project -->|Calculate| Trans
+        Project -->|Calculate| Risk
+        Project -->|Calculate| Align
+    end
+
+    %% 3. Outcome Generation
+    subgraph "3. Evaluation Output"
+        direction TB
+        Pred[Predicted Outcome]:::result
+        Fit[Fitness Contribution]:::result
+        
+        Trans & Risk & Align --> Pred
+        Pred -->|Score| Fit
+    end
+
+    %% Flow to Ranking
+    Fit --> Rank[To Ranking Engine]:::input
+
+    %% Annotations
+    note1["Simulates 'What if?'<br/>before committing to action"]:::sim -.-> Project
+    note2["High risk projection<br/>penalizes fitness score"]:::risk -.-> Risk
