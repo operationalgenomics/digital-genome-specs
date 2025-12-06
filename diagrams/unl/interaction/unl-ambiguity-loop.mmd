@@ -1,0 +1,67 @@
+%% ==============================================================================
+%% Ambiguity Resolution Loop Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/specification.md
+%% Repository Path: diagrams/unl/interaction/unl-ambiguity-loop.png
+%% Description:     Visualizes the clarification loop: Input -> Ambiguity 
+%%                  Detection -> Request Generation -> Operator Response -> 
+%%                  Context Update -> Resolution.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef artifact fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. The Interaction
+    subgraph "1. Interaction Layer"
+        direction TB
+        Operator((Human Operator)):::actor
+        Input[Multimodal Input]:::artifact
+        Output[Clarification Request]:::fail
+        
+        Operator -->|Speech / Gesture| Input
+        Output -->|Question / Menu| Operator
+    end
+
+    %% 2. Processing Layer
+    subgraph "2. Resolution Engine"
+        direction TB
+        Parser[Semantic Parser]:::process
+        Detector{Ambiguity Check}:::check
+        Manager[Clarification Manager]:::process
+        Merger[Context Merger]:::process
+        
+        Input --> Parser
+        Parser --> Detector
+        
+        Detector -->|Confidence > Threshold| Success[Resolved Intent]:::artifact
+        Detector -->|Ambiguous| Manager
+        
+        Manager -->|Generate Query| Output
+        
+        %% The Loop Back
+        Input -.->|New Response| Merger
+        Merger -->|Refined Context| Parser
+    end
+
+    %% 3. Ambiguity Types (Metadata)
+    subgraph "3. Ambiguity Classes"
+        direction TB
+        T1["Entity Ambiguity\n(Which pump?)"]:::check
+        T2["Action Ambiguity\n(Stop or Isolate?)"]:::check
+        T3["State Ambiguity\n(Safe or Off?)"]:::check
+        
+        Detector -.-> T1 & T2 & T3
+    end
+
+    %% Destination
+    Core[Cognitive Core]:::process
+    Success --> Core
+
+    %% Annotations
+    note1["Loop continues until\nambiguity is resolved"]:::process -.-> Merger
