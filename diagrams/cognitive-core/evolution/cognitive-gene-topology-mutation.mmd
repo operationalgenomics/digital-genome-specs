@@ -1,0 +1,65 @@
+%% ==============================================================================
+%% Gene Topology Mutation Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/evolution-engine.md
+%% Repository Path: diagrams/cognitive-core/evolution/cognitive-gene-topology-mutation.png
+%% Description:     Visualizes structural mutations where the topology of a gene
+%%                  is altered: Node Addition (inserting a new Codon) and Node
+%%                  Removal (pruning an existing Codon), creating a new logic path.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef mutation fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef removed fill:#ffcdd2,stroke:#c62828,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef added fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% 1. Original Structure
+    subgraph "1. Parent Gene Topology"
+        direction LR
+        Start((Start)):::input --> A[Codon 1: Check]:::input
+        A --> B[Codon 2: Action]:::input
+        B --> End((End)):::input
+    end
+
+    %% 2. The Mutator
+    subgraph "2. Topological Mutator"
+        direction TB
+        Engine{Mutation Engine}:::mutation
+        Op1[Op: Add Node]:::mutation
+        Op2[Op: Remove Node]:::mutation
+        
+        Start --> Engine
+        Engine -->|Strategy: Expansion| Op1
+        Engine -->|Strategy: Pruning| Op2
+    end
+
+    %% 3. Result A: Addition
+    subgraph "3A. Mutation: Insertion"
+        direction LR
+        S_A((Start)):::output --> A_A[Codon 1: Check]:::output
+        A_A --> New[Codon New: Verify]:::added
+        New --> B_A[Codon 2: Action]:::output
+        B_A --> E_A((End)):::output
+    end
+
+    %% 3. Result B: Removal
+    subgraph "3B. Mutation: Pruning"
+        direction LR
+        S_B((Start)):::output --> A_B[Codon 1: Check]:::output
+        A_B --> B_Rm[Codon 2: Removed]:::removed
+        B_Rm -.-> E_B((End)):::output
+        
+        %% Re-routing
+        A_B -->|Bypass| E_B
+    end
+
+    %% Flow
+    Op1 --> S_A
+    Op2 --> S_B
+
+    %% Annotations
+    note1["Adds complexity to handle<br/>nuanced edge cases"]:::added -.-> New
+    note2["Simplifies logic by removing<br/>redundant steps"]:::removed -.-> B_Rm
