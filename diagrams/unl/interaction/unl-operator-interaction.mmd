@@ -1,0 +1,80 @@
+%% ==============================================================================
+%% Operator Interaction Model Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/translation-engine.md
+%% Repository Path: diagrams/unl/interaction/unl-operator-interaction.png
+%% Description:     Visualizes the operator interaction cycle: Input (Voice/
+%%                  Gesture/Text) -> UNL Processing -> Clarification Loop ->
+%%                  Explanation Rendering (Visual/Audio).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef process fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef loop fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. The Operator
+    subgraph "1. Human Operator"
+        direction TB
+        Op((Operator)):::human
+        Context[Personal Context]:::human
+        
+        Op -.->|Skill / Profile| Context
+    end
+
+    %% 2. Inbound Interaction
+    subgraph "2. Input Modalities"
+        direction TB
+        Voice[Voice Command]:::input
+        Gesture[Gesture / Pointing]:::input
+        Text[Text / Keyboard]:::input
+        Gaze[Eye Tracking]:::input
+        
+        Op --> Voice
+        Op --> Gesture
+        Op --> Text
+        Op --> Gaze
+    end
+
+    %% 3. UNL Processing
+    subgraph "3. Interaction Engine"
+        direction TB
+        Fusion[Multimodal Fusion]:::process
+        Check{Ambiguity Check}:::process
+        Clarify[Clarification Manager]:::loop
+        
+        Voice & Gesture & Text & Gaze --> Fusion
+        Fusion --> Check
+        
+        Check -->|Ambiguous| Clarify
+        Check -->|Clear| Process[To Cognitive Core]:::process
+    end
+
+    %% 4. Outbound Interaction
+    subgraph "4. Output Rendering"
+        direction TB
+        Trans[Translation Engine]:::process
+        
+        Process -.->|Response| Trans
+        
+        Trans -->|Text| UI_Text[UI Notification]:::output
+        Trans -->|Speech| TTS[Voice Synthesis]:::output
+        Trans -->|Visual| AR[AR Overlay]:::output
+    end
+
+    %% Clarification Loop
+    Clarify -->|Query| UI_Text
+    Clarify -->|Prompt| TTS
+    
+    UI_Text -->|Selection| Op
+    TTS -->|Voice Reply| Op
+
+    %% Feedback
+    UI_Text & TTS & AR --> Op
+
+    %% Annotations
+    note1["Clarification requests must match<br/>operator skill level"]:::loop -.-> Clarify
