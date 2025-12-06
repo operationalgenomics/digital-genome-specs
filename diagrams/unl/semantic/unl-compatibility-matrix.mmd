@@ -1,0 +1,73 @@
+%% ==============================================================================
+%% Compatibility Matrix Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/semantic-ontology.md
+%% Repository Path: diagrams/unl/semantic/unl-compatibility-matrix.png
+%% Description:     Visualizes the compatibility rules between Entity Types,
+%%                  Action Categories, and State Categories, defining valid
+%%                  praxeological combinations.
+%% ==============================================================================
+
+graph LR
+    %% Global Styles
+    classDef entity fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef action fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef state fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef note fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Column 1: Entity Types
+    subgraph Entities ["1. Entity Types"]
+        direction TB
+        E_Phy[Physical Entity]:::entity
+        E_Log[Logical Entity]:::entity
+        E_Ag[Agent Entity]:::entity
+    end
+
+    %% Column 2: Action Categories
+    subgraph Actions ["2. Action Categories"]
+        direction TB
+        A_Op[Operational]:::action
+        A_Safe[Safety]:::action
+        A_Diag[Diagnostic]:::action
+        A_Info[Informational]:::action
+    end
+
+    %% Column 3: State Categories
+    subgraph States ["3. Target State Categories"]
+        direction TB
+        S_Op[Operational State]:::state
+        S_Safe[Safety State]:::state
+        S_Diag[Diagnostic State]:::state
+        S_Info[Informational State]:::state
+    end
+
+    %% ---------------------------------------------------------
+    %% COMPATIBILITY LINKS (The Matrix Logic)
+    %% ---------------------------------------------------------
+
+    %% Physical Entity Compatibilities
+    E_Phy --> A_Op
+    E_Phy --> A_Safe
+    E_Phy --> A_Diag
+
+    %% Logical Entity Compatibilities
+    E_Log --> A_Op
+    E_Log --> A_Info
+
+    %% Agent Entity Compatibilities
+    E_Ag --> A_Op
+    E_Ag --> A_Info
+
+    %% Action -> State Logic (Transitions)
+    A_Op --> S_Op
+    A_Safe --> S_Safe
+    A_Diag --> S_Diag
+    A_Info --> S_Info
+
+    %% Cross-Category Validations
+    A_Op -.->|Maintenance| S_Safe
+    A_Safe -.->|Recovery| S_Op
+
+    %% Annotations
+    N1["Physical entities support<br/>Safety & Diagnostic actions"]:::note -.-> E_Phy
+    N2["Safety actions must result<br/>in verified Safety States"]:::note -.-> S_Safe
