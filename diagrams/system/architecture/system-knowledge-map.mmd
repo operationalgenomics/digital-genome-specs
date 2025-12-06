@@ -1,0 +1,72 @@
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef evo fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef meta fill:#eceff1,stroke:#455a64,stroke-width:1px,color:#000;
+
+    %% 1. Semantic Foundation (The Vocabulary)
+    subgraph Ontology ["UNL Semantic Ontology (Vocabulary)"]
+        direction TB
+        Entity[Entity Class]:::unl
+        Action[Action Class]:::unl
+        State[State Class]:::unl
+        Constraint[Constraint Class]:::unl
+    end
+
+    %% 2. Structural Layer (The Atoms)
+    subgraph Praxeology ["Praxeological Layer (Atoms)"]
+        direction TB
+        Codon[Praxeological Codon]:::genome
+        
+        %% Composition
+        Codon -->|References| Entity
+        Codon -->|References| Action
+        Codon -->|Target| State
+        Codon -.->|Bounded By| Constraint
+    end
+
+    %% 3. Functional Layer (The Molecules)
+    subgraph GenomeStructure ["Digital Genome Structure (Molecules)"]
+        direction TB
+        Gene[Operational Gene]:::genome
+        GenLib[Digital Genome Library]:::genome
+        
+        GenLib -->|Contains| Gene
+        Gene -->|Sequence of| Codon
+    end
+
+    %% 4. Evolutionary Metadata (The Change)
+    subgraph Evolution ["Evolutionary Artifacts"]
+        direction TB
+        Variant[Gene Variant]:::evo
+        AntiGene[Anti-Gene]:::evo
+        Fitness[Fitness Score]:::evo
+        Lineage[Evolution Lineage]:::evo
+        
+        Gene -->|Has History| Lineage
+        Gene -->|Has Score| Fitness
+        Variant -->|Modifies| Gene
+        AntiGene -->|Opposes/Replaces| Gene
+    end
+
+    %% 5. Governance Metadata (The Rules)
+    subgraph Governance ["Governance Metadata"]
+        direction TB
+        Policy[Governance Policy]:::gov
+        Ledger[Immutable Ledger Entry]:::gov
+        Safety[Safety Invariant]:::gov
+        
+        Policy -->|Restricts| Gene
+        Safety -->|Forbids| Codon
+        Ledger -->|Anchors| Gene
+        Ledger -->|Anchors| Variant
+    end
+
+    %% External Inputs
+    Frame[Semantic Frame]:::meta -->|Maps to| Codon
+    Context[Context Snapshot]:::meta -->|Evaluates| Fitness
+
+    %% Relationships
+    note1[Codon = Entity + Action + State]:::genome -.-> Codon
