@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Safety Evaluation Funnel Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/simulation-engine.md
+%% Repository Path: diagrams/cognitive-core/simulation/cognitive-sim-safety-funnel.png
+%% Description:     Visualizes the safety funnel: Incoming Candidate -> Baseline
+%%                  Safety -> Multiverse Stress Test -> Invariant Validation ->
+%%                  Final Safe Candidate.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Input
+    subgraph "1. Candidate Entry"
+        direction TB
+        Gene[Candidate Gene]:::input
+        Context[Context Snapshot]:::input
+        
+        Gene --- Context
+    end
+
+    %% 2. The Funnel (Progressive Filtering)
+    subgraph "2. The Safety Funnel"
+        direction TB
+        
+        %% Filter 1: Baseline Check (Deterministic)
+        Filter1{Baseline Check}:::check
+        
+        Gene --> Filter1
+        
+        Filter1 -->|Violates Constraints| Rej1["Reject: Logical Violation"]:::reject
+        Filter1 -->|Pass| Filter2
+        
+        %% Filter 2: Multiverse Check (Stochastic)
+        Filter2{Multiverse Check}:::check
+        
+        Filter2 -->|High Failure Rate| Rej2["Reject: Low Robustness"]:::reject
+        Filter2 -->|Pass| Filter3
+        
+        %% Filter 3: Worst-Case Check (Catastrophic)
+        Filter3{Worst-Case Check}:::check
+        
+        Filter3 -->|Catastrophic Outcome| Rej3["Reject: Existential Risk"]:::reject
+        Filter3 -->|Pass| Filter4
+        
+        %% Filter 4: Invariant Check (Governance)
+        Filter4{Invariant Check}:::check
+        
+        Filter4 -->|Forbidden Transition| Rej4["Reject: Policy Violation"]:::reject
+        Filter4 -->|Pass| Output
+    end
+
+    %% 3. The Output
+    subgraph "3. Validated Output"
+        direction TB
+        Output[Safe Candidate]:::safe
+        Cert[Safety Certificate]:::meta
+        
+        Output --- Cert
+    end
+
+    %% Annotations
+    note1["Rejects any gene that fails<br/>even a single critical worldline"]:::reject -.-> Rej3
+    note2["Validates against System Safety Invariants"]:::check -.-> Filter4
