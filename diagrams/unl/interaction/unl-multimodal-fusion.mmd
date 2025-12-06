@@ -1,0 +1,77 @@
+%% ==============================================================================
+%% Multimodal Fusion Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%%                  specs/unl/context-model.md
+%% Repository Path: diagrams/unl/interaction/unl-multimodal-fusion.png
+%% Description:     Visualizes the fusion of multimodal inputs: Signal Capture ->
+%%                  Synchronization -> Feature Extraction -> Conflict Resolution
+%%                  (Hierarchy) -> Fused Intent.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef process fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef logic fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input Signals
+    subgraph "1. Signal Capture"
+        direction TB
+        Voice[Speech Signal]:::input
+        Gesture[Gesture Vector]:::input
+        Gaze[Gaze Tracking]:::input
+        Affect[Affect/Emotion]:::input
+    end
+
+    %% 2. Fusion Engine
+    subgraph "2. Fusion Engine"
+        direction TB
+        
+        %% Stage A: Sync
+        Sync[Temporal Synchronization]:::process
+        
+        Voice & Gesture & Gaze & Affect --> Sync
+        
+        %% Stage B: Extraction
+        Extract[Feature Extraction]:::process
+        
+        Sync --> Extract
+        
+        %% Stage C: Resolution (The Hierarchy)
+        Resolve{Conflict Resolution}:::logic
+        
+        Extract --> Resolve
+        
+        %% Resolution Rules
+        Rule1["Gesture dominates Entity"]:::meta
+        Rule2["Speech dominates Action"]:::meta
+        Rule3["Gaze resolves Ambiguity"]:::meta
+        
+        Resolve -.-> Rule1 & Rule2 & Rule3
+    end
+
+    %% 3. Construction
+    subgraph "3. Intent Construction"
+        direction TB
+        Merge[Semantic Merger]:::process
+        Coherence{Coherence Check}:::logic
+        
+        Resolve --> Merge
+        Merge --> Coherence
+    end
+
+    %% 4. Output
+    subgraph "4. Output"
+        Result[Fused Multimodal Intent]:::output
+    end
+
+    %% Flow
+    Coherence -->|Valid| Result
+    Coherence -->|Invalid| Rejection[Reject / Clarify]:::meta
+
+    %% Annotations
+    note1["Example: Pointing at Pump A (Gesture)<br/>saying 'Stop this' (Speech)"]:::input -.-> Sync
+    note2["Result: [Entity: Pump A | Action: STOP]"]:::output -.-> Result
