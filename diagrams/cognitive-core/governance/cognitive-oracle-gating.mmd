@@ -1,0 +1,62 @@
+%% ==============================================================================
+%% Oracle Gating Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/governance-model.md
+%% Repository Path: diagrams/cognitive-core/governance/cognitive-oracle-gating.mmd
+%% Description:     Visualizes the decision gating logic: Oracle Confidence Score
+%%                  + Impact Severity -> Governance Mode (Auto, Verify, Block).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef auto fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef manual fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef block fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Oracle Output
+    subgraph "1. Oracle Proposal"
+        direction TB
+        Prop[Proposed Action]:::source
+        Score[Confidence: 0.0-1.0]:::source
+        Impact[Impact: Low/Med/High]:::source
+        
+        Prop --- Score
+        Prop --- Impact
+    end
+
+    %% 2. Gating Matrix
+    subgraph "2. Governance Gate"
+        direction TB
+        Gate{Decision Matrix}:::logic
+        
+        Prop --> Gate
+        
+        %% Path A: High Confidence, Low Impact
+        Gate -->|Conf > 0.9 & Low Risk| ModeA[Mode: AUTOMATION]:::auto
+        
+        %% Path B: Medium Confidence OR High Impact
+        Gate -->|Conf < 0.9 OR High Risk| ModeB[Mode: HUMAN_VERIFY]:::manual
+        
+        %% Path C: Low Confidence
+        Gate -->|Conf < 0.5| ModeC[Mode: REJECT]:::block
+    end
+
+    %% 3. Execution Path
+    subgraph "3. Execution Flow"
+        direction TB
+        Exec[Execute Action]:::auto
+        Prompt[Operator Confirmation]:::manual
+        Stop[Halt & Log]:::block
+        
+        ModeA --> Exec
+        ModeB --> Prompt
+        ModeC --> Stop
+        
+        Prompt -->|Approved| Exec
+        Prompt -->|Denied| Stop
+    end
+
+    %% Annotations
+    note1["Calculated risk determines<br/>autonomy level"]:::logic -.-> Gate
