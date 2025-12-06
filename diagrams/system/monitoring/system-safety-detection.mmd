@@ -1,0 +1,66 @@
+graph TD
+    %% Global Styles
+    classDef raw fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef detect fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef alert fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef action fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input Stream
+    subgraph "1. Telemetry Stream"
+        direction TB
+        Metrics[Raw Metrics]:::raw
+        States[Entity States]:::raw
+        Events[System Events]:::raw
+    end
+
+    %% 2. Detection Logic
+    subgraph "2. Safety Detection Engine"
+        direction TB
+        Threshold{Threshold Rules}:::detect
+        Forbidden{Forbidden State Check}:::detect
+        Drift{Drift Analysis}:::detect
+        
+        %% Flow
+        Metrics --> Threshold
+        States --> Forbidden
+        Metrics & States --> Drift
+    end
+
+    %% 3. Alerting
+    subgraph "3. Alert Generation"
+        direction TB
+        Alert[Safety Alert Object]:::alert
+        Class[Severity Classifier]:::detect
+        
+        Threshold -->|Violation| Class
+        Forbidden -->|Match| Class
+        Drift -->|Trend Detected| Class
+        
+        Class -->|Critical / High / Medium| Alert
+    end
+
+    %% 4. Intervention
+    subgraph "4. Execution Intervention"
+        direction TB
+        Exec[Execution Gateway]:::action
+        Inject[Safety Codon Injector]:::action
+        Halt((Emergency Stop)):::alert
+        
+        Alert -->|Critical| Halt
+        Alert -->|High| Inject
+        Alert -->|Medium| Exec
+    end
+
+    %% External Actors
+    Operator((Human Operator)):::gov
+    Ledger[Governance Ledger]:::gov
+
+    %% Notifications and Logging
+    Alert -.->|Notify| Operator
+    Alert -.->|Audit Log| Ledger
+    
+    %% Intervention Actions
+    Halt -->|Force Stop| Exec
+    Inject -->|Insert 'Isolate'| Exec
+    Exec -->|Pause / Degrade| Operator
