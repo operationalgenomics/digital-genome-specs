@@ -1,0 +1,53 @@
+%% ==============================================================================
+%% API UNL Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/api/unl-api.md
+%% Repository Path: diagrams/api/api-unl-pipeline.png
+%% Description:     Visualizes the UNL (Universal Natural Language) processing
+%%                  pipeline at the API edge: Raw Payload Ingestion -> Schema
+%%                  Validation -> Tokenization -> Semantic Mapping -> Intent
+%%                  Object Output.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef proc fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef error fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. Ingestion
+    subgraph "1. Ingestion Layer"
+        direction TB
+        Payload[Raw JSON Payload]:::input
+        Schema{Schema Validator}:::proc
+        
+        Payload --> Schema
+    end
+
+    %% 2. Processing
+    subgraph "2. UNL Processing"
+        direction TB
+        Tokenizer[Tokenizer Service]:::proc
+        Mapper[Semantic Mapper]:::proc
+        Enrich[Context Enricher]:::proc
+        
+        Schema -->|Valid| Tokenizer
+        Schema -->|Invalid| Err1[400 Bad Request]:::error
+        
+        Tokenizer -->|"Tokens: [Start, Pump, 1] "| Mapper
+        Mapper -->|"Map: {Action: START, Target: P-101}"| Enrich
+    end
+
+    %% 3. Output
+    subgraph "3. Core Handover"
+        direction TB
+        IntentObj[Cognitive Intent Object]:::output
+        Queue[Internal Event Bus]:::output
+        
+        Enrich --> IntentObj
+        IntentObj --> Queue
+    end
+
+    %% Annotations
+    note1["Converts external API formats<br/>into internal Genome-compliant objects"]:::proc -.-> Mapper
