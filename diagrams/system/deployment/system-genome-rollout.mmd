@@ -1,0 +1,84 @@
+%% ==============================================================================
+%% Genome Rollout Strategy Diagram
+%% ==============================================================================
+%% Source File:     specs/system/deployment-model.md
+%% Repository Path: diagrams/system/deployment/system-genome-rollout.png
+%% Description:     Visualizes the phased rollout strategy: Simulation ->
+%%                  Shadow Mode -> Canary Deployment -> Global Activation,
+%%                  with automatic rollback triggers.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef phase fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef success fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Pre-Deployment (Simulation)
+    subgraph "Phase 1: Validation (Virtual)"
+        direction TB
+        NewVer[New Genome Version]:::phase
+        SimTest[Simulation Testing]:::phase
+        MetaSim[Meta-Multiverse Check]:::phase
+        
+        NewVer --> SimTest
+        SimTest --> MetaSim
+    end
+
+    %% Gate 1
+    Gate1{Simulation Pass?}:::check
+    MetaSim --> Gate1
+
+    %% 2. Shadow Mode (Passive)
+    subgraph "Phase 2: Shadow Mode (Passive)"
+        direction TB
+        Shadow[Deploy to Shadow Nodes]:::phase
+        Compare[Compare vs Active Logic]:::phase
+        
+        Shadow --> Compare
+    end
+
+    %% Gate 2
+    Gate1 -->|Yes| Shadow
+    Gate1 -->|No| Reject1[Reject Candidate]:::fail
+    
+    Gate2{Drift < Threshold?}:::check
+    Compare --> Gate2
+
+    %% 3. Canary Deployment (Limited Active)
+    subgraph "Phase 3: Canary Deployment (Active)"
+        direction TB
+        Canary[Deploy to 5% Edge Nodes]:::phase
+        Monitor[Intensive Monitoring]:::phase
+        
+        Canary --> Monitor
+    end
+
+    %% Gate 3
+    Gate2 -->|Yes| Canary
+    Gate2 -->|No| Reject2[Reject Candidate]:::fail
+    
+    Gate3{Safety Metrics OK?}:::check
+    Monitor --> Gate3
+
+    %% 4. Global Rollout
+    subgraph "Phase 4: Global Activation"
+        direction TB
+        Global[Deploy to 100% Nodes]:::success
+        Sign[Governance Sign-off]:::gov
+        
+        Global --> Sign
+    end
+
+    %% Gate 4
+    Gate3 -->|Yes| Global
+    Gate3 -->|No| Rollback[Trigger Automatic Rollback]:::fail
+
+    %% Rollback Logic
+    Rollback -->|Revert to Previous| Revert[Restore Last Stable]:::success
+    Revert --> Audit[Mandatory Post-Mortem]:::gov
+
+    %% Annotations
+    note1["Shadow mode runs parallel logic<br/>without actuating hardware"]:::phase -.-> Shadow
