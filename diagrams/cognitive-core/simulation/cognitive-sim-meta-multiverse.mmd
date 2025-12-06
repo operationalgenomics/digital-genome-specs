@@ -1,0 +1,84 @@
+%% ==============================================================================
+%% Meta-Multiverse Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/simulation-engine.md
+%% Repository Path: diagrams/cognitive-core/simulation/cognitive-sim-meta-multiverse.png
+%% Description:     Visualizes a Meta-Multiverse simulation where multiple 
+%%                  distinct Multiverses are generated under different 
+%%                  hypothetical paradigms (e.g., Baseline, Stress Test, 
+%%                  Structural Shift) to evaluate meta-robustness.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef root fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef paradigm fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef multi fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef result fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef meta fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. The Trigger
+    subgraph Origin ["1. Simulation Request"]
+        direction TB
+        Input[Candidate Gene]:::root
+        Context[Current Context]:::root
+        Hypothesis[Meristic Hypotheses]:::root
+        
+        Input & Context & Hypothesis --> Gen{Paradigm Generator}:::meta
+    end
+
+    %% 2. The Meta-Multiverse (Parallel Realities)
+    subgraph MetaMultiverse ["2. The Meta-Multiverse"]
+        direction TB
+        
+        %% Paradigm A: The Standard Model
+        subgraph ParaA ["Paradigm A: Standard Model"]
+            direction TB
+            DefA[Rules: Deterministic Physics]:::paradigm
+            MultiA["Multiverse A (1000 Runs)"]:::multi
+            ResA[Success: 98%]:::result
+            
+            DefA --> MultiA --> ResA
+        end
+        
+        %% Paradigm B: The Stress Test
+        subgraph ParaB ["Paradigm B: High Volatility"]
+            direction TB
+            DefB[Rules: 3x Stochastic Noise]:::paradigm
+            MultiB["Multiverse B (1000 Runs)"]:::multi
+            ResB[Success: 82%]:::result
+            
+            DefB --> MultiB --> ResB
+        end
+        
+        %% Paradigm C: The Structural Shift (Anti-Gene)
+        subgraph ParaC ["Paradigm C: Structural Shift"]
+            direction TB
+            DefC[Rules: Inverted Dependencies]:::paradigm
+            MultiC["Multiverse C (1000 Runs)"]:::multi
+            ResC[Success: 45%]:::result
+            
+            DefC --> MultiC --> ResC
+        end
+        
+        Gen --> ParaA
+        Gen --> ParaB
+        Gen --> ParaC
+    end
+
+    %% 3. Cross-Paradigm Synthesis
+    subgraph Synthesis ["3. Meta-Evaluation"]
+        direction TB
+        Agg[Cross-Paradigm Aggregator]:::meta
+        
+        ResA & ResB & ResC --> Agg
+        
+        Final[Meta-Robustness Score]:::meta
+        Report["Stability across paradigms: MEDIUM"]:::result
+        
+        Agg --> Final
+        Final --- Report
+    end
+
+    %% Annotations
+    note1["'Does it work if the<br/>rules of the game change?'"]:::paradigm -.-> Gen
