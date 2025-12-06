@@ -1,0 +1,85 @@
+%% ==============================================================================
+%% Scenario Interaction Map
+%% ==============================================================================
+%% Source File:     specs/system/operational-scenarios.md
+%% Repository Path: diagrams/system/scenarios/system-operational-scenario-map.png
+%% Description:     Visualizes the cross-layer interactions across all
+%%                  subsystems during an operational scenario, mapping the flow
+%%                  from human expression to evolutionary feedback.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+
+    %% Actors & Environment
+    Operator((Human Operator)):::human
+    Env[Operational Environment]:::sys
+
+    %% Subsystems
+    subgraph "1. Interface Layer"
+        UNL[UNL System]:::unl
+        Context[Context Model]:::unl
+    end
+
+    subgraph "2. Cognitive Layer"
+        Core[Cognitive Core]:::core
+        Sim[Simulation Engine]:::core
+    end
+
+    subgraph "3. Knowledge Layer"
+        Genome[Digital Genome]:::genome
+        Evo[Evolution Engine]:::genome
+    end
+
+    subgraph "4. Control Layer"
+        Gov[Governance Matrix]:::gov
+    end
+
+    subgraph "5. Execution Layer"
+        Exec[Execution Engine]:::sys
+    end
+
+    subgraph "6. Observation Layer"
+        Mon[Monitoring]:::mon
+        Feed[Feedback Loop]:::mon
+    end
+
+    %% Interaction Flow
+    Operator -->|Expression| UNL
+    Env -.->|State Data| Context
+    UNL -->|Contextualized Intent| Core
+    Context -->|Enrichment| Core
+
+    %% Reasoning Interactions
+    Core <-->|Query Genes| Genome
+    Core <-->|Validate Plan| Sim
+    Core -->|Propose Action| Gov
+
+    %% Governance Gate
+    Gov -->|Approve/Reject| Exec
+    Gov -.->|Log Decision| Genome
+
+    %% Execution Interactions
+    Exec -->|Actuate| Env
+    Env -->|Telemetry| Mon
+    Exec -->|Status Updates| Mon
+
+    %% Feedback & Evolution
+    Mon -->|Outcome| Feed
+    Feed -->|Fitness Score| Genome
+    Feed -->|Triggers| Evo
+    Evo -->|New Variants| Genome
+
+    %% Human Feedback Loop
+    Exec -.->|Status| UNL
+    UNL -.->|Explanation| Operator
+
+    %% Annotations
+    note1["Map covers the full<br/>Action-Learning cycle"]:::core -.-> Core
