@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Safety Insertion Logic Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/codification-rules.md
+%% Repository Path: diagrams/unl/flows/unl-safety-insertion.png
+%% Description:     Visualizes the automatic injection of mandatory safety codons
+%%                  (e.g., isolation, confirmation) into a generated sequence
+%%                  to enforce safety invariants.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef inject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef seq fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. Input Sequence
+    subgraph "1. Raw Sequence"
+        direction TB
+        Input[Raw Codon Sequence]:::input
+        C_Orig["Codon: ACTUATE VALVE"]:::input
+        
+        Input --> C_Orig
+    end
+
+    %% 2. Safety Analysis
+    subgraph "2. Safety Analysis Engine"
+        direction TB
+        Analyze{Analyze Risks}:::check
+        Rule1{Requires Isolation?}:::check
+        Rule2{Critical Severity?}:::check
+        
+        C_Orig --> Analyze
+        Analyze --> Rule1
+        Rule1 -->|Yes| Insert1[Inject: ISOLATE]:::inject
+        Rule1 -->|No| Rule2
+        
+        Insert1 --> Rule2
+        Rule2 -->|Yes| Insert2[Inject: CONFIRM]:::inject
+        Rule2 -->|No| Pass[No Action]:::safe
+    end
+
+    %% 3. Sequence Transformation
+    subgraph "3. Sequence Transformation"
+        direction TB
+        Merge[Sequence Merger]:::seq
+        
+        Insert1 --> Merge
+        Insert2 --> Merge
+        C_Orig --> Merge
+        
+        Merge --> Final["Ordered Safe Sequence"]:::safe
+    end
+
+    %% 4. Final Output Details
+    subgraph "4. Final Output"
+        direction LR
+        S1["1. ISOLATE (Injected)"]:::inject
+        S2["2. CONFIRM (Injected)"]:::inject
+        S3["3. ACTUATE (Original)"]:::input
+        
+        Final --> S1
+        S1 --> S2
+        S2 --> S3
+    end
+
+    %% Annotations
+    note1["Codification rules enforce safety<br/>by modifying the intent structure"]:::check -.-> Analyze
