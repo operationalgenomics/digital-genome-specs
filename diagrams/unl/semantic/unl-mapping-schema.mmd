@@ -1,0 +1,79 @@
+%% ==============================================================================
+%% Unified Mapping Schema Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/intent-mapping.md
+%% Repository Path: diagrams/unl/semantic/unl-mapping-schema.png
+%% Description:     Visualizes the unified mapping schema where raw semantic
+%%                  components (Tier 2) are mapped against the Ontology
+%%                  (Reference) to produce a deterministic Praxeological Intent
+%%                  (Tier 3).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef raw fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef logic fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef onto fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef final fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. Input: Semantic Frame (Raw)
+    subgraph "1. Raw Semantic Frame"
+        direction TB
+        RawEnt[Raw Entities]:::raw
+        RawAct[Raw Actions]:::raw
+        RawState[Raw States]:::raw
+        RawMod[Raw Modifiers]:::raw
+    end
+
+    %% 2. Mapping Logic (The Resolver)
+    subgraph "2. Mapping Resolution"
+        direction TB
+        ResEnt{Entity Resolver}:::logic
+        ResAct{Action Resolver}:::logic
+        ResState{State Resolver}:::logic
+        ResMod{Modifier Normalizer}:::logic
+        
+        %% Ontology Lookup
+        Ontology[("Digital Genome\nOntology")]:::onto
+        
+        RawEnt --> ResEnt
+        RawAct --> ResAct
+        RawState --> ResState
+        RawMod --> ResMod
+        
+        ResEnt <-->|Lookup/Disambiguate| Ontology
+        ResAct <-->|Canonicalize| Ontology
+        ResState <-->|Validate Transition| Ontology
+    end
+
+    %% 3. Output: Praxeological Intent (Deterministic)
+    subgraph "3. Praxeological Intent (UNLIntent)"
+        direction TB
+        Intent[UNLIntent Structure]:::final
+        
+        %% Mapped Components
+        I_Ent["EntityID[]"]:::final
+        I_Act[ActionID]:::final
+        I_State[TargetStateID]:::final
+        I_Const["ConstraintSpec[]"]:::final
+        
+        Intent --- I_Ent
+        Intent --- I_Act
+        Intent --- I_State
+        Intent --- I_Const
+    end
+
+    %% Flow Connections
+    ResEnt -->|Mapped| I_Ent
+    ResAct -->|Mapped| I_Act
+    ResState -->|Mapped| I_State
+    ResMod -->|Mapped| I_Const
+
+    %% Validation Logic
+    Validation{Schema Check}:::logic
+    I_Ent & I_Act & I_State --> Validation
+    Validation -->|Valid| Output[Ready for Core]:::final
+
+    %% Annotations
+    note1["Raw: 'Turn off the big pump'"]:::raw -.-> RawEnt
+    note2["Mapped: [Entity: Pump-500 | Action: STOP]"]:::final -.-> Intent
