@@ -1,0 +1,85 @@
+%% ==============================================================================
+%% Evolution Safety Constraints Diagram
+%% ==============================================================================
+%% Source File:     specs/system/safety-invariants.md
+%% Repository Path: diagrams/system/governance/system-safety-evolution.png
+%% Description:     Visualizes the safety-bounded evolution pipeline: Proposal
+%%                  Generation -> Invariant Checks (Forbidden Outcomes) ->
+%%                  Directional Safety Check -> Governance Gate -> Integration
+%%                  or Rejection.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef crit fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Evolutionary Source
+    subgraph "1. Variation Source"
+        direction TB
+        Merism[Merism Engine]:::source
+        Proposal[Variant / Anti-Gene]:::source
+        
+        Merism -->|Generates| Proposal
+    end
+
+    %% 2. Hard Safety Filters (Invariant Logic)
+    subgraph "2. Safety Invariant Filter"
+        direction TB
+        InvCheck{Violates Invariant?}:::check
+        TransCheck{Forbidden Transition?}:::check
+        MechCheck{Disables Safety?}:::check
+        
+        Proposal --> InvCheck
+        
+        InvCheck -->|No| TransCheck
+        InvCheck -->|Yes| Reject1["Reject: Invariant Violation"]:::crit
+        
+        TransCheck -->|No| MechCheck
+        TransCheck -->|Yes| Reject2["Reject: Hazardous Path"]:::crit
+        
+        MechCheck -->|No| DirCheck{Weakens Safety?}:::check
+        MechCheck -->|Yes| Reject3["Reject: Safety Disable"]:::crit
+    end
+
+    %% 3. Directional Safety (Regression Check)
+    subgraph "3. Directional Safety"
+        direction TB
+        
+        DirCheck -->|"No (Neutral/Improved)"| GovGate
+        DirCheck -->|"Yes (Regression)"| Reject4["Reject: Safety Regression"]:::crit
+    end
+
+    %% 4. Governance Control
+    subgraph "4. Governance & Integration"
+        direction TB
+        GovGate{Governance Approval}:::gov
+        Genome[Digital Genome]:::safe
+        
+        GovGate -->|Approved| Genome
+        GovGate -->|Denied| Reject5["Reject: Policy Block"]:::crit
+    end
+
+    %% 5. Runtime Feedback (Post-Integration)
+    subgraph "5. Runtime Safety Constraints"
+        direction TB
+        Mon[Monitoring]:::source
+        FitCheck{Safety Performance}:::check
+        Demote[Immediate Demotion]:::crit
+        Deactivate[Emergency Deactivation]:::crit
+        
+        Genome -.->|Execute| Mon
+        Mon --> FitCheck
+        
+        FitCheck -->|Repeated Unsafe Fail| Demote
+        FitCheck -->|Catastrophic Fail| Deactivate
+    end
+
+    %% Feedback Loop
+    Demote & Deactivate -.->|Feedback| Merism
+
+    %% Annotations
+    note1["Evolution must be directionally safe:<br/>Risk(New) <= Risk(Old)"]:::safe -.-> DirCheck
