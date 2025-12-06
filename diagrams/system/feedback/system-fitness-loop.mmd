@@ -1,0 +1,64 @@
+graph TD
+    %% Global Styles
+    classDef source fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef process fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef logic fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef trigger fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% 1. Input Stream (Observations)
+    subgraph "1. Observation Stream"
+        direction TB
+        Outcomes[Execution Outcomes]:::source
+        Anomalies[Detected Anomalies]:::source
+        Time[Temporal Decay Factor]:::source
+    end
+
+    %% 2. Fitness Engine
+    subgraph "2. Fitness Evaluation Engine"
+        direction TB
+        Calc{Score Calculator}:::process
+        
+        %% Factors
+        Rew[Positive Reinforcement]:::logic
+        Pen[Negative Penalty]:::logic
+        Dec[Obsolescence Decay]:::logic
+        
+        %% Logic Connections
+        Outcomes -->|Success / Efficiency| Rew
+        Outcomes -->|Failure / Deviation| Pen
+        Anomalies -->|Safety Risk| Pen
+        Time -->|Aging| Dec
+        
+        Rew -->|"+ Score"| Calc
+        Pen -->|"- Score"| Calc
+        Dec -->|"- Score"| Calc
+    end
+
+    %% 3. Knowledge Base Impact
+    subgraph "3. Digital Genome Impact"
+        direction TB
+        Gene[Operational Gene]:::genome
+        Variant[Gene Variant]:::genome
+        Anti[Anti-Gene]:::genome
+        
+        Calc -->|Update Fitness| Gene
+        Calc -->|Update Fitness| Variant
+        Calc -->|Update Fitness| Anti
+    end
+
+    %% 4. Evolutionary Consequences
+    subgraph "4. Evolutionary Selection"
+        direction TB
+        Select[Selection Probability]:::process
+        Retire[Deprecation / Pruning]:::trigger
+        
+        Gene & Variant & Anti --> Select
+        Gene & Variant & Anti -->|Score < Threshold| Retire
+    end
+
+    %% Closing the Loop
+    Select -.->|Higher Probability| Outcomes
+    
+    %% Annotations
+    note1["Fitness determines future<br/>selection by Cognitive Core"]:::process -.-> Select
