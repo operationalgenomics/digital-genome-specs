@@ -1,0 +1,73 @@
+%% ==============================================================================
+%% Context Integrity Matrix Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/context-evaluator.md
+%% Repository Path: diagrams/cognitive-core/context/cognitive-context-integrity.png
+%% Description:     Visualizes the integrity scoring mechanism: Data Point ->
+%%                  Freshness Check + Source Trust + Consistency Check = 
+%%                  Integrity Score.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef score fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef final fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. The Data Point
+    subgraph "1. Data Input"
+        direction TB
+        Data[Context Data Point]:::input
+        Meta[Metadata: TS, Source, ID]:::input
+        
+        Data --- Meta
+    end
+
+    %% 2. The Validation Matrix
+    subgraph "2. Validation Checks"
+        direction TB
+        
+        %% Check A: Freshness
+        Fresh{Freshness Check}:::check
+        Meta --> Fresh
+        Fresh -->|Age < TTL| S1[Score: High]:::score
+        Fresh -->|Age > TTL| S2[Score: Low]:::reject
+        
+        %% Check B: Source Trust
+        Trust{Source Trust}:::check
+        Meta --> Trust
+        Trust -->|Hardware Sensor| S3[Score: High]:::score
+        Trust -->|Inferred/Soft| S4[Score: Med]:::score
+        
+        %% Check C: Consistency
+        Consist{Consistency Check}:::check
+        Data --> Consist
+        Consist -->|Matches History| S5[Score: High]:::score
+        Consist -->|Outlier| S6[Score: Low]:::reject
+    end
+
+    %% 3. Scoring Engine
+    subgraph "3. Integrity Calculation"
+        direction TB
+        Calc[Integrity Calculator]:::score
+        
+        S1 & S2 & S3 & S4 & S5 & S6 --> Calc
+        
+        Calc --> FinalScore["Final Integrity Score (0.0 - 1.0)"]:::final
+    end
+
+    %% 4. Decision
+    subgraph "4. Usage Decision"
+        direction TB
+        Gate{Integrity Gate}:::check
+        
+        FinalScore --> Gate
+        
+        Gate -->|> 0.7| Use[Use in Inference]:::final
+        Gate -->|< 0.7| Flag[Flag as Unreliable]:::reject
+    end
+
+    %% Annotations
+    note1["Prevents hallucinations by filtering<br/>stale or conflicting data"]:::check -.-> Gate
