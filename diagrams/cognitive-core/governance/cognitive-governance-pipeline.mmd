@@ -1,0 +1,62 @@
+%% ==============================================================================
+%% Cognitive Governance Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/governance-model.md
+%% Repository Path: diagrams/cognitive-core/governance/cognitive-governance-pipeline.png
+%% Description:     Visualizes the sequential governance pipeline: Policy Check
+%%                  (Rules) -> Safety Check (Invariants) -> Ethics Check (Values)
+%%                  -> Authorization.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef pass fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef meta fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Input
+    subgraph "1. Decision Request"
+        direction TB
+        Intent[Proposed Action]:::input
+        Context[Governance Context]:::input
+        
+        Intent --- Context
+    end
+
+    %% 2. The Gauntlet
+    subgraph "2. Governance Gauntlet"
+        direction TB
+        
+        %% Gate 1: Policy
+        Gate1{Policy Engine}:::check
+        Intent --> Gate1
+        Gate1 -->|Violates Rule| Rej1[Reject: Policy]:::reject
+        Gate1 -->|Pass| Gate2
+        
+        %% Gate 2: Safety
+        Gate2{Safety Monitor}:::check
+        Gate2 -->|Risk > Limit| Rej2[Reject: Unsafe]:::reject
+        Gate2 -->|Pass| Gate3
+        
+        %% Gate 3: Ethics/Values
+        Gate3{Ethics Validator}:::check
+        Gate3 -->|Conflict| Rej3[Reject: Unethical]:::reject
+        Gate3 -->|Pass| Approve[Authorization]:::pass
+    end
+
+    %% 3. Output
+    subgraph "3. Execution Status"
+        direction TB
+        Signed[Signed Instruction]:::pass
+        Log[Audit Ledger]:::meta
+        
+        Approve --> Signed
+        Approve -.-> Log
+        Rej1 & Rej2 & Rej3 -.-> Log
+    end
+
+    %% Annotations
+    note1["Checks static rules<br/>(e.g., 'No Ops after 5PM')"]:::check -.-> Gate1
+    note2["Checks dynamic invariants<br/>(e.g., 'Pressure < Max')"]:::check -.-> Gate2
