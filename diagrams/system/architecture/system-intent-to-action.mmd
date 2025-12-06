@@ -1,0 +1,57 @@
+graph TD
+    %% Global Styles
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Actor
+    Operator((Human Operator)):::human
+
+    %% UNL Layer Processing
+    subgraph "UNL Layer (Understanding)"
+        direction TB
+        Input[Multimodal Capture]:::unl
+        Parser[Semantic Parser]:::unl
+        Context[Context Fusion]:::unl
+        Codifier[Codification Engine]:::unl
+    end
+
+    %% Cognitive Core Processing
+    subgraph "Cognitive Core (Reasoning)"
+        direction TB
+        Selector[Gene Selection]:::cog
+    end
+
+    %% System Layer Processing
+    subgraph "System Layer (Action)"
+        direction TB
+        Planner[Plan Generation]:::sys
+        Actuator[System Actuation]:::sys
+    end
+
+    %% Artifacts (Data passing through)
+    Frame(Semantic Frame):::artifact
+    Enriched(Contextualized Intent):::artifact
+    PraxIntent(Praxeological Intent):::artifact
+    Gene(Selected Gene):::artifact
+    Plan(Execution Plan):::artifact
+
+    %% The Flow
+    Operator -->|Speech / Gesture / Text| Input
+    Input --> Parser
+    Parser --> Frame
+    Frame --> Context
+    Context --> Enriched
+    Enriched --> Codifier
+    Codifier --> PraxIntent
+    
+    PraxIntent --> Selector
+    Selector --> Gene
+    
+    Gene --> Planner
+    Planner --> Plan
+    Plan --> Actuator
+    
+    Actuator -->|Physical / Digital Change| Reality[Real World Environment]:::sys
