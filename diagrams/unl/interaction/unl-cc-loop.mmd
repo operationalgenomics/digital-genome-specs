@@ -1,0 +1,74 @@
+%% ==============================================================================
+%% UNL ↔ Cognitive Core Loop Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%% Repository Path: diagrams/unl/interaction/unl-cc-loop.png
+%% Description:     Visualizes the interaction loop: UNLIntent sent to Cognitive
+%%                  Core -> CognitiveResponse returned -> Translation Engine
+%%                  output -> Governance interaction.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% 1. The Human Side
+    subgraph "1. Human Interface"
+        direction TB
+        Operator((Operator)):::human
+        Input[Multimodal Input]:::unl
+        Output[Rendered Explanation]:::unl
+        
+        Operator -->|Express| Input
+        Output -->|Inform| Operator
+    end
+
+    %% 2. The Bridge (Inbound)
+    subgraph "2. Inbound Pipeline"
+        direction TB
+        IntentMap[Intent Mapper]:::unl
+        Intent[UNLIntent]:::artifact
+        GovCheck{Governance Gate}:::gov
+        
+        Input --> IntentMap
+        IntentMap --> Intent
+        Intent --> GovCheck
+    end
+
+    %% 3. The Core (Reasoning)
+    subgraph "3. Cognitive Core"
+        direction TB
+        Inference[Inference Engine]:::cog
+        Oracle[Oracle Synthesizer]:::cog
+        Response[Cognitive Response]:::artifact
+        
+        Inference --> Oracle
+        Oracle -->|Decision| Response
+    end
+
+    %% 4. The Bridge (Outbound)
+    subgraph "4. Outbound Pipeline"
+        direction TB
+        Trans[Translation Engine]:::unl
+        Render[Explanation Renderer]:::unl
+        
+        Response --> Trans
+        Trans --> Render
+    end
+
+    %% The Loop Flows
+    GovCheck -->|Approved| Inference
+    GovCheck -->|Forbidden| Trans
+    
+    Render --> Output
+
+    %% Feedback for Clarification
+    Response -.->|Ambiguity Detected| IntentMap
+
+    %% Annotations
+    note1["Intent is normalized before entering Core"]:::unl -.-> Intent
+    note2["Response explains 'Why' and 'What'"]:::cog -.-> Response
