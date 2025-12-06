@@ -1,0 +1,51 @@
+%% ==============================================================================
+%% Fallback Decision Tree
+%% ==============================================================================
+%% Source File:     specs/system/failure-modes.md
+%% Repository Path: diagrams/system/failure/system-fallback-tree.png
+%% Description:     Visualizes the decision logic for fallback activation at three
+%%                  levels: Codon (retry/skip), Gene (alternative strategy), and
+%%                  Execution (degraded mode/safety halt).
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef trigger fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef action fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef crit fill:#d50000,stroke:#b71c1c,stroke-width:3px,color:#fff;
+
+    %% Root Trigger
+    Fail[Failure Detected]:::trigger
+    Level{Failure Level?}:::decision
+    
+    Fail --> Level
+
+    %% Branch 1: Codon Level
+    Level -->|Codon| C_Check{Is Critical?}:::decision
+    
+    C_Check -->|No| C_Retry{Retry Count < Max?}:::decision
+    C_Check -->|Yes| C_Safe[Execute Safety Codon]:::crit
+    
+    C_Retry -->|Yes| C_Act1[Retry Action]:::action
+    C_Retry -->|No| C_Skip[Skip / Log Warning]:::safe
+
+    %% Branch 2: Gene Level
+    Level -->|Gene| G_Check{Alternative Available?}:::decision
+    
+    G_Check -->|Yes| G_Switch[Select Secondary Gene]:::action
+    G_Check -->|No| G_Safe[Revert to Safety Gene]:::safe
+    
+    %% Branch 3: Execution Level
+    Level -->|Execution Plan| E_Check{Severity?}:::decision
+    
+    E_Check -->|Low/Medium| E_Degrade[Enter Degraded Mode]:::action
+    E_Check -->|High/Critical| E_Halt[Emergency Sequence]:::crit
+
+    %% Outcomes
+    C_Act1 & C_Skip & G_Switch & E_Degrade --> Resume[Resume Operation]:::safe
+    C_Safe & G_Safe & E_Halt --> Audit[Mandatory Governance Audit]:::trigger
+
+    %% Annotations
+    note1["Codon fallbacks are fast and local;<br/>Execution fallbacks affect system state"]:::action -.-> Level
