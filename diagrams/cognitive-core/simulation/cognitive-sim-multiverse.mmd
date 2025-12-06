@@ -1,0 +1,93 @@
+%% ==============================================================================
+%% Multiverse Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/simulation-engine.md
+%% Repository Path: diagrams/cognitive-core/simulation/cognitive-sim-multiverse.png
+%% Description:     Visualizes a Multiverse simulation where a single initial
+%%                  state branches into multiple worldlines (deterministic baseline
+%%                  + stochastic variations), creating a probability distribution
+%%                  of outcomes.
+%% ==============================================================================
+
+graph LR
+    %% Global Styles
+    classDef state fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef base fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef var fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef fail fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef result fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef noise fill:#eceff1,stroke:#455a64,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. The Origin
+    subgraph Origin ["Simulation Origin"]
+        direction TB
+        S0((Initial Context)):::state
+        Gene[Candidate Gene]:::state
+        
+        S0 --- Gene
+    end
+
+    %% 2. The Branching (Uncertainty Injection)
+    subgraph Injection ["Uncertainty Injection"]
+        direction TB
+        Noise{Stochastic Generator}:::noise
+        
+        S0 --> Noise
+    end
+
+    %% 3. The Multiverse (Parallel Worldlines)
+    subgraph Multiverse ["The Multiverse (Parallel Execution)"]
+        direction TB
+        
+        %% Baseline (Deterministic)
+        subgraph WL_Base ["Worldline 0 (Baseline)"]
+            direction LR
+            B1((t1)):::base --> B2((t2)):::base
+            B2 --> B3((t3)):::base
+            B3 --> Out0[Success: Optimal]:::base
+        end
+        
+        %% Variation 1 (Minor Noise)
+        subgraph WL_Var1 ["Worldline 1 (Low Noise)"]
+            direction LR
+            V1a((t1)):::var --> V1b((t2)):::var
+            V1b --> V1c((t3)):::var
+            V1c --> Out1[Success: Sub-optimal]:::var
+        end
+        
+        %% Variation 2 (High Noise)
+        subgraph WL_Var2 ["Worldline 2 (High Noise)"]
+            direction LR
+            V2a((t1)):::var --> V2b((t2)):::var
+            V2b --> Fail((Failure Event)):::fail
+            Fail --> Out2[Outcome: Fail]:::fail
+        end
+        
+        %% Variation N
+        subgraph WL_N ["Worldline N"]
+            direction LR
+            Vna((...)):::noise --> Vnb((...)):::noise
+            Vnb --> OutN[Outcome: Success]:::var
+        end
+    end
+
+    %% 4. Aggregation
+    subgraph Aggregation ["Result Synthesis"]
+        direction TB
+        Stats[Statistical Aggregator]:::result
+        
+        Out0 & Out1 & Out2 & OutN --> Stats
+        
+        Metrics["Success Rate: 85%<br/>Robustness: 0.72<br/>Worst Case: Safe Halt"]:::result
+        
+        Stats --- Metrics
+    end
+
+    %% Flow Connections
+    Noise -->|Chaos: 0.0| B1
+    Noise -->|Chaos: 0.2| V1a
+    Noise -->|Chaos: 0.6| V2a
+    Noise -->|Chaos: 0.4| Vna
+
+    %% Annotations
+    note1["Baseline represents the ideal path;<br/>Variations test resilience."]:::base -.-> WL_Base
