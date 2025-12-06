@@ -1,0 +1,99 @@
+%% ==============================================================================
+%% Truth Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/foundations/truth-architecture.md
+%% Repository Path: diagrams/foundations/truth-architecture.mmd
+%% Description:     Visualizes the dual truth system: Registered Truth (Foucauldian,
+%%                  immutable, contextual) stored in blockchain vs Synthesized Truth
+%%                  (Platonic approximation, plastic, universal) stored as DNA.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef exp fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef fouc fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef plat fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef block fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Experience Layer
+    subgraph "1. Experience (The World)"
+        direction TB
+        Event1[Operator closes valve]:::exp
+        Event2[Sensor detects temperature]:::exp
+        Event3[Machine completes cycle]:::exp
+        
+        Events[Raw Experiences]:::exp
+        Event1 & Event2 & Event3 --> Events
+    end
+
+    %% 2. Registered Truth (Foucauldian)
+    subgraph "2. Registered Truth (Foucauldian)"
+        direction TB
+        
+        Capture[Observation & Capture]:::fouc
+        Events --> Capture
+        
+        RT["Registered Truth<br/>(Contextual, Historical, Valid in Moment)"]:::fouc
+        Capture --> RT
+        
+        BC[(Immutable Blockchain)]:::block
+        RT -->|Crystallized| BC
+        
+        Props1["• Cannot be altered"]:::meta
+        Props2["• Like light from distant star"]:::meta
+        Props3["• Sensory memory of system"]:::meta
+        Props4["• Millions of frozen photographs"]:::meta
+        
+        BC -.-> Props1 & Props2 & Props3 & Props4
+    end
+
+    %% 3. Processing Layer
+    subgraph "3. Four Motor Processing"
+        direction TB
+        
+        Motors[Parallel Motor Evaluation]:::motor
+        BC -->|Read patterns| Motors
+        
+        MP[Praxeological Analysis]:::motor
+        MN[Nash Analysis]:::motor
+        MC[Chaotic Analysis]:::motor
+        MM[Meristic Imagination]:::motor
+        
+        Motors --> MP & MN & MC & MM
+    end
+
+    %% 4. Synthesized Truth (Platonic)
+    subgraph "4. Synthesized Truth (Platonic Approximation)"
+        direction TB
+        
+        Synth[Synthesis Engine]:::plat
+        MP & MN & MC & MM --> Synth
+        
+        DNA["Synthesized DNA<br/>(Universal, Calculated, Approaching the Form)"]:::plat
+        Synth -->|Validated| DNA
+        
+        Props5["• CAN be modified (plastic)"]:::meta
+        Props6["• Distilled wisdom of many"]:::meta
+        Props7["• Approaches ideal but never reaches"]:::meta
+        Props8["• Structural component of brain"]:::meta
+        
+        DNA -.-> Props5 & Props6 & Props7 & Props8
+    end
+
+    %% 5. The Journey
+    subgraph "5. The Epistemological Journey"
+        direction LR
+        
+        Start["Foucault<br/>(Contextual truths)"]:::fouc
+        Arrow1["→ Processing →"]:::motor
+        End["Plato<br/>(Approaching the Form)"]:::plat
+        
+        Start --> Arrow1 --> End
+    end
+
+    %% Annotations
+    note1["SCIENTIFIC METHOD AS ARBITER<br/>10,000 doing wrong ≠ truth<br/>1 verifiable discovery = new truth"]:::meta -.-> Synth
+    
+    note2["DNA is not the Form itself<br/>CP < 1.0 always<br/>Infinite room for improvement"]:::meta -.-> DNA
