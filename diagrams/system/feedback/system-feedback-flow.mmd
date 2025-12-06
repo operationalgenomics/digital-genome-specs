@@ -1,0 +1,65 @@
+graph TD
+    %% Global Styles
+    classDef source fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef target fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Collection Phase
+    subgraph "1. Data Collection"
+        direction TB
+        Exec[Execution Layer]:::source
+        Mon[Monitoring Layer]:::source
+        Raw[Raw Feedback Event]:::process
+        
+        Exec & Mon -->|Telemetry & Logs| Raw
+    end
+
+    %% 2. Assessment Phase
+    subgraph "2. Outcome Assessment"
+        direction TB
+        Class{Outcome Classifier}:::decision
+        
+        Raw --> Class
+        
+        Class -->|All Codons OK| Success[Success]:::process
+        Class -->|Non-Critical Deviation| Partial[Partial Success]:::process
+        Class -->|Handled Error| SafeFail[Safe Failure]:::process
+        Class -->|Safety Violation| UnsafeFail[Unsafe Failure]:::process
+    end
+
+    %% 3. Interpretation Phase
+    subgraph "3. Interpretation & Attribution"
+        direction TB
+        Attr[Causal Attribution]:::process
+        SimCheck[Simulation Comparison]:::process
+        
+        Success & Partial & SafeFail & UnsafeFail --> Attr
+        Attr -->|Root Cause| SimCheck
+    end
+
+    %% 4. Cognitive Update Phase
+    subgraph "4. Cognitive Distribution"
+        direction TB
+        Router[Feedback Router]:::process
+        
+        SimCheck -->|Deviation Delta| Router
+    end
+
+    %% Targets
+    Fit[Fitness Engine]:::target
+    Sim[Simulation Engine]:::target
+    Merism[Merism Evolution]:::target
+    Oracle[Oracle Synthesizer]:::target
+    Ledger[Governance Ledger]:::gov
+
+    %% Routing Flows
+    Router -->|Update Score| Fit
+    Router -->|Calibrate Model| Sim
+    Router -->|Trigger Variant| Merism
+    Router -->|Refine Rules| Oracle
+    Router -->|Audit Trail| Ledger
+
+    %% Annotations
+    note1["Unsafe Failures trigger<br/>Immediate Evolution"]:::gov -.-> UnsafeFail
