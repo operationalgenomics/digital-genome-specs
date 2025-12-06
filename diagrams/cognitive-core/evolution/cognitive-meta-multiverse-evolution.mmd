@@ -1,0 +1,79 @@
+%% ==============================================================================
+%% Meta-Multiverse Evolution Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/evolution-engine.md
+%%                  specs/cognitive-core/simulation-engine.md
+%% Repository Path: diagrams/cognitive-core/evolution/cognitive-meta-multiverse-evolution.png
+%% Description:     Visualizes the evolution of "Generalist Genes" by subjecting
+%%                  populations to parallel evolutionary pressures in distinct
+%%                  reality paradigms (Standard, High Volatility, Structural Shift)
+%%                  and selecting for cross-paradigm viability.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef root fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef env fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef evo fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef select fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef final fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. The Seed
+    subgraph Origin ["1. Seed Population"]
+        direction TB
+        Parent[Parent Gene Pool]:::root
+    end
+
+    %% 2. The Split (Meta-Multiverse)
+    subgraph MetaSpace ["2. Parallel Evolutionary Environments"]
+        direction TB
+        
+        %% Paradigm A
+        subgraph ParaA ["Environment A: Standard"]
+            direction TB
+            EnvA[Deterministic Rules]:::env
+            EvoA[Run GA: 50 Gens]:::evo
+            BestA[Survivors A]:::select
+            
+            EnvA --> EvoA --> BestA
+        end
+
+        %% Paradigm B
+        subgraph ParaB ["Environment B: High Entropy"]
+            direction TB
+            EnvB[Stochastic Rules]:::env
+            EvoB[Run GA: 50 Gens]:::evo
+            BestB[Survivors B]:::select
+            
+            EnvB --> EvoB --> BestB
+        end
+
+        %% Paradigm C
+        subgraph ParaC ["Environment C: Resource Scarcity"]
+            direction TB
+            EnvC[Constrained Rules]:::env
+            EvoC[Run GA: 50 Gens]:::evo
+            BestC[Survivors C]:::select
+            
+            EnvC --> EvoC --> BestC
+        end
+    end
+
+    %% 3. The Synthesis
+    subgraph Convergence ["3. Cross-Paradigm Selection"]
+        direction TB
+        Intersect{Intersection Logic}:::root
+        
+        BestA & BestB & BestC --> Intersect
+        
+        Intersect -->|Common Traits| Generalist[Generalist Gene]:::final
+        Intersect -->|Niche Traits| Specialist[Discard Specialists]:::select
+    end
+
+    %% Flow
+    Parent --> EnvA
+    Parent --> EnvB
+    Parent --> EnvC
+
+    %% Annotations
+    note1["Selecting for adaptability<br/>rather than specific optimality"]:::root -.-> Intersect
