@@ -1,0 +1,74 @@
+%% ==============================================================================
+%% UNL Translation Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/translation-engine.md
+%% Repository Path: diagrams/unl/flows/unl-translation-flow.png
+%% Description:     Visualizes the translation pipeline: Input (UNLIntent/
+%%                  CognitiveResponse) -> Decomposition -> Template Selection ->
+%%                  Narrative Assembly -> Format Adaptation -> Human Output.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef config fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% 1. Input Sources
+    subgraph "1. Input Sources"
+        direction TB
+        CoreResp[Cognitive Response]:::input
+        Intent[UNL Intent]:::input
+        
+        CoreResp -->|Explanation Data| Decomp
+        Intent -->|Clarification Data| Decomp
+    end
+
+    %% 2. Translation Pipeline
+    subgraph "2. Translation Engine"
+        direction TB
+        
+        %% Stage 1: Decomposition
+        Decomp[Semantic Decomposition]:::process
+        Prims[Linguistic Primitives]:::artifact
+        
+        Decomp -->|Extracts| Prims
+        
+        %% Stage 2: Selection
+        Select[Template Selection]:::process
+        Context[Context Model]:::config
+        Tmpl[Rendering Template]:::artifact
+        
+        Prims --> Select
+        Context -.->|User Profile/Skill| Select
+        Select -->|Chooses| Tmpl
+        
+        %% Stage 3: Assembly
+        Assemble[Narrative Assembly]:::process
+        Draft[Draft Text]:::artifact
+        
+        Tmpl & Prims --> Assemble
+        Assemble -->|Constructs| Draft
+        
+        %% Stage 4: Adaptation
+        Adapt[Format Adaptation]:::process
+        
+        Draft --> Adapt
+    end
+
+    %% 3. Multimodal Output
+    subgraph "3. Rendered Output"
+        direction TB
+        Text["UI Text / Card"]:::output
+        Voice["Speech Synthesis"]:::output
+        Visual["Visual Highlight"]:::output
+        
+        Adapt -->|Format: Text| Text
+        Adapt -->|Format: SSML| Voice
+        Adapt -->|Format: Overlay| Visual
+    end
+
+    %% Annotations
+    note1["Templates adapt to operator skill:<br><strong>Expert vs Novice</string>"]:::config -.-> Select
