@@ -39,7 +39,7 @@ classDiagram
     class Modifier {
         +string key
         +value
-        +type (quant/qual)
+        +type
     }
     
     class Constraint {
@@ -48,12 +48,14 @@ classDiagram
         +parameters
     }
 
-    %% Apply Styles
-    class Entity, Action, State core
+    %% Apply Styles (Individual Assignment for Stability)
+    class Entity core
+    class Action core
+    class State core
     class Modifier mod
     class Constraint const
 
-    %% Relationships (Edges defined in Spec Sec 4.2)
+    %% Relationships
     Entity "1" --> "*" Action : can_perform
     Entity "1" --> "*" State : has_state
     
