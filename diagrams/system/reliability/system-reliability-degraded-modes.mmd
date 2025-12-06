@@ -1,0 +1,63 @@
+%% ==============================================================================
+%% Degraded Mode Diagram
+%% ==============================================================================
+%% Source File:     specs/system/reliability-model.md
+%% Repository Path: diagrams/system/reliability/system-reliability-degraded-modes.png
+%% Description:     Visualizes the system's behavior when operating under reduced
+%%                  capabilities, showing specific restrictions applied to
+%%                  Cognition, Execution, UNL, and Governance.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef normal fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef degraded fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef restriction fill:#ffcdd2,stroke:#c62828,stroke-width:1px,color:#000;
+    classDef trigger fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% Central Status
+    Status{System Status}:::trigger
+
+    %% Normal Operation Branch
+    Status -->|Healthy| Normal[Full Capability Mode]:::normal
+    Normal -->|Full Autonomy| Act1[Execute All Genes]:::normal
+
+    %% Degraded Operation Branch
+    Status -->|Constraint / Failure| Degraded[Degraded Mode Active]:::degraded
+
+    %% 1. Cognitive Degradation
+    subgraph "1. Cognitive Restrictions"
+        direction TB
+        Degraded --> CogDeg[Cognitive Core]:::degraded
+        CogDeg --- R1[Restrict Complexity]:::restriction
+        CogDeg --- R2[Skip Non-Critical Sim]:::restriction
+        CogDeg --- R3[Prioritize Safety Genes]:::restriction
+    end
+
+    %% 2. Execution Degradation
+    subgraph "2. Execution Restrictions"
+        direction TB
+        Degraded --> ExecDeg[Execution Layer]:::degraded
+        ExecDeg --- R4[Restrict Automation]:::restriction
+        ExecDeg --- R5[Require Human Approval]:::restriction
+        ExecDeg --- R6[Low-Risk Actions Only]:::restriction
+    end
+
+    %% 3. UNL Degradation
+    subgraph "3. UNL Restrictions"
+        direction TB
+        Degraded --> UnlDeg[UNL Interface]:::degraded
+        UnlDeg --- R7[Strict Interpretation]:::restriction
+        UnlDeg --- R8[Simplify Commands]:::restriction
+    end
+
+    %% 4. Governance Degradation
+    subgraph "4. Governance Restrictions"
+        direction TB
+        Degraded --> GovDeg[Governance Matrix]:::degraded
+        GovDeg --- R9[Increase Approval Req]:::restriction
+        GovDeg --- R10[Block Overrides]:::restriction
+    end
+
+    %% Recovery Path
+    Degraded -.->|Conditions Restored| Normal
