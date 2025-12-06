@@ -1,0 +1,46 @@
+%% ==============================================================================
+%% Cognitive Core API Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/api/cognitive-api.md
+%% Repository Path: diagrams/api/api-cognitive-core-flow.png
+%% Description:     Visualizes the lifecycle of a Cognitive API request: Client
+%%                  Request (POST /intent) -> Gateway Auth -> UNL Parsing ->
+%%                  Inference Engine -> Execution -> Async Response (Webhook).
+%% ==============================================================================
+
+sequenceDiagram
+    participant Client as API Client
+    participant GW as API Gateway
+    participant UNL as UNL Service
+    participant Core as Cognitive Engine
+    participant Gov as Governance
+    
+    %% 1. Ingress
+    Client->>GW: POST /v1/intent (Payload)
+    GW->>GW: Validate Token (JWT)
+    GW->>UNL: Forward Request
+    
+    %% 2. Processing
+    UNL->>UNL: Parse & Normalize
+    UNL->>Core: Submit Intent Object
+    
+    activate Core
+    Core->>Core: Context Lookup
+    Core->>Core: Gene Selection
+    Core->>Gov: Request Approval (GeneID)
+    
+    %% 3. Governance Check
+    Gov-->>Core: Approved (Token)
+    
+    %% 4. Response
+    Core->>Core: Schedule Execution
+    Core-->>UNL: JobID: 12345
+    deactivate Core
+    
+    UNL-->>GW: HTTP 202 Accepted (JobID)
+    GW-->>Client: HTTP 202 Accepted (JobID)
+    
+    %% 5. Async Completion
+    Note over Client, Core: Later (Async)
+    Core->>GW: Webhook: Job 12345 Complete
+    GW->>Client: POST /webhook/callback
