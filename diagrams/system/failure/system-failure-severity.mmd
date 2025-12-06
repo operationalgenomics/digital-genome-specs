@@ -1,0 +1,61 @@
+%% ==============================================================================
+%% Severity Ladder Diagram
+%% ==============================================================================
+%% Source File:     specs/system/failure-modes.md
+%% Repository Path: diagrams/system/failure/system-failure-severity.png
+%% Description:     Visualizes the classification of failure severity levels
+%%                  from Low to Critical, including characteristic responses
+%%                  and escalation paths.
+%% ==============================================================================
+
+graph BT
+    %% Global Styles
+    classDef low fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef med fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef high fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef crit fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef resp fill:#e1f5fe,stroke:#01579b,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Level 1: Low
+    subgraph Lev1 ["Level 1: Low Severity"]
+        direction TB
+        S1[Minor Deviation]:::low
+        R1["Automatic Recovery\nStandard Logging\nNo Interruption"]:::resp
+        
+        S1 --- R1
+    end
+
+    %% Level 2: Medium
+    subgraph Lev2 ["Level 2: Medium Severity"]
+        direction TB
+        S2[Functional Impairment]:::med
+        R2["Execution Fallback\nMonitoring Escalation\nDegraded Mode"]:::resp
+        
+        S2 --- R2
+    end
+
+    %% Level 3: High
+    subgraph Lev3 ["Level 3: High Severity"]
+        direction TB
+        S3[Safety/Policy Risk]:::high
+        R3["Governance Approval\nHuman Intervention\nOperation Pause"]:::resp
+        
+        S3 --- R3
+    end
+
+    %% Level 4: Critical
+    subgraph Lev4 ["Level 4: Critical Severity"]
+        direction TB
+        S4[Catastrophic Hazard]:::crit
+        R4["Emergency Halt\nFull System Isolation\nMandatory Audit"]:::resp
+        
+        S4 --- R4
+    end
+
+    %% Escalation Path (The Ladder)
+    S1 -->|Escalate| S2
+    S2 -->|Escalate| S3
+    S3 -->|Escalate| S4
+
+    %% Annotations
+    note1["Severity determines the <br>autonomy level of recovery"]:::resp -.-> S2
