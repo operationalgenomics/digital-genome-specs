@@ -1,0 +1,95 @@
+%% ==============================================================================
+%% Parallel Motors Architecture Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/parallel-motors.md
+%% Repository Path: diagrams/cognitive-core/motors/parallel-motors-architecture.mmd
+%% Description:     Visualizes the four parallel cognitive motors that evaluate
+%%                  every input simultaneously: Praxeological, Nash, Chaotic,
+%%                  and Meristic Meta-Motor. Shows parallel processing nature
+%%                  and convergence to Craft Performance.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef motor fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef prax fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef nash fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef chaos fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000;
+    classDef meta fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef conv fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef output fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+
+    %% Input
+    subgraph "Input Layer"
+        Input[Evaluation Input]:::input
+        Context[Context Snapshot]:::input
+        Intent[Intent Structure]:::input
+    end
+
+    %% Parallel Distribution
+    Dist{Parallel<br/>Distribution}:::conv
+
+    Input & Context & Intent --> Dist
+
+    %% The Four Parallel Motors
+    subgraph "Parallel Motor Evaluation (Simultaneous)"
+        direction TB
+        
+        %% Praxeological Motor
+        subgraph Prax ["Praxeological Motor"]
+            PraxQ["Does this action<br/>realize its intention?"]:::prax
+            PraxEval[Intent Alignment<br/>Means-End Coherence<br/>Utility Transformation]:::prax
+            PraxScore[Score_P]:::prax
+            
+            PraxQ --> PraxEval --> PraxScore
+        end
+        
+        %% Nash Motor
+        subgraph Nash ["Nash Motor"]
+            NashQ["Does this produce<br/>equilibrium?"]:::nash
+            NashEval[Strategic Stability<br/>Multi-Agent Coherence<br/>Pareto Analysis]:::nash
+            NashScore[Score_N]:::nash
+            
+            NashQ --> NashEval --> NashScore
+        end
+        
+        %% Chaotic Motor
+        subgraph Chaos ["Chaotic Motor"]
+            ChaosQ["Is this robust to<br/>perturbations?"]:::chaos
+            ChaosEval[Sensitivity Analysis<br/>Attractor Stability<br/>Failure Mode Mapping]:::chaos
+            ChaosScore[Score_C]:::chaos
+            
+            ChaosQ --> ChaosEval --> ChaosScore
+        end
+        
+        %% Meristic Meta-Motor
+        subgraph Meta ["Meristic Meta-Motor"]
+            MetaQ["What patterns exist?<br/>What SHOULD exist?"]:::meta
+            MetaEval[Fractal Pattern Recognition<br/>Cross-Domain Analogy<br/>Hypothesis Generation]:::meta
+            MetaScore[Score_M]:::meta
+            MetaProp[Proposals]:::meta
+            
+            MetaQ --> MetaEval --> MetaScore
+            MetaEval --> MetaProp
+        end
+    end
+
+    %% Parallel Distribution to Motors
+    Dist --> Prax
+    Dist --> Nash
+    Dist --> Chaos
+    Dist --> Meta
+
+    %% Convergence
+    subgraph "Convergence Layer"
+        Conv[Convergence Function]:::conv
+        CP[Craft Performance]:::output
+        
+        PraxScore & NashScore & ChaosScore & MetaScore --> Conv
+        Conv -->|"CP = P × N × C × M"| CP
+    end
+
+    %% Annotations
+    note1["CRITICAL: Motors operate SIMULTANEOUSLY<br/>Not sequentially - all perspectives at once"]:::input -.-> Dist
+    note2["Product function ensures:<br/>Any zero = Total zero (Absolute Veto)"]:::conv -.-> Conv
