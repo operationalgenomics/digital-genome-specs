@@ -1,0 +1,57 @@
+%% ==============================================================================
+%% System Integration Overview Diagram
+%% ==============================================================================
+%% Source File:     specs/system/integration-contracts.md
+%% Repository Path: diagrams/system/integration/system-integration-overview.png
+%% Description:     Visualizes the high-level integration flows and API contracts
+%%                  between all major subsystems: UNL, Cognitive Core, Genome,
+%%                  Execution, Monitoring, Feedback, and Governance.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+
+    %% Nodes
+    UNL[UNL Subsystem]:::unl
+    CC[Cognitive Core]:::cog
+    DG[Digital Genome]:::genome
+    Exec[Execution Layer]:::sys
+    Mon[Monitoring Layer]:::mon
+    Feed[Feedback Model]:::mon
+    Gov[System Governance]:::gov
+
+    %% 1. Intent & Explanation
+    UNL -->|SendIntentRequest| CC
+    CC -->|ExplanationResponse| UNL
+
+    %% 2. Knowledge & Evolution
+    CC -->|GeneQueryRequest| DG
+    DG -->|Gene Data| CC
+    CC -->|GenomeUpdateProposal| DG
+
+    %% 3. Execution & Action
+    CC -->|DispatchExecutionRequest| Exec
+    Exec -->|ExecutionStatusEvent| CC
+
+    %% 4. Observation Loop
+    Exec -->|TelemetryEvent| Mon
+    Mon -->|OutcomeEvaluation| Feed
+
+    %% 5. Learning Feedback
+    Feed -->|EvolutionTrigger| CC
+    Feed -->|FitnessUpdate| DG
+
+    %% 6. Governance Interception (The Control Plane)
+    Gov -.->|GovernanceCheckRequest| UNL
+    Gov -.->|GovernanceCheckRequest| CC
+    Gov -.->|GovernanceCheckRequest| DG
+    Gov -.->|GovernanceCheckRequest| Exec
+
+    %% Annotations
+    note1["All critical API calls must be<br/>signed and logged in the Ledger"]:::gov -.-> Gov
