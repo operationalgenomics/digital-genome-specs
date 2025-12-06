@@ -1,0 +1,86 @@
+%% ==============================================================================
+%% Failure Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/system/failure-modes.md
+%% Repository Path: diagrams/system/failure/system-failure-pipeline.png
+%% Description:     Visualizes the unified failure handling pipeline:
+%%                  Detection -> Classification -> Mitigation -> Recovery ->
+%%                  Logging -> Feedback.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef step fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef crit fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef auto fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef out fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% 1. Detection Phase
+    subgraph "1. Detection"
+        direction TB
+        Signal[Failure Signal]:::step
+        Source{Source Type}:::step
+        
+        Signal --> Source
+        Source -->|"Threshold"| Detect1[Metric Violation]:::step
+        Source -->|"Pattern"| Detect2[Behavioral Deviation]:::step
+        Source -->|"Logic"| Detect3[Consistency Check]:::step
+    end
+
+    %% 2. Classification Phase
+    subgraph "2. Classification"
+        direction TB
+        Class{Severity Classifier}:::crit
+        
+        Detect1 & Detect2 & Detect3 --> Class
+        
+        Class -->|Low| Sev1[Low Severity]:::auto
+        Class -->|Medium| Sev2[Medium Severity]:::step
+        Class -->|High| Sev3[High Severity]:::crit
+        Class -->|Critical| Sev4[Critical Severity]:::crit
+    end
+
+    %% 3. Mitigation Phase
+    subgraph "3. Mitigation"
+        direction TB
+        Mitigate{Mitigation Strategy}:::step
+        
+        Sev1 --> Mitigate
+        Sev2 --> Mitigate
+        Sev3 --> Mitigate
+        Sev4 --> Mitigate
+        
+        Mitigate -->|Auto| Fallback[Execute Fallback Codon]:::auto
+        Mitigate -->|Stop| Halt[Emergency Stop]:::crit
+        Mitigate -->|Isolate| Iso[System Isolation]:::step
+    end
+
+    %% 4. Recovery Phase
+    subgraph "4. Recovery"
+        direction TB
+        Rec{Recovery Mode}:::step
+        
+        Fallback --> Rec
+        Halt --> Rec
+        Iso --> Rec
+        
+        Rec -->|Automatic| Restore[Restore Safe State]:::auto
+        Rec -->|Manual| Human[Human Intervention]:::gov
+        
+        Restore & Human --> Resync[Re-Synchronization]:::step
+    end
+
+    %% 5. Governance & Feedback
+    subgraph "5. Logging & Learning"
+        direction TB
+        Ledger[Governance Ledger]:::gov
+        Evo[Evolution Engine]:::out
+        
+        Resync --> Ledger
+        Resync --> Evo
+    end
+
+    %% Annotations
+    note1["Critical failures trigger immediate
+    halt and mandatory audit"]:::crit -.-> Sev4
