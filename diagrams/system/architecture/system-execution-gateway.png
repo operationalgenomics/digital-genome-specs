@@ -1,0 +1,60 @@
+graph TD
+    %% Global Styles
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,color:#000;
+    classDef safe fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef term fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% Source
+    subgraph Source [1. Cognitive Input]
+        direction TB
+        Decision[Approved Gene / Decision]:::cog
+        Context[Operational Context]:::cog
+        
+        Decision --> Input[Gateway Input]:::sys
+        Context --> Input
+    end
+
+    %% The Gateway Logic
+    subgraph Gateway [2. Execution Gateway Logic]
+        direction TB
+        Input --> Auth{Identity & Auth}:::gov
+        
+        %% Step 1: Authorization
+        Auth -- Valid --> Policy{Governance Policy}:::gov
+        Auth -- Invalid --> DenyAuth[Reject: Unauthorized]:::term
+        
+        %% Step 2: Policy Check
+        Policy -- Allowed --> SafeCheck{Safety Envelope}:::safe
+        Policy -- Forbidden --> DenyPol[Reject: Policy Violation]:::term
+        Policy -- "Review Mode" --> Hold[Hold for Operator]:::gov
+        
+        %% Step 3: Safety Invariants
+        SafeCheck -- "Inside Envelope" --> FinalGate{Final Gate}:::sys
+        SafeCheck -- "Constraint Violation" --> DenySafe[Reject: Safety Hazard]:::term
+        
+        %% Step 4: Emergency Override Logic
+        SafeCheck -.->|Emergency Signal| Override[Safety Override?]:::safe
+        Override -- Yes --> FinalGate
+        Override -- No --> DenySafe
+    end
+
+    %% Destinations
+    subgraph Destinations [3. Output]
+        direction TB
+        Orch[Orchestration Engine]:::sys
+        Log[Governance Ledger]:::gov
+        
+        FinalGate -->|Execute| Orch
+        FinalGate -->|Log Success| Log
+        
+        %% Rejection Logging
+        DenyAuth --> Log
+        DenyPol --> Log
+        DenySafe --> Log
+    end
+
+    %% Edge Definitions
+    Hold -.->|Approval Received| SafeCheck
+    Hold -.->|Timeout / Denied| DenyPol
