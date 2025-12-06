@@ -1,0 +1,49 @@
+%% ==============================================================================
+%% Generic Message Flow Patterns Diagram
+%% ==============================================================================
+%% Source File:     specs/system/integration-contracts.md
+%% Repository Path: diagrams/system/integration/system-integration-flows-generic.png
+%% Description:     Visualizes the standardized "Governance-Intercept" pattern 
+%%                  used for all critical system interactions: Request -> 
+%%                  Governance Validation -> Processing -> Audit Logging -> 
+%%                  Response.
+%% ==============================================================================
+
+sequenceDiagram
+    autonumber
+    
+    %% Participants
+    participant Req as Requester (Client)
+    participant Prov as Provider (Service)
+    participant Gov as Governance Engine
+    participant Led as Immutable Ledger
+
+    %% 1. The Request
+    Req->>Prov: API Request (Payload + Signature)
+    
+    %% 2. Governance Interception (Pre-Check)
+    rect rgb(240, 248, 255)
+        Note right of Prov: Phase 1: Validation
+        Prov->>Gov: GovernanceCheckRequest(Action, Context)
+        Gov->>Gov: Evaluate Policy (RBAC/ABAC)
+        
+        alt Policy Violation / Unsafe
+            Gov-->>Prov: CheckResponse(Status: FORBIDDEN)
+            Prov-->>Req: Error 403: Policy Violation
+            Prov->>Led: Log(AttemptBlocked)
+        else Review Required
+            Gov-->>Prov: CheckResponse(Status: REVIEW)
+            Prov-->>Req: 202 Accepted: Pending Approval
+            Prov->>Led: Log(PendingReview)
+        else Auto Approval
+            Gov-->>Prov: CheckResponse(Status: AUTO)
+            
+            %% 3. Processing
+            Note right of Prov: Phase 2: Execution
+            Prov->>Prov: Execute Logic / Process Data
+            
+            %% 4. Response & Audit
+            Prov-->>Req: Success Response (Result)
+            Prov->>Led: Log(Success, ResultHash)
+        end
+    end
