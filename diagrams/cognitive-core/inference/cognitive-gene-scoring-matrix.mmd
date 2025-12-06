@@ -1,0 +1,70 @@
+%% ==============================================================================
+%% Gene Scoring Matrix Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/inference-engine.md
+%% Repository Path: diagrams/cognitive-core/inference/cognitive-gene-scoring-matrix.png
+%% Description:     Visualizes the mathematical breakdown of the Composite Score
+%%                  calculation: Component Scoring -> Weight Application ->
+%%                  Summation -> Safety Veto Application -> Final Score.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef weight fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef calc fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef veto fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef result fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+
+    %% 1. Raw Scores (The Inputs)
+    subgraph "1. Raw Component Scores [0..1]"
+        direction TB
+        S_Ctx[Context Score]:::input
+        S_Int[Intent Alignment]:::input
+        S_Fit[Fitness History]:::input
+        S_Safe[Safety Status]:::veto
+        
+        Val1["e.g., 0.95"]:::input -.-> S_Ctx
+        Val2["e.g., 0.88"]:::input -.-> S_Int
+        Val3["e.g., 0.92"]:::input -.-> S_Fit
+        Val4["PASS (1.0) / FAIL (0.0)"]:::veto -.-> S_Safe
+    end
+
+    %% 2. Weighting (The Policy)
+    subgraph "2. Weight Application"
+        direction TB
+        W_Ctx[Weight: 0.30]:::weight
+        W_Int[Weight: 0.30]:::weight
+        W_Fit[Weight: 0.40]:::weight
+        
+        S_Ctx -->|Multiply| W_Ctx
+        S_Int -->|Multiply| W_Int
+        S_Fit -->|Multiply| W_Fit
+        
+        W_Ctx -->|Result: 0.285| Res1(Weighted Context):::calc
+        W_Int -->|Result: 0.264| Res2(Weighted Intent):::calc
+        W_Fit -->|Result: 0.368| Res3(Weighted Fitness):::calc
+    end
+
+    %% 3. Aggregation
+    subgraph "3. Aggregation & Veto"
+        direction TB
+        Sum{Summation}:::calc
+        Veto{Safety Veto}:::veto
+        
+        Res1 & Res2 & Res3 --> Sum
+        Sum -->|Total: 0.917| Veto
+        S_Safe -->|Multiplier| Veto
+    end
+
+    %% 4. Final Output
+    subgraph "4. Final Composite Score"
+        direction TB
+        Final[Composite Score]:::result
+        
+        Veto -->|If Safe: 0.917| Final
+        Veto -->|If Unsafe: 0.000| Final
+    end
+
+    %% Annotations
+    note1["Safety is non-negotiable:<br>Any violation sets score to 0"]:::veto -.-> Veto
