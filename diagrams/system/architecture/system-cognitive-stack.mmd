@@ -1,0 +1,82 @@
+graph BT
+    %% Global Styles
+    classDef layer1 fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000;
+    classDef layer2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef layer3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef layer4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef layer5 fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef layer6 fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+
+    %% Layer 6: Execution
+    subgraph L6 [Layer 6: Execution & Actuation]
+        direction TB
+        Exec[Execution Gateway]:::layer6
+        Orch[Orchestration Engine]:::layer6
+        Act[Physical/Digital Actuators]:::layer6
+    end
+
+    %% Layer 5: Governance
+    subgraph L5 [Layer 5: Governance & Safety Enforcement]
+        direction TB
+        Gov[Governance Matrix]:::layer5
+        Safe[Safety Invariants]:::layer5
+        Audit[Immutable Ledger]:::layer5
+    end
+
+    %% Layer 4: Digital Genome
+    subgraph L4 [Layer 4: Digital Genome Knowledge Structures]
+        direction TB
+        Genes[Operational Genes]:::layer4
+        Codons[Praxeological Codons]:::layer4
+        Ontology[Semantic Ontology]:::layer4
+    end
+
+    %% Layer 3: Cognitive Core
+    subgraph L3 [Layer 3: Cognitive Core Reasoning Layers]
+        direction TB
+        Oracle[Oracle Synthesizer]:::layer3
+        Sim[Simulation Engine]:::layer3
+        Inf[Inference Engine]:::layer3
+    end
+
+    %% Layer 2: UNL
+    subgraph L2 [Layer 2: UNL Context & Intent Mapping]
+        direction TB
+        Intent[Intent Mapping]:::layer2
+        Context[Context Model]:::layer2
+        Parser[Semantic Parser]:::layer2
+    end
+
+    %% Layer 1: Data
+    subgraph L1 [Layer 1: Sensors, Telemetry & Environment]
+        direction TB
+        Sensors[IoT Sensors]:::layer1
+        Logs[System Logs]:::layer1
+        Env[Environment Data]:::layer1
+    end
+
+    %% Stack Connections (Bottom-Up Dependency)
+    L1 --> L2
+    L2 --> L3
+    
+    %% Internal Logic Flows within the Stack
+    Env & Sensors --> Context
+    Parser --> Intent
+    
+    Context & Intent --> Inf
+    Inf --> Sim
+    Sim --> Oracle
+    
+    %% Knowledge Support
+    Ontology -.-> Parser
+    Genes -.-> Inf
+    Codons -.-> Sim
+    
+    %% Governance Gate
+    Oracle --> Gov
+    Safe -.-> Sim
+    
+    %% Execution Output
+    Gov --> Exec
+    Exec --> Orch
+    Orch --> Act
