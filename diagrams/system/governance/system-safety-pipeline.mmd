@@ -1,0 +1,77 @@
+%% ==============================================================================
+%% Safety Enforcement Pipeline Diagram
+%% ==============================================================================
+%% Source File:     specs/system/safety-invariants.md
+%% Repository Path: diagrams/system/governance/system-safety-pipeline.png
+%% Description:     Visualizes the safety enforcement pipeline: Monitoring ->
+%%                  Detection -> Governance Decision -> Execution Enforcement ->
+%%                  Feedback Loop.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef mon fill:#e0f7fa,stroke:#006064,stroke-width:2px,color:#000;
+    classDef detect fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef action fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+
+    %% 1. Continuous Monitoring
+    subgraph "1. Monitoring Layer"
+        direction TB
+        Sensors[Vital Metrics]:::mon
+        States[State Transitions]:::mon
+        
+        Sensors & States --> Stream[Telemetry Stream]:::mon
+    end
+
+    %% 2. Safety Detection
+    subgraph "2. Safety Detection Layer"
+        direction TB
+        Rules{Invariant Check}:::detect
+        Alert[Safety Alert]:::detect
+        
+        Stream --> Rules
+        
+        Rules -->|Pass| Safe[Normal Op]:::sys
+        Rules -->|Fail| Alert
+    end
+
+    %% 3. Governance Decisions
+    subgraph "3. Governance Decision"
+        direction TB
+        Decide{Decision Engine}:::gov
+        
+        Alert --> Decide
+        
+        Decide -->|Low Risk| Log[Log & Continue]:::gov
+        Decide -->|Med Risk| Restrict[Restrict Execution]:::gov
+        Decide -->|High Risk| Deny[Deny Action]:::gov
+        Decide -->|Critical| Halt[Auto-Halt]:::action
+    end
+
+    %% 4. Execution Enforcement
+    subgraph "4. Execution Control"
+        direction TB
+        Enforce[Enforcement Gateway]:::action
+        Inject[Safety Codon]:::action
+        
+        Restrict -->|Modify Plan| Enforce
+        Deny -->|Block| Enforce
+        Halt -->|Emergency Stop| Enforce
+        
+        Enforce --> Inject
+    end
+
+    %% 5. Feedback
+    subgraph "5. Feedback Loop"
+        direction TB
+        Fitness[Reduce Gene Fitness]:::sys
+        AntiGene[Create Anti-Gene]:::sys
+        
+        Inject --> Fitness
+        Inject --> AntiGene
+    end
+
+    %% Annotations
+    note1["Detection must happen in real-time<br/>latency < 10ms"]:::mon -.-> Rules
