@@ -1,0 +1,75 @@
+%% ==============================================================================
+%% Security Architecture Overview Diagram
+%% ==============================================================================
+%% Source File:     specs/security/architecture-overview.md
+%%                  specs/security/security-model.md
+%% Repository Path: diagrams/security/security-architecture-overview.png
+%% Description:     A high-level overview of the security landscape, showing
+%%                  isolated zones (Interface, Cognitive, Storage, Execution)
+%%                  protected by Identity, Policy, and Safety gates, with
+%%                  centralized audit logging.
+%% ==============================================================================
+
+graph LR
+    %% Global Styles
+    classDef infra fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef zone fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef gate fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef component fill:#ffffff,stroke:#000000,stroke-width:1px,color:#000;
+
+    %% Security Infrastructure Wrapper
+    subgraph SecurityInfra ["Security Infrastructure Layer"]
+        direction TB
+        IAM[Identity & Access Mgmt]:::infra
+        PolicyEng[Global Policy Engine]:::infra
+        Audit[Immutable Audit Log]:::infra
+    end
+
+    %% Zone 1: Interface
+    subgraph Zone1 ["Zone 1: Interface (Untrusted Input)"]
+        direction TB
+        Gate1{IAM Gate}:::gate
+        UNL[UNL Interaction Layer]:::component
+    end
+
+    %% Zone 2: Cognitive
+    subgraph Zone2 ["Zone 2: Cognitive (Sandboxed Logic)"]
+        direction TB
+        Gate2{Policy Gate}:::gate
+        Core[Cognitive Core Engines]:::component
+    end
+
+    %% Zone 3: Storage
+    subgraph Zone3 ["Zone 3: Storage (High Integrity)"]
+        direction TB
+        Gate3{Integrity Gate}:::gate
+        Genome[(Digital Genome)]:::component
+    end
+
+    %% Zone 4: Execution
+    subgraph Zone4 ["Zone 4: Execution (Physical Safety)"]
+        direction TB
+        Gate4{Safety Gate}:::gate
+        Actuators[Physical Actuators]:::component
+    end
+
+    %% Main Flow
+    User((External User)) --> Gate1
+    Gate1 -->|Auth OK| UNL
+    UNL --> Gate2
+    Gate2 -->|Policy OK| Core
+    Core <--> Gate3
+    Gate3 <-->|Valid Access| Genome
+    Core --> Gate4
+    Gate4 -->|Safe| Actuators
+
+    %% Infrastructure Connections
+    IAM -.-> Gate1
+    PolicyEng -.-> Gate2 & Gate4
+    
+    %% Audit Taps
+    Gate1 & Gate2 & Gate3 & Gate4 -.->|Log Event| Audit
+    Core -.->|Log Trace| Audit
+
+    %% Annotations
+    note1["Zones provide isolation boundaries to prevent lateral movement"]:::zone -.-> Zone2
