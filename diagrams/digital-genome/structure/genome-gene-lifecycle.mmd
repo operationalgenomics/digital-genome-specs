@@ -1,0 +1,51 @@
+%% ==============================================================================
+%% Gene Lifecycle Diagram
+%% ==============================================================================
+%% Source File:     specs/digital-genome/structure-definition.md
+%% Repository Path: diagrams/digital-genome/structure/genome-gene-lifecycle.png
+%% Description:     Visualizes the lifecycle states of a Gene: Draft -> 
+%%                  Validation (Sandbox) -> Active (Production) -> Deprecated -> 
+%%                  Archived.
+%% ==============================================================================
+
+stateDiagram-v2
+    %% Global Styles
+    classDef draft fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef sand fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef active fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef end fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef warn fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+
+    %% Initial State
+    [*] --> Draft: Creation
+
+    %% State Definitions
+    state "1. Draft" as Draft ::: draft
+    state "2. Validation (Sandbox)" as Sandbox ::: sand
+    state "3. Active (Production)" as Active ::: active
+    state "4. Deprecated" as Deprecated ::: warn
+    state "5. Archived" as Archived ::: end
+
+    %% Transitions
+    Draft --> Sandbox: Submit for Review
+    
+    Sandbox --> Active: Approved & Validated
+    Sandbox --> Draft: Rejected / Failed Tests
+    
+    Active --> Deprecated: Superseded by v(N+1)
+    Active --> Archived: Emergency Revocation
+    
+    Deprecated --> Archived: End of Life (TTL Expired)
+    
+    Archived --> [*]: Delete
+
+    %% Notes
+    note right of Sandbox
+        Must pass Safety &
+        Policy checks here.
+    end note
+
+    note right of Active
+        Immutable state.
+        Available for Execution.
+    end note
