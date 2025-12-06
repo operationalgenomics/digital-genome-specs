@@ -1,0 +1,107 @@
+%% ==============================================================================
+%% Neuron Ontology Diagram
+%% ==============================================================================
+%% Source File:     specs/foundations/neuron-ontology.md
+%% Repository Path: diagrams/foundations/neuron-ontology.mmd
+%% Description:     Visualizes how DNA blocks function as neurons in a distributed
+%%                  cognitive system. Knowledge IS the brain, not stored IN it.
+%%                  Shows synaptic connections, plasticity, and cell donation.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef neuron fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef synapse fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef node fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef brain fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. DNA as Neuron Structure
+    subgraph "1. DNA Block = Neuron"
+        direction TB
+        
+        DNA1["DNA Block"]:::neuron
+        
+        %% Neuron Components
+        Body["Cell Body<br/>(Codon Sequence)"]:::neuron
+        Dendrites["Dendrites<br/>(Input References)"]:::synapse
+        Axon["Axon<br/>(Output Effects)"]:::synapse
+        Synapses["Synapses<br/>(Relationship Weights)"]:::synapse
+        
+        DNA1 --> Body
+        DNA1 --> Dendrites
+        DNA1 --> Axon
+        DNA1 --> Synapses
+    end
+
+    %% 2. Synaptic Connections
+    subgraph "2. Synapses Between DNAs"
+        direction TB
+        
+        DNAA[DNA: Morning Routine]:::neuron
+        DNAB[DNA: Tooth Brushing]:::neuron
+        DNAC[DNA: Oral Hygiene]:::neuron
+        
+        DNAA -->|"weight: +0.8"| DNAB
+        DNAB -->|"weight: +0.9"| DNAC
+        DNAA -->|"weight: +0.6"| DNAC
+        
+        SynRule["Synapses strengthen with success<br/>Weaken with failure<br/>Range: [-1, +1]"]:::meta
+    end
+
+    %% 3. The Distributed Brain
+    subgraph "3. Federated Brain Architecture"
+        direction TB
+        
+        %% Node A
+        subgraph NodeA ["Node A (Pumps)"]
+            BrainA[Local Brain]:::brain
+            DNA_A1[DNA: Pump Start]:::neuron
+            DNA_A2[DNA: Pump Stop]:::neuron
+            DNA_A1 & DNA_A2 --> BrainA
+        end
+        
+        %% Node B
+        subgraph NodeB ["Node B (Safety)"]
+            BrainB[Local Brain]:::brain
+            DNA_B1[DNA: Emergency]:::neuron
+            DNA_B2[DNA: Isolation]:::neuron
+            DNA_B1 & DNA_B2 --> BrainB
+        end
+        
+        %% Cell Donation
+        Donation{Cell Donation}:::node
+        BrainA <-->|Share discoveries| Donation
+        BrainB <-->|Share discoveries| Donation
+    end
+
+    %% 4. Brain Growth
+    subgraph "4. Morphogenic Brain"
+        direction TB
+        
+        NewTruth[New Validated Truth]:::node
+        Growth["Brain GROWS new neuron<br/>(Not 'stores new file')"]:::brain
+        NewDNA[New DNA Block]:::neuron
+        NewSyn[New Synaptic Connections]:::synapse
+        
+        NewTruth --> Growth --> NewDNA --> NewSyn
+    end
+
+    %% 5. Emergent Motors
+    subgraph "5. Motors as Emergent Patterns"
+        direction TB
+        
+        Pattern1["Praxeological Motor<br/>emerges from intent-encoding DNA"]:::neuron
+        Pattern2["Nash Motor<br/>emerges from multi-agent DNA"]:::neuron
+        Pattern3["Chaotic Motor<br/>emerges from robustness DNA"]:::neuron
+        Pattern4["Meristic Meta-Motor<br/>emerges from pattern-recognition DNA"]:::neuron
+        
+        Emerge["Motors are NOT modules<br/>They EMERGE from activation patterns"]:::meta
+        
+        Pattern1 & Pattern2 & Pattern3 & Pattern4 -.-> Emerge
+    end
+
+    %% Annotations
+    note1["CORE INSIGHT:<br/>Knowledge IS the brain structure<br/>Not data stored within it"]:::meta -.-> DNA1
+    
+    note2["When node shares discovery,<br/>it DONATES BRAIN CELLS<br/>to the distributed mind"]:::meta -.-> Donation
