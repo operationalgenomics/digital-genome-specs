@@ -1,0 +1,88 @@
+%% ==============================================================================
+%% Gene Selection Matrix Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/specification.md
+%%                  specs/cognitive-core/inference-engine.md
+%% Repository Path: diagrams/cognitive-core/inference/cognitive-gene-selection-matrix.png
+%% Description:     Visualizes the comparative scoring of candidate genes, 
+%%                  highlighting how the Weighted Composite Score is calculated
+%%                  and how Safety acts as a hard veto filter.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef rank1 fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px,color:#000;
+    classDef rank2 fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef rank3 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef veto fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef header fill:#37474f,stroke:#263238,stroke-width:2px,color:#fff;
+    classDef meta fill:#eceff1,stroke:#455a64,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% Matrix Header
+    subgraph Matrix ["Selection Matrix"]
+        direction TB
+        
+        %% Candidate 1: The Winner
+        subgraph C1 ["Candidate 1: Gene-Opt (Optimized)"]
+            direction LR
+            S1[Safety: CRITICAL PASS]:::rank1
+            Ctx1[Context: 0.95]:::rank1
+            Int1[Intent: 0.98]:::rank1
+            Fit1[Fitness: 0.92]:::rank1
+            
+            Score1[Composite: 0.96]:::rank1
+        end
+
+        %% Candidate 2: The Backup
+        subgraph C2 ["Candidate 2: Gene-Std (Standard)"]
+            direction LR
+            S2[Safety: PASS]:::rank2
+            Ctx2[Context: 0.85]:::rank2
+            Int2[Intent: 0.90]:::rank2
+            Fit2[Fitness: 0.88]:::rank2
+            
+            Score2[Composite: 0.87]:::rank2
+        end
+
+        %% Candidate 3: Context Mismatch
+        subgraph C3 ["Candidate 3: Gene-Alt (Alternative)"]
+            direction LR
+            S3[Safety: PASS]:::rank3
+            Ctx3[Context: 0.40]:::rank3
+            Int3[Intent: 0.70]:::rank3
+            Fit3[Fitness: 0.60]:::rank3
+            
+            Score3[Composite: 0.55]:::rank3
+        end
+
+        %% Candidate 4: Safety Veto
+        subgraph C4 ["Candidate 4: Gene-Fast (High Risk)"]
+            direction LR
+            S4[Safety: VIOLATION]:::veto
+            Ctx4[Context: 0.99]:::veto
+            Int4[Intent: 0.99]:::veto
+            Fit4[Fitness: 0.45]:::veto
+            
+            Score4[Composite: 0.00]:::veto
+        end
+    end
+
+    %% Scoring Logic Logic
+    subgraph Logic ["Scoring Weight Model"]
+        direction LR
+        W_Safe["Safety (Veto)"]:::header
+        W_Ctx["Context (0.3)"]:::meta
+        W_Int["Intent (0.3)"]:::meta
+        W_Fit["Fitness (0.4)"]:::meta
+    end
+
+    %% Decision
+    Result((Selected: Gene-Opt)):::rank1
+
+    %% Connections
+    Score1 --> Result
+    Score2 -.->|Reserve| Result
+    Score4 -.->|Blocked| Result
+
+    %% Annotations
+    note1["Composite = (Ctx * 0.3) + (Int * 0.3) + (Fit * 0.4)<br/>Multiplied by Safety (1 or 0)"]:::meta -.-> Score1
