@@ -1,0 +1,67 @@
+%% ==============================================================================
+%% Cognitive Isolation Diagram (Sandbox)
+%% ==============================================================================
+%% Source File:     specs/security/security-model.md
+%% Repository Path: diagrams/security/security-cognitive-isolation.png
+%% Description:     Visualizes the sandboxed execution environment: Gene Logic is 
+%%                  wrapped in a Container with strict Resource Quotas (CPU/RAM) 
+%%                  and a filtered I/O Bridge, preventing unauthorized system access.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef host fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000;
+    classDef box fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef gene fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;
+    classDef gate fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef res fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+
+    %% 1. The Host System
+    subgraph Host ["Host OS / Kernel Space"]
+        direction TB
+        Kernel[Kernel Core]:::host
+        Files[File System]:::host
+        Net[Network Stack]:::host
+    end
+
+    %% 2. The Sandbox Boundary
+    subgraph Sandbox ["Cognitive Sandbox (User Space)"]
+        direction TB
+        
+        %% Resource Limits
+        subgraph Quotas ["Resource Quotas"]
+            CPU[CPU Limit: 2 Cores]:::res
+            RAM[RAM Limit: 4GB]:::res
+            Time[Timeout: 500ms]:::res
+        end
+        
+        %% The Logic
+        Gene[Gene Logic Execution]:::gene
+        
+        Gene --- Quotas
+    end
+
+    %% 3. The I/O Bridge (The only way out)
+    subgraph Bridge ["Controlled I/O Bridge"]
+        direction TB
+        SyscallGate{Syscall Filter}:::gate
+        NetGate{Network Proxy}:::gate
+        FileGate{VFS Mount}:::gate
+        
+        Gene --> SyscallGate
+        Gene --> NetGate
+        Gene --> FileGate
+    end
+
+    %% 4. Enforcement
+    SyscallGate -->|Allowed Calls| Kernel
+    SyscallGate -->|Forbidden| Kill[Terminate Process]:::gate
+    
+    NetGate -->|Whitelisted IPs| Net
+    NetGate -->|Unknown Host| BlockNet[Block Packet]:::gate
+    
+    FileGate -->|Read-Only Data| Files
+    FileGate -->|Write Attempt| BlockIO[Block Write]:::gate
+
+    %% Annotations
+    note1["Prevents 'Runaway Genes' from consuming<br/>host resources or accessing system files"]:::box -.-> Sandbox
