@@ -1,0 +1,65 @@
+graph TD
+    %% Global Styles
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef cog fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef genome fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef sys fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef human fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+
+    %% Actors
+    Operator((Human Operator)):::human
+
+    %% Subsystems
+    subgraph "UNL Layer"
+        UNL[Universal Neutral Language]:::unl
+    end
+
+    subgraph "Cognitive Core Layer"
+        CC[Cognitive Core]:::cog
+        Sim[Simulation Engine]:::cog
+        Oracle[Oracle Synthesizer]:::cog
+    end
+
+    subgraph "Digital Genome Layer"
+        DG[Digital Genome Library]:::genome
+        Genes[Operational Genes]:::genome
+    end
+
+    subgraph "System Layer (Execution)"
+        Orch[Orchestration Layer]:::sys
+        Exec[Physical/Digital Execution]:::sys
+        Mon[Monitoring & Feedback]:::sys
+    end
+
+    %% Governance (Cross-cutting)
+    Gov[Governance Matrix]:::gov
+
+    %% Flows (The Closed Cognitive Loop)
+    Operator -->|Multimodal Input| UNL
+    UNL -->|UNLIntent| CC
+
+    %% Core Interactions
+    CC <-->|Query / Retrieve| DG
+    DG --- Genes
+    
+    CC -->|Validates Plan| Sim
+    Sim -->|Predicts Outcomes| Oracle
+    Oracle -->|Synthesized Decision| CC
+    CC -->|Approved Decision Plan| Orch
+
+    %% Execution Flow
+    Orch -->|Actuation Commands| Exec
+    Exec -->|Telemetry & Outcomes| Mon
+    
+    %% Feedback Loop
+    Mon -->|Cognitive Feedback| CC
+    Mon -->|Fitness Updates| DG
+    Mon -->|Audit Logs| Gov
+
+    %% Governance Interventions
+    Gov -.->|Policy Enforcement| CC
+    Gov -.->|Safety Constraints| Orch
+
+    %% Human Feedback
+    UNL -.->|Explanation & Status| Operator
