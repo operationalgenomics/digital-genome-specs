@@ -1,0 +1,113 @@
+%% ==============================================================================
+%% Meristic Meta-Motor Diagram
+%% ==============================================================================
+%% Source File:     specs/cognitive-core/meta-motor-meristic.md
+%% Repository Path: diagrams/cognitive-core/motors/meristic-meta-motor.mmd
+%% Description:     Visualizes the Meristic Meta-Motor as the Platonic philosopher
+%%                  of the system: fractal pattern recognition, cross-domain analogy,
+%%                  hypothesis generation, and the four types of outputs.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef fractal fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;
+    classDef gen fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;
+    classDef valid fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+    classDef consult fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000;
+    classDef meta fill:#eeeeee,stroke:#212121,stroke-width:1px,stroke-dasharray: 5 5,color:#000;
+
+    %% 1. Triggering
+    subgraph "1. Activation Triggers"
+        direction TB
+        LowCP[Low Craft Performance]:::input
+        Failures[Repeated Failures]:::input
+        Anomaly[Anomaly Detection]:::input
+        Feedback[Operator Feedback]:::input
+        Request[Oracle Request]:::input
+        
+        Trigger{Meta-Motor<br/>Triggered}:::fractal
+        
+        LowCP & Failures & Anomaly & Feedback & Request --> Trigger
+    end
+
+    %% 2. Fractal Pattern Recognition
+    subgraph "2. Fractal Pattern Recognition"
+        direction TB
+        
+        Gather[Gather Relevant Truths]:::fractal
+        Trigger --> Gather
+        
+        %% Multi-Scale Analysis
+        Micro["MICRO Scale<br/>Codon variations<br/>Parameter adjustments"]:::fractal
+        Meso["MESO Scale<br/>Gene restructuring<br/>Sequence reordering"]:::fractal
+        Macro["MACRO Scale<br/>Genome topology<br/>Emergent capabilities"]:::fractal
+        
+        Gather --> Micro & Meso & Macro
+        
+        %% Cross-Domain
+        CrossDom["Cross-Domain Analogy<br/>Patterns that work across sectors"]:::fractal
+        Micro & Meso & Macro --> CrossDom
+    end
+
+    %% 3. Generative Core
+    subgraph "3. The Four Generative Outputs"
+        direction TB
+        
+        CrossDom --> Gen{Generative Core}:::gen
+        
+        %% Output Types (Increasing Disruption)
+        Variants["VARIANTS<br/>Small improvements<br/>Low risk"]:::output
+        AntiGenes["ANTI-GENES<br/>Structural changes<br/>High risk"]:::output
+        Hypotheses["HYPOTHESES<br/>Proposed correlations<br/>Need testing"]:::output
+        Paradigms["PARADIGMS<br/>Worldview shifts<br/>Extreme risk"]:::output
+        
+        Gen --> Variants
+        Gen --> AntiGenes
+        Gen --> Hypotheses
+        Gen --> Paradigms
+    end
+
+    %% 4. Validation Pipeline
+    subgraph "4. Validation Pipeline"
+        direction TB
+        
+        Coherence{Coherence<br/>Check}:::valid
+        Simulation{Simulation<br/>Testing}:::valid
+        Safety{Safety<br/>Verification}:::valid
+        Governance{Governance<br/>Review}:::valid
+        
+        Variants & AntiGenes & Hypotheses & Paradigms --> Coherence
+        Coherence -->|Pass| Simulation
+        Simulation -->|Pass| Safety
+        Safety -->|Pass| Governance
+    end
+
+    %% 5. Consultative Output
+    subgraph "5. Consultative Role (NEVER Decides)"
+        direction TB
+        
+        Proposal[Validated Proposals]:::consult
+        Oracle[To Oracle Synthesizer]:::consult
+        
+        Governance -->|Approved| Proposal --> Oracle
+        
+        Note1["The Meta-Motor PROPOSES<br/>It never DECIDES<br/>Creativity under containment"]:::meta
+    end
+
+    %% The Platonic Function
+    subgraph "The Platonic Function"
+        direction TB
+        
+        Question["Core Question:<br/>'What SHOULD exist<br/>but doesn't yet?'"]:::fractal
+        Form["Seeking the Form<br/>behind the shadows"]:::fractal
+        Infinite["Improvement is<br/>always possible"]:::fractal
+        
+        Question --> Form --> Infinite
+    end
+
+    %% Annotations
+    note2["THE PLATO OF THE SYSTEM<br/>Looks at 1000 ways of doing something<br/>and imagines the 1001st that never existed"]:::meta -.-> Gen
+    
+    note3["Scale-Invariant Principles:<br/>Patterns that work at ALL scales<br/>are most valuable"]:::meta -.-> CrossDom
