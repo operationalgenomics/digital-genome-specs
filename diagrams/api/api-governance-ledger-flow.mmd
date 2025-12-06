@@ -1,0 +1,38 @@
+%% ==============================================================================
+%% Governance Ledger Flow Diagram
+%% ==============================================================================
+%% Source File:     specs/api/governance-api.md
+%% Repository Path: diagrams/api/api-governance-ledger-flow.png
+%% Description:     Visualizes the audit logging sequence: API Request -> Ledger 
+%%                  Write (Start) -> Execution -> Ledger Write (Result) -> 
+%%                  Immutable Hash Generation -> Client Receipt.
+%% ==============================================================================
+
+sequenceDiagram
+    participant Client as External Client
+    participant GW as API Gateway
+    participant Ledger as Ledger Service
+    participant Chain as Immutable Log
+    participant Core as Cognitive Core
+
+    %% 1. Request Start
+    Client->>GW: POST /v1/execute (Action)
+    GW->>Ledger: Log Event: REQUEST_RECEIVED
+    Ledger->>Chain: Commit Block (Timestamp, CallerID)
+    Chain-->>Ledger: TxID: 0x8a7f...
+    
+    %% 2. Execution
+    GW->>Core: Execute Action
+    activate Core
+    Core->>Core: Process Logic
+    Core-->>GW: Result: SUCCESS
+    deactivate Core
+
+    %% 3. Request End
+    GW->>Ledger: Log Event: EXECUTION_COMPLETE
+    Ledger->>Chain: Commit Block (TxID, ResultHash)
+    Chain-->>Ledger: FinalHash: 0xb29c...
+
+    %% 4. Receipt
+    GW-->>Client: HTTP 200 OK (Data + ReceiptHeader)
+    Note right of Client: Receipt Header contains<br/>Ledger Hash for verification
