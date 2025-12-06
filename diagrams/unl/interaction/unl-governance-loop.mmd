@@ -1,0 +1,82 @@
+%% ==============================================================================
+%% Governance & Safety Interaction Diagram
+%% ==============================================================================
+%% Source File:     specs/unl/diagrams.md
+%% Repository Path: diagrams/unl/interaction/unl-governance-loop.png
+%% Description:     Visualizes the interaction between UNL and Governance/Safety,
+%%                  highlighting forbidden actions, required approvals, and
+%%                  safety-triggered overrides.
+%% ==============================================================================
+
+graph TD
+    %% Global Styles
+    classDef actor fill:#eeeeee,stroke:#212121,stroke-width:2px,color:#000;
+    classDef unl fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;
+    classDef gov fill:#fbe9e7,stroke:#bf360c,stroke-width:2px,stroke-dasharray: 5 5,color:#000;
+    classDef safety fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#000;
+    classDef check fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000;
+
+    %% 1. Input
+    subgraph "1. Intent Formation"
+        direction TB
+        Operator((Operator)):::actor
+        Input[Multimodal Intent]:::unl
+        
+        Operator --> Input
+    end
+
+    %% 2. Governance Intercept
+    subgraph "2. Governance Intercept"
+        direction TB
+        GovCheck{Governance Mode?}:::check
+        Policy[Policy Engine]:::gov
+        
+        Input --> GovCheck
+        Policy -.-> GovCheck
+    end
+
+    %% 3. Safety Evaluation
+    subgraph "3. Safety Evaluation"
+        direction TB
+        SafeCheck{Safety Check}:::check
+        SafeSys[Safety System]:::safety
+        
+        GovCheck -->|Auto / Review| SafeCheck
+        SafeSys -.->|Risk Level| SafeCheck
+    end
+
+    %% 4. Resolution Paths
+    subgraph "4. Outcomes"
+        direction TB
+        
+        %% Path A: Forbidden
+        GovCheck -->|Forbidden| Block[Action Blocked]:::gov
+        
+        %% Path B: Review
+        GovCheck -->|Review| Confirm[Request Confirmation]:::gov
+        
+        %% Path C: Safety Override
+        SafeCheck -->|Critical Risk| Override[Safety Override]:::safety
+        
+        %% Path D: Approved
+        SafeCheck -->|Safe| Execute[Proceed to Core]:::unl
+    end
+
+    %% 5. Feedback to Operator
+    subgraph "5. Operator Feedback"
+        direction TB
+        Explain[Explanation Renderer]:::unl
+        
+        Block --> Explain
+        Confirm --> Explain
+        Override --> Explain
+        
+        Explain -->|Notification / Prompt| Operator
+    end
+
+    %% Closing the Loop (Confirmation)
+    Operator -.->|Approval / Cancel| Confirm
+    Confirm -->|Validated| Execute
+
+    %% Annotations
+    note1["UNL must transparently communicate<br/>why an action was blocked or overridden"]:::unl -.-> Explain
