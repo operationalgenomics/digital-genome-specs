@@ -20,29 +20,110 @@ The core insight is simple but profound: **operational knowledge can be structur
 
 ---
 
+## Critical Architecture Principles
+
+Before diving into structure, understand these foundational truths:
+
+### 1. DNA IS the Neuron
+
+Knowledge is not stored in the brain — **knowledge IS the brain**. Each DNA block functions as a plastic neuron in the distributed cognitive architecture. When new truth crystallizes, the brain grows a new neuron. The genome is morphogenic: it literally constructs itself as it learns.
+
+### 2. Four Parallel Motors
+
+The Cognitive Core uses four motors operating **simultaneously**, not sequentially. Like four GPS satellites triangulating a position, each motor asks a fundamental question:
+
+| Motor | Fundamental Question |
+|-------|---------------------|
+| **Praxeological** | Does this action realize its intention? |
+| **Nash** | Does this action produce strategic equilibrium? |
+| **Chaotic** | Is this action robust to perturbations? |
+| **Meristic Meta-Motor** | Does this reflect universal patterns? What *should* exist? |
+
+### 3. Craft Performance as PRODUCT
+
+```ts
+CP = Praxeological × Nash × Chaotic × Meristic
+```
+
+**Not a weighted sum. Not an average. A PRODUCT.**
+
+If any motor gives zero, CP is zero — this is **absolute veto**.
+
+*The yen example*: If I have 1 million yen and you have 0, our "average" of 500k is a lie. You still starve. The product captures reality: 1,000,000 × 0 = 0.
+
+Between 0 and 1 there are infinite values — not binary, it's fractal, quantum-like. Zero is error, one is absolute truth (the Platonic Form).
+
+### 4. Two Types of Truth
+
+| Type | Description | Mutability |
+|------|-------------|------------|
+| **Foucauldian** | Registered experience, crystallized in blockchain — like light that traveled billions of years without changing | Immutable |
+| **Platonic** | Synthesized approximation of the ideal Form, calculated from Foucauldian truths | Plastic |
+
+The journey from Foucault to Plato: experiences → patterns → synthesis → wisdom.
+
+A single verified truth can replace millions of perceived truths. **This is science, not democracy.**
+
+---
+
 ## The Digital Genome Architecture
 
-The architecture mirrors biology's elegant hierarchy:
+The architecture mirrors biology's elegant hierarchy, but with a crucial insight: **the genome is not a database — it is the brain itself**.
 
-```bash
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              DIGITAL GENOME                                 │
-│                    (Complete operational knowledge library)                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐        │
-│  │  OPERATIONAL GENE │  │  OPERATIONAL GENE │  │  OPERATIONAL GENE │  ...   │
-│  │  (Functional unit)│  │  (Functional unit)│  │  (Functional unit)│        │
-│  ├───────────────────┤  ├───────────────────┤  ├───────────────────┤        │
-│  │ [Codon] [Codon]   │  │ [Codon] [Codon]   │  │ [Codon] [Codon]   │        │
-│  │ [Codon] [Codon]   │  │ [Codon]           │  │ [Codon] [Codon]   │        │
-│  └───────────────────┘  └───────────────────┘  └───────────────────┘        │
-└─────────────────────────────────────────────────────────────────────────────┘
+```
+┌────────────────────────────────────────────────────────────────────────────-─┐
+│                         COGNITIVE CORE                                       │
+│            Four motors operating in PARALLEL, not sequentially               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌──────────────────┐                      ┌──────────────────┐             │
+│   │  PRAXEOLOGICAL   │                      │      NASH        │             │
+│   │     MOTOR        │                      │     MOTOR        │             │
+│   │ "Does it realize │                      │ "Does it produce │             │
+│   │  its intention?" │                      │   equilibrium?"  │             │
+│   └────────┬─────────┘                      └────────┬─────────┘             │
+│            │                                         │                       │
+│            ▼                                         ▼                       │
+│   ┌─────────────────────────────────────────────────────────────┐            │
+│   │                                                             │            │
+│   │          CP = P × N × C × M                                 │            │
+│   │                                                             │            │
+│   │          (Any zero = ABSOLUTE VETO)                         │            │
+│   │                                                             │            │
+│   └─────────────────────────────────────────────────────────────┘            │
+│            ▲                                         ▲                       │
+│            │                                         │                       │
+│   ┌────────┴─────────┐                      ┌────────┴─────────┐             │
+│   │    CHAOTIC       │                      │    MERISTIC      │             │
+│   │     MOTOR        │                      │   META-MOTOR     │             │
+│   │ "Is it robust    │                      │ "What SHOULD     │             │
+│   │  to chaos?"      │                      │     exist?"      │             │
+│   └──────────────────┘                      └──────────────────┘             │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                            COGNITIVE CORE                                   │
-│         (Reasoning engine: context → inference → simulation → decision)     │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         DIGITAL GENOME                                       │
+│                   The distributed brain (DNA = Neurons)                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   Foucauldian Truths              Platonic Approximations                    │
+│   (Immutable, Blockchain)          (Plastic, Evolving)                       │
+│          │                                │                                  │
+│          └────────────────┬───────────────┘                                  │
+│                           ▼                                                  │
+│  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐         │
+│  │  OPERATIONAL GENE │  │  OPERATIONAL GENE │  │  OPERATIONAL GENE │  ...    │
+│  │    (DNA-Neuron)   │  │    (DNA-Neuron)   │  │    (DNA-Neuron)   │         │
+│  ├───────────────────┤  ├───────────────────┤  ├───────────────────┤         │
+│  │ [Codon] [Codon]   │  │ [Codon] [Codon]   │  │ [Codon] [Codon]   │         │
+│  │ [Codon] [Codon]   │  │ [Codon]           │  │ [Codon] [Codon]   │         │
+│  └─────────┬─────────┘  └─────────┬─────────┘  └─────────┬─────────┘         │
+│            │                      │                      │                   │
+│            └──────────Synapses────┴──────────────────────┘                   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
                           [ COORDINATED ACTION ]
@@ -58,7 +139,7 @@ The **smallest unit of operational meaning**. Every codon has three components:
 
 Example: `[ Pump-401 | Stop | Isolated ]`
 
-This isn't just an event record — it captures **intentional action**: an agent performed an action with a specific purpose.
+This isn't just an event record — it captures **intentional action**: an agent performed an action with a specific purpose. The praxeological foundation means we encode *intent*, not mere occurrence.
 
 ### The Operational Gene
 
@@ -69,18 +150,38 @@ A **sequence of codons** that together express a complete functional capability.
 - **Postconditions**: What should be true after success
 - **Exception Handlers**: What to do when things go wrong
 - **Evaluation Metrics**: How to measure execution quality
+- **Motor Scores**: CP from parallel evaluation (P × N × C × M)
 
 ### The Digital Genome
 
-The **complete library of an organization's operational genes**, organized into:
+The **complete library of an organization's operational genes**, but more than a library — this IS the brain:
 
-- **Stems**: Thematic groupings (safety, maintenance, optimization)
+- **Stems**: Thematic brain regions (safety, maintenance, optimization)
 - **Chromosomes**: Functional groupings (core, experimental, deprecated)
+- **Synapses**: Connections between DNA-neurons
+- **Foucauldian Registry**: Immutable truths (blockchain)
+- **Platonic Approximations**: Synthesized wisdom (plastic)
 
 The genome is **alive**: it evolves through **Merism** (variation → evaluation → selection → inheritance).
 
 ---
 
+## The Meristic Meta-Motor: The Platonic Philosopher
+
+The Meta-Motor is unique among the four. It doesn't just evaluate what IS — it imagines what SHOULD exist.
+
+Like Plato's allegory of the cave: while other motors look at shadows, the Meta-Motor perceives the Forms that cast those shadows.
+
+The Meta-Motor is **consultative** — it proposes, never decides:
+
+- **Variants**: Modified versions of existing genes
+- **Anti-Genes**: Fundamentally different approaches to the same goal
+- **Hypotheses**: Untested possibilities worth exploring
+- **Paradigms**: New frameworks for understanding
+
+It operates at multiple scales (micro, meso, macro), seeing patterns that span domains and time.
+
+---
 ## Repository Structure
 
 ```bash
@@ -247,13 +348,21 @@ from src.digital_genome_core import (
     DigitalGenome,
     OperationalGene,
     PraxeologicalCodon,
-    ComputationalRibosome,
+    TruthType,
     SafetyLevel,
     make_uid
 )
 
-# Create a genome
+# Create genome (the distributed brain)
 genome = DigitalGenome(name="Industrial Operations")
+
+# Register a Foucauldian truth (immutable experience)
+truth = genome.register_foucauldian_truth(
+    agent_id="operator_001",
+    action="emergency_stop_pump_401",
+    context={"temperature": 95, "pressure": 850},
+    outcome={"success": True, "time_ms": 450}
+)
 
 # Register entities, actions, and states
 pump_id = genome.register_entity(
@@ -283,7 +392,7 @@ shutdown_gene = OperationalGene.create(
     target="pump_401"
 )
 
-# Add codons (atomic action steps)
+# Add codons (atomic intention units)
 shutdown_gene.add_codon(PraxeologicalCodon(
     entity_id=pump_id,
     action_id=stop_action,
@@ -293,19 +402,14 @@ shutdown_gene.add_codon(PraxeologicalCodon(
     postconditions=("equipment_isolated",)
 ))
 
-# Activate and insert into genome
+# Activate and insert as DNA-neuron
 shutdown_gene.activate()
-genome.insert_gene(shutdown_gene, stem="safety", chromosome="critical")
+genome.insert_gene_as_neuron(shutdown_gene, TruthType.PLATONIC, "safety", "critical")
 
-# Translate and execute
-ribosome = ComputationalRibosome(genome)
-plan = ribosome.translate_gene(shutdown_gene.uid)
-result = ribosome.execute_plan(plan, dry_run=True)
-
-print(f"Execution: {result['overall_status'].value}")
+print(f"Neurons in brain: {genome.get_statistics()['total_neurons']}")
 ```
 
-### Using the Cognitive Core
+### Using the Cognitive Core (Four Parallel Motors)
 
 ```python
 from src.cognitive_core import CognitiveSystem
@@ -313,16 +417,52 @@ from src.cognitive_core import CognitiveSystem
 # Initialize with genome
 system = CognitiveSystem(genome)
 
-# Process high-level objective
-result = system.process_objective(
-    objective="Execute emergency shutdown procedure",
-    context_data={"temperature": 95, "vibration": 8.5},
-    dry_run=True
+# Evaluate through all four motors simultaneously
+result = system.orchestrator.evaluate_gene(
+    shutdown_gene,
+    context={"emergency": True, "pressure": 850},
+    intent={"purpose": "emergency shutdown"}
 )
 
-if result["decision"]["success"]:
-    print(f"Selected: {result['decision']['selected_gene']['name']}")
-    print(f"Confidence: {result['decision']['explanation']['inference']['scores']['composite']:.2f}")
+# Craft Performance is PRODUCT of all motors
+print(f"Craft Performance: {result.craft_performance:.4f}")
+print(f"Vetoed: {result.is_vetoed}")
+
+# See individual motor scores
+for motor, score in result.individual_scores.items():
+    print(f"  {motor}: {score:.3f}")
+
+# Full explanation
+print(result.explain())
+```
+
+**Example Output:**
+
+```
+Craft Performance: 0.2476
+
+Motor Scores (PRODUCT formula - any zero = total zero):
+  • Praxeological: 1.000   ← Intention fully realized
+  • Nash: 0.740            ← Good strategic equilibrium  
+  • Chaotic: 0.432         ← Moderate robustness (concern)
+  • Meristic: 0.774        ← Good pattern universality
+
+△ Significant concerns (chaotic robustness needs improvement)
+```
+
+**When a motor vetoes:**
+
+```
+Motor Scores:
+  • Praxeological: 1.000
+  • Nash: 0.448
+  • Chaotic: 0.000  ← ABSOLUTE VETO
+  • Meristic: 0.356
+
+Craft Performance: 0.0000
+Vetoed: True
+Veto by: Chaotic
+Reason: Failure mode includes irreversible catastrophe
 ```
 
 ---
@@ -340,21 +480,19 @@ This distinction is crucial: the system captures **intent**, not just occurrence
 Merism is the evolutionary mechanism that allows the genome to improve over time:
 
 1. **Variation**: Generate modified versions of existing genes
-2. **Evaluation**: Test variants through simulation
-3. **Selection**: Choose variants that outperform originals
+2. **Evaluation**: Test variants through all four motors simultaneously
+3. **Selection**: Choose variants with highest non-vetoed CP
 4. **Inheritance**: Incorporate successful variants into the genome
 
-This creates a system that **learns from experience** without requiring explicit reprogramming.
+A single verified truth can replace millions of perceived truths. This is science, not democracy — **verification, not consensus**.
 
-### The Cognitive Core
+### The Two Truths
 
-The reasoning engine that turns knowledge into action:
+**Foucauldian Truth**: Like light that traveled billions of years without changing, these are experiences crystallized in blockchain. Immutable. Contextual. "This worked for this agent in this situation."
 
-- **Context Evaluator**: Transforms raw data into structured, validated context
-- **Inference Engine**: Matches intent + context to optimal genes
-- **Simulation Engine**: Validates decisions across multiple scenarios (worldlines)
-- **Oracle Synthesizer**: Produces final, safe, explainable decisions
-- **Governance Interface**: Ensures compliance with safety and policy constraints
+**Platonic Truth**: The synthesized approximation of the ideal Form. Plastic. Universal. Calculated from Foucauldian truths through motor evaluation. The DNA of the genome contains Platonic approximations — our best current understanding of the ideal action.
+
+The journey: Experience → Registration → Motor Observation → Pattern Recognition → Synthesis → Validation → DNA Integration → Expression → Action → New Experience.
 
 ---
 
@@ -375,6 +513,7 @@ Emergent behaviors detected during validation:
 - **Predictive Self-Diagnosis**: System detected performance degradation before failure
 - **Cross-Domain Synthesis**: Spontaneous recombination of genes from different domains
 - **Adaptive Resilience**: Creation of "survival modes" under extreme stress
+- **Collaborative Emergence**: Agents developed cooperation protocols not explicitly programmed
 
 ---
 
@@ -430,4 +569,5 @@ Creator of Operational Genomics and author of *The Digital Genome*.
 
 ---
 
-*"You cannot integrate what you do not understand. The Digital Genome provides the grammar that makes understanding — and therefore true integration — possible."*
+*"Between 0 and 1 there are infinite values — not binary, it's fractal, quantum-like. Zero is error, one is absolute truth. You cannot integrate what you do not understand. The Digital Genome provides the grammar that makes understanding — and therefore true integration — possible."*
+
