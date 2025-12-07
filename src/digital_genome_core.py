@@ -1,14 +1,15 @@
 """
-Digital Genome - Core Implementation
-=====================================
+Digital Genome - Core Implementation v2.0
+==========================================
 Operational Genomics: A framework that unifies data, AI, intention and action
 into coherent, evolutive, and explainable operational knowledge systems.
 
-This module implements the foundational components:
-- Praxeological Codons: Atomic units of purposeful action (Entity-Action-State)
-- Operational Genes: Composable sequences of codons expressing functional capabilities
-- Digital Genome: The complete knowledge organism containing genes and evolution mechanisms
-- Computational Ribosome: Translates genes into executable instructions
+CRITICAL ARCHITECTURE PRINCIPLES:
+1. DNA is not storage - DNA IS the neuron (knowledge IS the brain, not stored in it)
+2. Four motors operate in PARALLEL, not sequentially
+3. Craft Performance is a PRODUCT, not a weighted sum (zero = absolute veto)
+4. Two truths: Foucauldian (registered, immutable) and Platonic (synthesized, approximate)
+5. The Meta-Motor imagines what SHOULD exist, not just what does exist
 
 Author: Carlos Eduardo Favini
 License: MIT
@@ -16,7 +17,7 @@ License: MIT
 
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple, Optional, Set, Callable
+from typing import Any, Dict, List, Tuple, Optional, Set, Callable, Union
 from abc import ABC, abstractmethod
 from enum import Enum
 from collections import defaultdict
@@ -25,6 +26,7 @@ import time
 import json
 import uuid
 import logging
+import math
 
 # ============================================================================
 # LOGGING CONFIGURATION
@@ -40,10 +42,7 @@ logger = logging.getLogger("DigitalGenome")
 # UTILITY FUNCTIONS
 # ============================================================================
 def compute_hash(*parts: bytes) -> str:
-    """
-    Computes a deterministic SHA-256 hash from multiple byte components.
-    Used to generate unique identifiers for genome components.
-    """
+    """Computes a deterministic SHA-256 hash from multiple byte components."""
     hasher = hashlib.sha256()
     for part in parts:
         hasher.update(part)
@@ -51,17 +50,7 @@ def compute_hash(*parts: bytes) -> str:
 
 
 def make_uid(prefix: str, *components: str) -> str:
-    """
-    Creates a unique identifier based on a prefix and semantic components.
-    The UID is deterministic: same inputs always produce the same output.
-    
-    Args:
-        prefix: Category identifier (e.g., "gene", "codon", "entity")
-        components: Semantic parts that define the element
-        
-    Returns:
-        A 64-character hexadecimal string
-    """
+    """Creates a unique identifier based on a prefix and semantic components."""
     payload = f"{prefix}:{':'.join(components)}"
     return compute_hash(payload.encode())
 
@@ -84,16 +73,135 @@ class GeneStatus(Enum):
     ARCHIVED = "archived"
 
 
-class ExecutionResult(Enum):
-    """Possible outcomes of gene execution"""
-    SUCCESS = "success"
-    PARTIAL = "partial"
-    FAILURE = "failure"
-    ABORTED = "aborted"
+class TruthType(Enum):
+    """
+    The two types of truth in the Digital Genome:
+    
+    FOUCAULDIAN: Registered truth - crystallized in blockchain, immutable,
+                 contextual ("this worked for this agent in this situation")
+    
+    PLATONIC: Synthesized truth - approximation of the ideal Form,
+              calculated from Foucauldian truths, plastic, evolving
+    """
+    FOUCAULDIAN = "foucauldian"  # Registered, immutable, contextual
+    PLATONIC = "platonic"        # Synthesized, approximate, universal
+
+
+class VetoReason(Enum):
+    """Reasons why a motor might issue an absolute veto (score = 0)"""
+    INTENTION_VIOLATION = "intention_violation"
+    STRATEGIC_INSTABILITY = "strategic_instability"
+    CHAOS_CATASTROPHE = "chaos_catastrophe"
+    PATTERN_VIOLATION = "pattern_violation"
+    SAFETY_CRITICAL = "safety_critical"
+    NO_VETO = "no_veto"
 
 
 # ============================================================================
-# PRAXEOLOGICAL CODON
+# TRUTH ARCHITECTURE
+# ============================================================================
+@dataclass(frozen=True)
+class FoucauldianTruth:
+    """
+    A registered truth - an experience crystallized in the blockchain.
+    
+    Like light that traveled billions of years without changing,
+    Foucauldian truths are immutable records of what actually happened.
+    They make no claim to universality - only to authenticity.
+    
+    "This action worked for this agent in this situation at this time."
+    """
+    truth_id: str
+    agent_id: str
+    action_signature: str
+    context_hash: str
+    outcome: Dict[str, Any]
+    timestamp: float
+    block_hash: str  # Reference to blockchain block
+    
+    @classmethod
+    def register(
+        cls,
+        agent_id: str,
+        action: str,
+        context: Dict[str, Any],
+        outcome: Dict[str, Any]
+    ) -> 'FoucauldianTruth':
+        """Registers a new truth in the system."""
+        context_hash = compute_hash(json.dumps(context, sort_keys=True).encode())
+        truth_id = make_uid("truth", agent_id, action, context_hash, str(time.time()))
+        block_hash = compute_hash(truth_id.encode(), str(time.time()).encode())
+        
+        return cls(
+            truth_id=truth_id,
+            agent_id=agent_id,
+            action_signature=action,
+            context_hash=context_hash,
+            outcome=outcome,
+            timestamp=time.time(),
+            block_hash=block_hash
+        )
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "truth_id": self.truth_id,
+            "truth_type": TruthType.FOUCAULDIAN.value,
+            "agent_id": self.agent_id,
+            "action_signature": self.action_signature,
+            "context_hash": self.context_hash,
+            "outcome": self.outcome,
+            "timestamp": self.timestamp,
+            "block_hash": self.block_hash
+        }
+
+
+@dataclass
+class PlatonicApproximation:
+    """
+    A synthesized truth - an approximation of the ideal Platonic Form.
+    
+    Unlike Foucauldian truths which are immutable, Platonic approximations
+    are plastic - they can change when better evidence emerges.
+    
+    The journey from Foucault to Plato:
+    1. Experiences are registered (Foucauldian truths)
+    2. Motors evaluate patterns across experiences
+    3. Meta-Motor imagines improvements
+    4. Validated improvements become new Platonic approximations
+    
+    A single verified truth can replace millions of perceived truths.
+    This is science, not democracy.
+    """
+    approximation_id: str
+    source_truths: List[str]  # UIDs of Foucauldian truths that contributed
+    synthesized_pattern: Dict[str, Any]
+    craft_performance: float  # CP score [0, 1]
+    confidence: float
+    version: int
+    created_at: float
+    supersedes: Optional[str] = None  # UID of previous approximation if evolved
+    
+    @property
+    def is_approaching_form(self) -> bool:
+        """Returns True if CP suggests proximity to the ideal Form."""
+        return self.craft_performance > 0.9
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "approximation_id": self.approximation_id,
+            "truth_type": TruthType.PLATONIC.value,
+            "source_truths": self.source_truths,
+            "synthesized_pattern": self.synthesized_pattern,
+            "craft_performance": self.craft_performance,
+            "confidence": self.confidence,
+            "version": self.version,
+            "created_at": self.created_at,
+            "supersedes": self.supersedes
+        }
+
+
+# ============================================================================
+# PRAXEOLOGICAL CODON - The Atomic Unit
 # ============================================================================
 @dataclass(frozen=True)
 class PraxeologicalCodon:
@@ -103,22 +211,14 @@ class PraxeologicalCodon:
     A codon encodes the fundamental structure of intentional action:
     Entity (who/what) → Action (operation) → Target State (desired result)
     
-    This mirrors biological codons that encode amino acids, but here we
-    encode units of operational meaning that can be composed into genes.
-    
-    Attributes:
-        entity_id: Unique identifier of the entity being acted upon
-        action_id: Unique identifier of the action to perform
-        target_state_id: Unique identifier of the desired resulting state
-        parameters: Optional domain-specific parameters for the action
-        preconditions: Conditions that must be true before execution
-        postconditions: Conditions expected to be true after execution
-        safety_level: Risk classification of this codon
-        context: Additional contextual information
+    This is not just an event record - it captures INTENT.
+    The praxeological foundation means every codon represents
+    purposeful human action, not mere occurrence.
     """
     entity_id: str
     action_id: str
     target_state_id: str
+    intent_signature: str = ""  # Hash of the original intent
     parameters: Dict[str, Any] = field(default_factory=dict)
     preconditions: Tuple[str, ...] = field(default_factory=tuple)
     postconditions: Tuple[str, ...] = field(default_factory=tuple)
@@ -127,16 +227,16 @@ class PraxeologicalCodon:
     
     @property
     def uid(self) -> str:
-        """Generates a unique identifier for this codon"""
+        """Generates a unique identifier for this codon."""
         return make_uid("codon", self.entity_id, self.action_id, self.target_state_id)
     
     def to_dict(self) -> Dict[str, Any]:
-        """Serializes the codon to a dictionary"""
         return {
             "uid": self.uid,
             "entity_id": self.entity_id,
             "action_id": self.action_id,
             "target_state_id": self.target_state_id,
+            "intent_signature": self.intent_signature,
             "parameters": self.parameters,
             "preconditions": list(self.preconditions),
             "postconditions": list(self.postconditions),
@@ -146,11 +246,11 @@ class PraxeologicalCodon:
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'PraxeologicalCodon':
-        """Deserializes a codon from a dictionary"""
         return cls(
             entity_id=data["entity_id"],
             action_id=data["action_id"],
             target_state_id=data["target_state_id"],
+            intent_signature=data.get("intent_signature", ""),
             parameters=data.get("parameters", {}),
             preconditions=tuple(data.get("preconditions", [])),
             postconditions=tuple(data.get("postconditions", [])),
@@ -172,25 +272,6 @@ class OperationalGene:
     a functional operational capability.
     
     If codons are intention-atoms, then operational genes are action-proteins.
-    A gene defines complete, purposeful behavior that can be activated,
-    executed, and evaluated.
-    
-    Attributes:
-        uid: Unique identifier for this gene
-        name: Human-readable name
-        purpose: Declarative description of what this gene accomplishes
-        version: Semantic version string (e.g., "1.0.0")
-        status: Current lifecycle status
-        codons: Ordered sequence of praxeological codons
-        activation_conditions: Conditions required for gene activation
-        postconditions: Expected truths after successful execution
-        exception_handlers: Fallback strategies for failure scenarios
-        evaluation_metrics: KPIs for assessing execution quality
-        metadata: Additional descriptive information
-        fitness_scores: Historical performance data per context
-        parent_genes: Lineage for evolutionary tracking (Merism)
-        created_at: Timestamp of creation
-        modified_at: Timestamp of last modification
     """
     uid: str
     name: str
@@ -203,35 +284,21 @@ class OperationalGene:
     exception_handlers: Dict[str, str] = field(default_factory=dict)
     evaluation_metrics: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    fitness_scores: Dict[str, float] = field(default_factory=dict)
+    
+    # Motor scores - these are filled by parallel evaluation
+    motor_scores: Dict[str, float] = field(default_factory=dict)
+    craft_performance: float = 0.0
+    veto_status: VetoReason = VetoReason.NO_VETO
+    
+    # Evolution tracking
     parent_genes: List[str] = field(default_factory=list)
+    source_truths: List[str] = field(default_factory=list)  # Foucauldian truths that informed this gene
+    
     created_at: float = field(default_factory=time.time)
     modified_at: float = field(default_factory=time.time)
     
     @classmethod
-    def create(
-        cls,
-        name: str,
-        purpose: str,
-        executor: str,
-        action: str,
-        target: str,
-        **metadata
-    ) -> 'OperationalGene':
-        """
-        Factory method to create a new operational gene.
-        
-        Args:
-            name: Human-readable name for the gene
-            purpose: What this gene accomplishes
-            executor: The agent/system that executes this gene
-            action: The primary action performed
-            target: The target of the action
-            **metadata: Additional metadata key-value pairs
-            
-        Returns:
-            A new OperationalGene instance
-        """
+    def create(cls, name: str, purpose: str, executor: str, action: str, target: str, **metadata) -> 'OperationalGene':
         uid = make_uid("gene", executor, action, target, str(time.time()))
         return cls(
             uid=uid,
@@ -241,56 +308,65 @@ class OperationalGene:
         )
     
     def add_codon(self, codon: PraxeologicalCodon) -> 'OperationalGene':
-        """
-        Adds a codon to the gene's sequence.
-        Codons define the atomic steps of the gene's execution.
-        
-        Args:
-            codon: The praxeological codon to add
-            
-        Returns:
-            Self for method chaining
-        """
         self.codons.append(codon)
         self.modified_at = time.time()
         return self
     
     def activate(self) -> 'OperationalGene':
-        """Transitions the gene to active status"""
         if len(self.codons) < 1:
             raise ValueError("Cannot activate gene without codons")
         self.status = GeneStatus.ACTIVE
         self.modified_at = time.time()
         return self
     
-    def deprecate(self, reason: str = "") -> 'OperationalGene':
-        """Marks the gene as deprecated"""
-        self.status = GeneStatus.DEPRECATED
-        self.metadata["deprecation_reason"] = reason
-        self.modified_at = time.time()
-        return self
-    
-    def record_fitness(self, context_signature: str, score: float) -> None:
+    def record_motor_scores(
+        self,
+        praxeological: float,
+        nash: float,
+        chaotic: float,
+        meristic: float
+    ) -> None:
         """
-        Records a fitness score for a specific context.
-        Used by the Merism evolution engine to select superior variants.
+        Records scores from all four parallel motors and computes CP.
         
-        Args:
-            context_signature: Hash identifying the execution context
-            score: Performance score between 0.0 and 1.0
+        CRITICAL: CP is computed as PRODUCT, not sum.
+        If any motor gives zero, CP is zero (absolute veto).
+        
+        The yen example: if I have 1 million yen and you have 0,
+        our "average" of 500k is a lie. You still starve.
+        The product captures reality: 1,000,000 × 0 = 0.
         """
-        self.fitness_scores[context_signature] = score
+        self.motor_scores = {
+            "praxeological": praxeological,
+            "nash": nash,
+            "chaotic": chaotic,
+            "meristic": meristic
+        }
+        
+        # CP is the PRODUCT of all motor scores
+        self.craft_performance = praxeological * nash * chaotic * meristic
+        
+        # Check for veto conditions
+        if praxeological == 0:
+            self.veto_status = VetoReason.INTENTION_VIOLATION
+        elif nash == 0:
+            self.veto_status = VetoReason.STRATEGIC_INSTABILITY
+        elif chaotic == 0:
+            self.veto_status = VetoReason.CHAOS_CATASTROPHE
+        elif meristic == 0:
+            self.veto_status = VetoReason.PATTERN_VIOLATION
+        else:
+            self.veto_status = VetoReason.NO_VETO
+        
         self.modified_at = time.time()
     
-    def get_average_fitness(self) -> float:
-        """Returns the average fitness across all recorded contexts"""
-        if not self.fitness_scores:
-            return 0.0
-        return sum(self.fitness_scores.values()) / len(self.fitness_scores)
+    @property
+    def is_vetoed(self) -> bool:
+        """Returns True if any motor has issued an absolute veto."""
+        return self.veto_status != VetoReason.NO_VETO
     
     @property
     def safety_level(self) -> SafetyLevel:
-        """Returns the highest safety level among all codons"""
         if not self.codons:
             return SafetyLevel.INFO
         levels = [c.safety_level for c in self.codons]
@@ -301,7 +377,6 @@ class OperationalGene:
         return SafetyLevel.INFO
     
     def to_dict(self) -> Dict[str, Any]:
-        """Serializes the gene to a dictionary"""
         return {
             "uid": self.uid,
             "name": self.name,
@@ -314,15 +389,17 @@ class OperationalGene:
             "exception_handlers": self.exception_handlers,
             "evaluation_metrics": self.evaluation_metrics,
             "metadata": self.metadata,
-            "fitness_scores": self.fitness_scores,
+            "motor_scores": self.motor_scores,
+            "craft_performance": self.craft_performance,
+            "veto_status": self.veto_status.value,
             "parent_genes": self.parent_genes,
+            "source_truths": self.source_truths,
             "created_at": self.created_at,
             "modified_at": self.modified_at
         }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'OperationalGene':
-        """Deserializes a gene from a dictionary"""
         gene = cls(
             uid=data["uid"],
             name=data["name"],
@@ -334,8 +411,11 @@ class OperationalGene:
             exception_handlers=data.get("exception_handlers", {}),
             evaluation_metrics=data.get("evaluation_metrics", []),
             metadata=data.get("metadata", {}),
-            fitness_scores=data.get("fitness_scores", {}),
+            motor_scores=data.get("motor_scores", {}),
+            craft_performance=data.get("craft_performance", 0.0),
+            veto_status=VetoReason(data.get("veto_status", "no_veto")),
             parent_genes=data.get("parent_genes", []),
+            source_truths=data.get("source_truths", []),
             created_at=data.get("created_at", time.time()),
             modified_at=data.get("modified_at", time.time())
         )
@@ -345,55 +425,205 @@ class OperationalGene:
 
 
 # ============================================================================
-# DIGITAL GENOME
+# DNA NEURON - The Fundamental Unit of the Cognitive Architecture
+# ============================================================================
+@dataclass
+class DNANeuron:
+    """
+    A DNA block that functions as a plastic neuron in the distributed brain.
+    
+    CRITICAL INSIGHT: Knowledge is not stored IN the brain.
+    Knowledge IS the brain. Each DNA block is a neuron.
+    When a new truth crystallizes, the brain grows a new neuron.
+    
+    The Digital Genome's brain is morphogenic - it literally constructs
+    itself as it learns. Each validated experience, each proven CODON,
+    each crystallized Foucauldian truth adds matter to the brain.
+    
+    Synapses are the relationships between DNA-neurons.
+    The motors are not separate modules - they are emergent properties
+    of how DNA-neurons connect and fire together.
+    """
+    neuron_id: str
+    gene: OperationalGene
+    truth_type: TruthType
+    source_block: Optional[str] = None  # Blockchain reference for Foucauldian
+    synapses: List[str] = field(default_factory=list)  # Connected neuron IDs
+    activation_level: float = 0.0
+    plasticity: float = 1.0  # How much this neuron can change (Foucauldian = 0, Platonic = 1)
+    
+    def __post_init__(self):
+        if self.truth_type == TruthType.FOUCAULDIAN:
+            self.plasticity = 0.0  # Immutable
+        else:
+            self.plasticity = 1.0  # Plastic
+    
+    def connect_to(self, other_neuron_id: str) -> None:
+        """Creates a synapse to another neuron."""
+        if other_neuron_id not in self.synapses:
+            self.synapses.append(other_neuron_id)
+    
+    def activate(self, signal_strength: float) -> float:
+        """
+        Activates this neuron with a signal.
+        Returns the output activation level.
+        """
+        # Simple sigmoid activation
+        self.activation_level = 1 / (1 + math.exp(-signal_strength))
+        return self.activation_level
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "neuron_id": self.neuron_id,
+            "gene": self.gene.to_dict(),
+            "truth_type": self.truth_type.value,
+            "source_block": self.source_block,
+            "synapses": self.synapses,
+            "activation_level": self.activation_level,
+            "plasticity": self.plasticity
+        }
+
+
+# ============================================================================
+# DIGITAL GENOME - The Distributed Brain
 # ============================================================================
 class DigitalGenome:
     """
     The complete, versioned, governed library of operational genes.
     
-    The Digital Genome is the central repository of operational knowledge,
-    organized into thematic clusters (stems) and functional groups (chromosomes).
-    It supports versioning, evolution tracking, and contextual search.
+    But more than a library - this IS the brain. The Digital Genome
+    is a distributed cognitive organ where:
+    - Each gene is a neuron
+    - Stems and chromosomes are brain regions
+    - Synapses are relationships between genes
+    - Motors emerge from activation patterns
     
-    This is a "living" structure that evolves through Merism:
-    variation → evaluation → selection → inheritance
+    The genome is morphogenic: it grows new neurons as it learns.
+    It is federated: each node has its own brain that can donate
+    cells to other nodes when evolution occurs.
     """
     
     def __init__(self, genome_id: str = None, name: str = "Default Genome"):
-        """
-        Initializes a new Digital Genome.
-        
-        Args:
-            genome_id: Unique identifier (auto-generated if not provided)
-            name: Human-readable name for this genome
-        """
         self.genome_id = genome_id or make_uid("genome", name, str(time.time()))
         self.name = name
+        
+        # Neural architecture
+        self.neurons: Dict[str, DNANeuron] = {}
         self.genes: Dict[str, OperationalGene] = {}
-        self.stems: Dict[str, List[str]] = defaultdict(list)  # Thematic groupings
-        self.chromosomes: Dict[str, List[str]] = defaultdict(list)  # Functional groupings
-        self.evolution_history: List[Dict[str, Any]] = []
+        
+        # Brain regions
+        self.stems: Dict[str, List[str]] = defaultdict(list)  # Thematic regions
+        self.chromosomes: Dict[str, List[str]] = defaultdict(list)  # Functional regions
+        
+        # Truth registries
+        self.foucauldian_truths: Dict[str, FoucauldianTruth] = {}
+        self.platonic_approximations: Dict[str, PlatonicApproximation] = {}
+        
+        # Ontology registries
         self.entity_registry: Dict[str, Dict[str, Any]] = {}
         self.action_registry: Dict[str, Dict[str, Any]] = {}
         self.state_registry: Dict[str, Dict[str, Any]] = {}
+        
+        # Evolution tracking
+        self.evolution_history: List[Dict[str, Any]] = []
+        
         self.created_at = time.time()
         self.modified_at = time.time()
         
         logger.info(f"Digital Genome initialized: {self.name} ({self.genome_id[:16]}...)")
     
-    def register_entity(self, entity_id: str, name: str, entity_type: str, **attributes) -> str:
+    def register_foucauldian_truth(
+        self,
+        agent_id: str,
+        action: str,
+        context: Dict[str, Any],
+        outcome: Dict[str, Any]
+    ) -> FoucauldianTruth:
         """
-        Registers an entity in the genome's ontology.
+        Registers an experience as immutable truth.
+        This is like light that traveled without changing - 
+        it records what actually happened.
+        """
+        truth = FoucauldianTruth.register(agent_id, action, context, outcome)
+        self.foucauldian_truths[truth.truth_id] = truth
         
-        Args:
-            entity_id: Unique identifier for the entity
-            name: Human-readable name
-            entity_type: Classification (physical, logical, agent, resource)
-            **attributes: Additional attributes
-            
-        Returns:
-            The entity_id
+        logger.info(f"Foucauldian truth registered: {truth.truth_id[:16]}...")
+        return truth
+    
+    def synthesize_platonic_approximation(
+        self,
+        source_truth_ids: List[str],
+        pattern: Dict[str, Any],
+        craft_performance: float,
+        confidence: float
+    ) -> PlatonicApproximation:
         """
+        Synthesizes a Platonic approximation from multiple Foucauldian truths.
+        This is the journey from experience to wisdom.
+        """
+        approximation = PlatonicApproximation(
+            approximation_id=make_uid("platonic", str(time.time())),
+            source_truths=source_truth_ids,
+            synthesized_pattern=pattern,
+            craft_performance=craft_performance,
+            confidence=confidence,
+            version=1,
+            created_at=time.time()
+        )
+        self.platonic_approximations[approximation.approximation_id] = approximation
+        
+        logger.info(f"Platonic approximation synthesized: CP={craft_performance:.3f}")
+        return approximation
+    
+    def insert_gene_as_neuron(
+        self,
+        gene: OperationalGene,
+        truth_type: TruthType,
+        stem: str = "default",
+        chromosome: str = "primary",
+        source_block: Optional[str] = None
+    ) -> DNANeuron:
+        """
+        Inserts a gene into the genome as a neuron.
+        The brain grows a new cell.
+        """
+        self.genes[gene.uid] = gene
+        self.stems[stem].append(gene.uid)
+        self.chromosomes[chromosome].append(gene.uid)
+        
+        # Create the neuron
+        neuron = DNANeuron(
+            neuron_id=make_uid("neuron", gene.uid),
+            gene=gene,
+            truth_type=truth_type,
+            source_block=source_block
+        )
+        self.neurons[neuron.neuron_id] = neuron
+        
+        self.modified_at = time.time()
+        
+        # Record evolution event
+        self.evolution_history.append({
+            "timestamp": time.time(),
+            "event_type": "neuron_growth",
+            "gene_uid": gene.uid,
+            "neuron_id": neuron.neuron_id,
+            "truth_type": truth_type.value,
+            "stem": stem,
+            "chromosome": chromosome
+        })
+        
+        logger.info(f"Neuron grown: {gene.name} → {stem}/{chromosome}")
+        return neuron
+    
+    def create_synapse(self, neuron_id_1: str, neuron_id_2: str) -> None:
+        """Creates a bidirectional synapse between two neurons."""
+        if neuron_id_1 in self.neurons and neuron_id_2 in self.neurons:
+            self.neurons[neuron_id_1].connect_to(neuron_id_2)
+            self.neurons[neuron_id_2].connect_to(neuron_id_1)
+            logger.debug(f"Synapse created: {neuron_id_1[:16]} ↔ {neuron_id_2[:16]}")
+    
+    def register_entity(self, entity_id: str, name: str, entity_type: str, **attributes) -> str:
         self.entity_registry[entity_id] = {
             "name": name,
             "type": entity_type,
@@ -403,18 +633,6 @@ class DigitalGenome:
         return entity_id
     
     def register_action(self, action_id: str, name: str, category: str, **attributes) -> str:
-        """
-        Registers an action in the genome's ontology.
-        
-        Args:
-            action_id: Unique identifier for the action
-            name: Human-readable name
-            category: Classification (operational, informational, safety, diagnostic)
-            **attributes: Additional attributes
-            
-        Returns:
-            The action_id
-        """
         self.action_registry[action_id] = {
             "name": name,
             "category": category,
@@ -424,18 +642,6 @@ class DigitalGenome:
         return action_id
     
     def register_state(self, state_id: str, name: str, category: str, **attributes) -> str:
-        """
-        Registers a state in the genome's ontology.
-        
-        Args:
-            state_id: Unique identifier for the state
-            name: Human-readable name
-            category: Classification (operational, safety, intermediate, diagnostic)
-            **attributes: Additional attributes
-            
-        Returns:
-            The state_id
-        """
         self.state_registry[state_id] = {
             "name": name,
             "category": category,
@@ -444,605 +650,197 @@ class DigitalGenome:
         }
         return state_id
     
-    def insert_gene(
-        self,
-        gene: OperationalGene,
-        stem: str = "default",
-        chromosome: str = "primary"
-    ) -> None:
-        """
-        Inserts a gene into the genome.
-        
-        Args:
-            gene: The operational gene to insert
-            stem: Thematic grouping (e.g., "safety", "optimization", "diagnostics")
-            chromosome: Functional grouping (e.g., "core", "experimental")
-        """
-        self.genes[gene.uid] = gene
-        self.stems[stem].append(gene.uid)
-        self.chromosomes[chromosome].append(gene.uid)
-        self.modified_at = time.time()
-        
-        # Record evolution event
-        self.evolution_history.append({
-            "timestamp": time.time(),
-            "event_type": "insertion",
-            "gene_uid": gene.uid,
-            "gene_name": gene.name,
-            "stem": stem,
-            "chromosome": chromosome
-        })
-        
-        logger.info(f"Gene inserted: {gene.name} ({gene.uid[:16]}...) → stem='{stem}', chromosome='{chromosome}'")
-    
     def get_gene(self, gene_uid: str) -> Optional[OperationalGene]:
-        """Retrieves a gene by its UID"""
         return self.genes.get(gene_uid)
     
+    def get_neuron(self, neuron_id: str) -> Optional[DNANeuron]:
+        return self.neurons.get(neuron_id)
+    
     def find_genes_by_context(self, context: str) -> List[OperationalGene]:
-        """
-        Finds genes related to a specific context.
-        Searches through gene names, purposes, and metadata.
-        
-        Args:
-            context: Search term or context description
-            
-        Returns:
-            List of matching genes, sorted by relevance
-        """
-        context_lower = context.lower()
+        """Finds genes related to a specific context using word matching."""
+        context_words = set(context.lower().split())
         matches = []
         
         for gene in self.genes.values():
             relevance = 0
             
-            # Check name
-            if context_lower in gene.name.lower():
-                relevance += 3
+            # Check name words
+            name_words = set(gene.name.lower().split())
+            name_overlap = len(context_words & name_words)
+            relevance += name_overlap * 3
             
-            # Check purpose
-            if context_lower in gene.purpose.lower():
-                relevance += 2
+            # Check purpose words
+            purpose_words = set(gene.purpose.lower().split())
+            purpose_overlap = len(context_words & purpose_words)
+            relevance += purpose_overlap * 2
             
             # Check metadata
             for key, value in gene.metadata.items():
-                if context_lower in str(value).lower():
-                    relevance += 1
+                value_words = set(str(value).lower().split())
+                meta_overlap = len(context_words & value_words)
+                relevance += meta_overlap
             
             if relevance > 0:
                 matches.append((relevance, gene))
         
-        # Sort by relevance (descending) and return genes only
         matches.sort(key=lambda x: x[0], reverse=True)
         return [gene for _, gene in matches]
     
-    def find_genes_by_stem(self, stem: str) -> List[OperationalGene]:
-        """Returns all genes in a specific thematic stem"""
-        gene_uids = self.stems.get(stem, [])
-        return [self.genes[uid] for uid in gene_uids if uid in self.genes]
-    
-    def find_genes_by_chromosome(self, chromosome: str) -> List[OperationalGene]:
-        """Returns all genes in a specific functional chromosome"""
-        gene_uids = self.chromosomes.get(chromosome, [])
-        return [self.genes[uid] for uid in gene_uids if uid in self.genes]
-    
     def get_statistics(self) -> Dict[str, Any]:
-        """Returns comprehensive statistics about the genome"""
         total_codons = sum(len(gene.codons) for gene in self.genes.values())
         active_genes = sum(1 for g in self.genes.values() if g.status == GeneStatus.ACTIVE)
-        avg_fitness = sum(g.get_average_fitness() for g in self.genes.values()) / max(len(self.genes), 1)
+        vetoed_genes = sum(1 for g in self.genes.values() if g.is_vetoed)
+        
+        avg_cp = 0
+        if self.genes:
+            avg_cp = sum(g.craft_performance for g in self.genes.values()) / len(self.genes)
         
         return {
             "genome_id": self.genome_id[:16] + "...",
             "name": self.name,
+            "total_neurons": len(self.neurons),
             "total_genes": len(self.genes),
             "active_genes": active_genes,
+            "vetoed_genes": vetoed_genes,
             "total_codons": total_codons,
+            "foucauldian_truths": len(self.foucauldian_truths),
+            "platonic_approximations": len(self.platonic_approximations),
             "stems": len(self.stems),
             "chromosomes": len(self.chromosomes),
-            "evolution_events": len(self.evolution_history),
-            "entities_registered": len(self.entity_registry),
-            "actions_registered": len(self.action_registry),
-            "states_registered": len(self.state_registry),
-            "average_fitness": round(avg_fitness, 3),
-            "created_at": self.created_at,
-            "modified_at": self.modified_at
+            "total_synapses": sum(len(n.synapses) for n in self.neurons.values()),
+            "average_craft_performance": round(avg_cp, 4),
+            "evolution_events": len(self.evolution_history)
         }
     
     def to_dict(self) -> Dict[str, Any]:
-        """Serializes the entire genome to a dictionary"""
         return {
             "genome_id": self.genome_id,
             "name": self.name,
             "genes": {uid: gene.to_dict() for uid, gene in self.genes.items()},
+            "neurons": {nid: n.to_dict() for nid, n in self.neurons.items()},
             "stems": dict(self.stems),
             "chromosomes": dict(self.chromosomes),
-            "evolution_history": self.evolution_history,
+            "foucauldian_truths": {tid: t.to_dict() for tid, t in self.foucauldian_truths.items()},
+            "platonic_approximations": {aid: a.to_dict() for aid, a in self.platonic_approximations.items()},
             "entity_registry": self.entity_registry,
             "action_registry": self.action_registry,
             "state_registry": self.state_registry,
+            "evolution_history": self.evolution_history,
             "created_at": self.created_at,
             "modified_at": self.modified_at
         }
     
     def to_json(self, indent: int = 2) -> str:
-        """Serializes the genome to a JSON string"""
         return json.dumps(self.to_dict(), indent=indent)
-    
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'DigitalGenome':
-        """Deserializes a genome from a dictionary"""
-        genome = cls(genome_id=data["genome_id"], name=data["name"])
-        
-        for gene_data in data.get("genes", {}).values():
-            gene = OperationalGene.from_dict(gene_data)
-            genome.genes[gene.uid] = gene
-        
-        genome.stems = defaultdict(list, data.get("stems", {}))
-        genome.chromosomes = defaultdict(list, data.get("chromosomes", {}))
-        genome.evolution_history = data.get("evolution_history", [])
-        genome.entity_registry = data.get("entity_registry", {})
-        genome.action_registry = data.get("action_registry", {})
-        genome.state_registry = data.get("state_registry", {})
-        genome.created_at = data.get("created_at", time.time())
-        genome.modified_at = data.get("modified_at", time.time())
-        
-        return genome
 
 
 # ============================================================================
-# COMPUTATIONAL RIBOSOME
+# DEMONSTRATION
 # ============================================================================
-@dataclass
-class ExecutionStep:
-    """Represents a single step in gene execution"""
-    order: int
-    codon: PraxeologicalCodon
-    status: ExecutionResult = ExecutionResult.SUCCESS
-    output: Dict[str, Any] = field(default_factory=dict)
-    duration_ms: float = 0.0
-    error: Optional[str] = None
-
-
-@dataclass
-class ExecutionPlan:
-    """Complete execution plan for a gene"""
-    gene_uid: str
-    gene_name: str
-    steps: List[ExecutionStep]
-    total_steps: int
-    safety_level: SafetyLevel
-    estimated_duration_ms: float
-    created_at: float = field(default_factory=time.time)
-
-
-class ComputationalRibosome:
-    """
-    Translates operational genes into executable instructions.
+def demonstration():
+    """Demonstrates the core Digital Genome architecture."""
+    print("\n" + "=" * 70)
+    print("DIGITAL GENOME v2.0 - CORE ARCHITECTURE DEMONSTRATION")
+    print("Knowledge IS the brain, not stored in it")
+    print("=" * 70)
     
-    Just as biological ribosomes translate mRNA into proteins,
-    the Computational Ribosome translates genes into action sequences
-    that can be executed in the operational environment.
-    """
+    # Create genome
+    print("\n Creating Digital Genome (distributed brain)...")
+    genome = DigitalGenome(name="Industrial Cognitive Genome")
     
-    def __init__(self, genome: DigitalGenome):
-        """
-        Initializes the ribosome with a reference to the genome.
-        
-        Args:
-            genome: The Digital Genome containing genes to translate
-        """
-        self.genome = genome
-        self.translation_cache: Dict[str, ExecutionPlan] = {}
-        self.execution_history: List[Dict[str, Any]] = []
-        
-    def translate_gene(self, gene_uid: str) -> ExecutionPlan:
-        """
-        Translates a gene into an executable plan.
-        
-        Args:
-            gene_uid: The unique identifier of the gene to translate
-            
-        Returns:
-            An ExecutionPlan containing all steps to execute
-            
-        Raises:
-            ValueError: If the gene is not found or is not active
-        """
-        # Check cache first
-        if gene_uid in self.translation_cache:
-            logger.debug(f"Using cached translation for gene {gene_uid[:16]}...")
-            return self.translation_cache[gene_uid]
-        
-        gene = self.genome.get_gene(gene_uid)
-        if not gene:
-            raise ValueError(f"Gene not found: {gene_uid}")
-        
-        if gene.status != GeneStatus.ACTIVE:
-            raise ValueError(f"Gene is not active: {gene.name} (status: {gene.status.value})")
-        
-        # Build execution steps from codons
-        steps = []
-        for i, codon in enumerate(gene.codons):
-            step = ExecutionStep(
-                order=i + 1,
-                codon=codon,
-                status=ExecutionResult.SUCCESS,  # Will be updated during execution
-                output={}
-            )
-            steps.append(step)
-        
-        # Create execution plan
-        plan = ExecutionPlan(
-            gene_uid=gene_uid,
-            gene_name=gene.name,
-            steps=steps,
-            total_steps=len(steps),
-            safety_level=gene.safety_level,
-            estimated_duration_ms=len(steps) * 100  # Rough estimate
-        )
-        
-        # Cache the translation
-        self.translation_cache[gene_uid] = plan
-        
-        logger.info(f"Translated gene '{gene.name}' → {len(steps)} execution steps")
-        return plan
+    # Register ontology
+    pump_id = genome.register_entity(make_uid("entity", "pump", "401"), "Pump 401", "physical")
+    stop_action = genome.register_action(make_uid("action", "stop"), "Stop", "operational")
+    isolated_state = genome.register_state(make_uid("state", "isolated"), "Isolated", "safety")
     
-    def execute_plan(
-        self,
-        plan: ExecutionPlan,
-        context: Dict[str, Any] = None,
-        dry_run: bool = False
-    ) -> Dict[str, Any]:
-        """
-        Executes a translated plan.
-        
-        Args:
-            plan: The execution plan to run
-            context: Runtime context and parameters
-            dry_run: If True, simulates execution without side effects
-            
-        Returns:
-            Execution result with status, outputs, and metrics
-        """
-        context = context or {}
-        start_time = time.time()
-        
-        result = {
-            "gene_uid": plan.gene_uid,
-            "gene_name": plan.gene_name,
-            "dry_run": dry_run,
-            "steps_executed": 0,
-            "steps_successful": 0,
-            "steps_failed": 0,
-            "step_results": [],
-            "overall_status": ExecutionResult.SUCCESS,
-            "start_time": start_time,
-            "end_time": None,
-            "duration_ms": 0
-        }
-        
-        for step in plan.steps:
-            step_start = time.time()
-            
-            try:
-                # Validate preconditions
-                preconditions_met = self._check_preconditions(step.codon, context)
-                
-                if not preconditions_met:
-                    step.status = ExecutionResult.ABORTED
-                    step.error = "Preconditions not met"
-                    result["steps_failed"] += 1
-                else:
-                    # Execute the step (simulated in this implementation)
-                    if not dry_run:
-                        step.output = self._execute_codon(step.codon, context)
-                    step.status = ExecutionResult.SUCCESS
-                    result["steps_successful"] += 1
-                    
-            except Exception as e:
-                step.status = ExecutionResult.FAILURE
-                step.error = str(e)
-                result["steps_failed"] += 1
-                logger.error(f"Step {step.order} failed: {e}")
-            
-            step.duration_ms = (time.time() - step_start) * 1000
-            result["steps_executed"] += 1
-            result["step_results"].append({
-                "order": step.order,
-                "codon": str(step.codon),
-                "status": step.status.value,
-                "duration_ms": step.duration_ms,
-                "error": step.error
-            })
-            
-            # Stop on critical failure
-            if step.status == ExecutionResult.FAILURE and step.codon.safety_level == SafetyLevel.CRITICAL:
-                result["overall_status"] = ExecutionResult.ABORTED
-                break
-        
-        # Determine overall status
-        if result["steps_failed"] > 0:
-            if result["steps_successful"] > 0:
-                result["overall_status"] = ExecutionResult.PARTIAL
-            else:
-                result["overall_status"] = ExecutionResult.FAILURE
-        
-        result["end_time"] = time.time()
-        result["duration_ms"] = (result["end_time"] - start_time) * 1000
-        
-        # Record in history
-        self.execution_history.append(result)
-        
-        logger.info(
-            f"Execution complete: {plan.gene_name} → "
-            f"{result['overall_status'].value} "
-            f"({result['steps_successful']}/{result['steps_executed']} steps, "
-            f"{result['duration_ms']:.2f}ms)"
-        )
-        
-        return result
-    
-    def _check_preconditions(self, codon: PraxeologicalCodon, context: Dict[str, Any]) -> bool:
-        """
-        Validates that all preconditions for a codon are met.
-        In a real implementation, this would check actual system state.
-        """
-        # Simplified: always return True for demonstration
-        # In production, this would validate against real context
-        return True
-    
-    def _execute_codon(self, codon: PraxeologicalCodon, context: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Executes a single codon.
-        In a real implementation, this would interface with actual systems.
-        """
-        # Simulated execution
-        return {
-            "entity": codon.entity_id,
-            "action_performed": codon.action_id,
-            "resulting_state": codon.target_state_id,
-            "timestamp": time.time()
-        }
-    
-    def invalidate_cache(self, gene_uid: str = None) -> None:
-        """
-        Invalidates translation cache.
-        
-        Args:
-            gene_uid: Specific gene to invalidate, or None for all
-        """
-        if gene_uid:
-            self.translation_cache.pop(gene_uid, None)
-        else:
-            self.translation_cache.clear()
-
-
-# ============================================================================
-# EXAMPLE USAGE AND DEMONSTRATION
-# ============================================================================
-def create_example_genome() -> DigitalGenome:
-    """
-    Creates an example genome with sample genes demonstrating
-    the core concepts of Operational Genomics.
-    """
-    # Initialize genome
-    genome = DigitalGenome(name="Industrial Operations Genome")
-    
-    # Register entities
-    pump_id = genome.register_entity(
-        make_uid("entity", "pump", "401"),
-        name="Pump 401",
-        entity_type="physical",
-        location="Building A",
-        criticality="high"
+    # Register a Foucauldian truth (immutable experience)
+    print("\n Registering Foucauldian truth (immutable experience)...")
+    truth = genome.register_foucauldian_truth(
+        agent_id="operator_001",
+        action="emergency_stop_pump_401",
+        context={"temperature": 95, "vibration": 8.5, "pressure": 850},
+        outcome={"success": True, "time_ms": 450, "equipment_intact": True}
     )
+    print(f"   Truth registered: {truth.truth_id[:32]}...")
+    print(f"   Block hash: {truth.block_hash[:32]}...")
     
-    valve_id = genome.register_entity(
-        make_uid("entity", "valve", "302"),
-        name="Valve 302",
-        entity_type="physical",
-        location="Building A",
-        criticality="medium"
-    )
-    
-    # Register actions
-    start_action = genome.register_action(
-        make_uid("action", "start"),
-        name="Start",
-        category="operational"
-    )
-    
-    stop_action = genome.register_action(
-        make_uid("action", "stop"),
-        name="Stop",
-        category="operational"
-    )
-    
-    isolate_action = genome.register_action(
-        make_uid("action", "isolate"),
-        name="Isolate",
-        category="safety"
-    )
-    
-    inspect_action = genome.register_action(
-        make_uid("action", "inspect"),
-        name="Inspect",
-        category="diagnostic"
-    )
-    
-    # Register states
-    running_state = genome.register_state(
-        make_uid("state", "running"),
-        name="Running",
-        category="operational"
-    )
-    
-    stopped_state = genome.register_state(
-        make_uid("state", "stopped"),
-        name="Stopped",
-        category="operational"
-    )
-    
-    isolated_state = genome.register_state(
-        make_uid("state", "isolated"),
-        name="Isolated",
-        category="safety"
-    )
-    
-    # Create an Emergency Shutdown Gene
-    shutdown_gene = OperationalGene.create(
+    # Create an operational gene
+    print("\n Creating operational gene...")
+    gene = OperationalGene.create(
         name="Emergency Pump Shutdown",
-        purpose="Safely transition pump to shutdown mode in case of anomaly",
+        purpose="Safely stop pump in emergency conditions",
         executor="safety_system",
         action="emergency_shutdown",
-        target="pump_401",
-        domain="safety",
-        priority="critical"
+        target="pump_401"
     )
     
-    # Add codons to the gene
-    shutdown_gene.add_codon(PraxeologicalCodon(
+    gene.add_codon(PraxeologicalCodon(
         entity_id=pump_id,
         action_id=stop_action,
-        target_state_id=stopped_state,
-        safety_level=SafetyLevel.CRITICAL,
-        preconditions=("pump_running",),
-        postconditions=("pump_stopped",)
-    ))
-    
-    shutdown_gene.add_codon(PraxeologicalCodon(
-        entity_id=valve_id,
-        action_id=isolate_action,
         target_state_id=isolated_state,
         safety_level=SafetyLevel.CRITICAL,
-        preconditions=("valve_open",),
-        postconditions=("valve_isolated",)
+        intent_signature=make_uid("intent", "emergency", "safety")
     ))
     
-    shutdown_gene.add_codon(PraxeologicalCodon(
-        entity_id=pump_id,
-        action_id=inspect_action,
-        target_state_id=stopped_state,
-        safety_level=SafetyLevel.WARNING,
-        preconditions=("pump_stopped", "valve_isolated"),
-        postconditions=("inspection_complete",)
-    ))
-    
-    # Configure gene
-    shutdown_gene.activation_conditions = [
-        "vibration_level > threshold",
-        "temperature > safe_limit",
-        "operator_authorization = true"
-    ]
-    shutdown_gene.postconditions = [
-        "equipment_status = 'safe_shutdown'",
-        "inspection_log_created = true"
-    ]
-    shutdown_gene.exception_handlers = {
-        "valve_stuck": "escalate_to_manual_intervention",
-        "communication_failure": "activate_local_shutdown"
-    }
-    shutdown_gene.evaluation_metrics = [
-        "shutdown_time_ms",
-        "safety_compliance_score",
-        "equipment_integrity"
-    ]
-    shutdown_gene.activate()
-    
-    # Insert into genome
-    genome.insert_gene(shutdown_gene, stem="safety", chromosome="critical_operations")
-    
-    # Create a Routine Inspection Gene
-    inspection_gene = OperationalGene.create(
-        name="Routine Equipment Inspection",
-        purpose="Perform standard inspection procedures on equipment",
-        executor="maintenance_system",
-        action="routine_inspection",
-        target="general_equipment",
-        domain="maintenance",
-        priority="normal"
+    # Record motor scores (PRODUCT, not sum!)
+    print("\n Recording parallel motor scores...")
+    gene.record_motor_scores(
+        praxeological=0.92,  # Intention realization
+        nash=0.85,          # Strategic equilibrium
+        chaotic=0.88,       # Robustness to perturbations
+        meristic=0.90       # Pattern universality
     )
     
-    inspection_gene.add_codon(PraxeologicalCodon(
-        entity_id=pump_id,
-        action_id=inspect_action,
-        target_state_id=running_state,
-        safety_level=SafetyLevel.INFO,
-        context={"inspection_type": "visual"}
-    ))
+    print(f"   Praxeological Motor: {gene.motor_scores['praxeological']:.2f}")
+    print(f"   Nash Motor: {gene.motor_scores['nash']:.2f}")
+    print(f"   Chaotic Motor: {gene.motor_scores['chaotic']:.2f}")
+    print(f"   Meristic Motor: {gene.motor_scores['meristic']:.2f}")
+    print(f"   Craft Performance (PRODUCT): {gene.craft_performance:.4f}")
+    print(f"   Veto Status: {gene.veto_status.value}")
     
-    inspection_gene.activate()
-    genome.insert_gene(inspection_gene, stem="maintenance", chromosome="routine_operations")
+    # Demonstrate veto
+    print("\n Demonstrating absolute veto (zero in any motor)...")
+    vetoed_gene = OperationalGene.create(
+        name="Unstable Action",
+        purpose="Action that fails strategic equilibrium",
+        executor="system",
+        action="unstable",
+        target="target"
+    )
+    vetoed_gene.record_motor_scores(
+        praxeological=0.95,
+        nash=0.0,  # ZERO - absolute veto!
+        chaotic=0.90,
+        meristic=0.85
+    )
+    print(f"   Motors: P=0.95, N=0.0, C=0.90, M=0.85")
+    print(f"   Craft Performance: {vetoed_gene.craft_performance:.4f}")
+    print(f"   Vetoed: {vetoed_gene.is_vetoed} ({vetoed_gene.veto_status.value})")
+    
+    # Insert gene as neuron
+    print("\n Growing neuron in the distributed brain...")
+    gene.activate()
+    neuron = genome.insert_gene_as_neuron(
+        gene,
+        truth_type=TruthType.PLATONIC,
+        stem="safety",
+        chromosome="critical_operations"
+    )
+    print(f"   Neuron ID: {neuron.neuron_id[:32]}...")
+    print(f"   Plasticity: {neuron.plasticity} (Platonic = plastic)")
+    
+    # Statistics
+    print("\n Genome Statistics:")
+    stats = genome.get_statistics()
+    for key, value in stats.items():
+        print(f"   • {key}: {value}")
+    
+    print("\n" + "=" * 70)
+    print(" DEMONSTRATION COMPLETE")
+    print("=" * 70)
     
     return genome
 
 
-def demonstration():
-    """
-    Demonstrates the core functionality of the Digital Genome framework.
-    """
-    print("\n" + "=" * 70)
-    print("OPERATIONAL GENOMICS - DIGITAL GENOME DEMONSTRATION")
-    print("Framework for Coherent, Evolutive Operational Knowledge Systems")
-    print("=" * 70)
-    
-    # Create genome with example data
-    print("\n📦 Creating Digital Genome...")
-    genome = create_example_genome()
-    
-    # Display statistics
-    stats = genome.get_statistics()
-    print(f"\n📊 Genome Statistics:")
-    print(f"   • Name: {stats['name']}")
-    print(f"   • Total Genes: {stats['total_genes']}")
-    print(f"   • Active Genes: {stats['active_genes']}")
-    print(f"   • Total Codons: {stats['total_codons']}")
-    print(f"   • Stems: {stats['stems']}")
-    print(f"   • Chromosomes: {stats['chromosomes']}")
-    print(f"   • Entities Registered: {stats['entities_registered']}")
-    print(f"   • Actions Registered: {stats['actions_registered']}")
-    print(f"   • States Registered: {stats['states_registered']}")
-    
-    # Initialize ribosome
-    print(f"\n🔬 Initializing Computational Ribosome...")
-    ribosome = ComputationalRibosome(genome)
-    
-    # Find and execute a gene
-    print(f"\n🔍 Searching for safety-related genes...")
-    safety_genes = genome.find_genes_by_context("shutdown")
-    
-    if safety_genes:
-        gene = safety_genes[0]
-        print(f"   Found: {gene.name}")
-        print(f"   Purpose: {gene.purpose}")
-        print(f"   Codons: {len(gene.codons)}")
-        print(f"   Safety Level: {gene.safety_level.value}")
-        
-        # Translate gene
-        print(f"\n⚙️  Translating gene to execution plan...")
-        plan = ribosome.translate_gene(gene.uid)
-        print(f"   Steps: {plan.total_steps}")
-        print(f"   Estimated Duration: {plan.estimated_duration_ms}ms")
-        
-        # Execute (dry run)
-        print(f"\n▶️  Executing gene (dry run)...")
-        result = ribosome.execute_plan(plan, dry_run=True)
-        print(f"   Status: {result['overall_status'].value}")
-        print(f"   Steps Executed: {result['steps_executed']}")
-        print(f"   Steps Successful: {result['steps_successful']}")
-        print(f"   Duration: {result['duration_ms']:.2f}ms")
-    
-    # Export genome
-    print(f"\n💾 Genome can be exported to JSON for persistence")
-    print(f"   Use: genome.to_json() or genome.to_dict()")
-    
-    print("\n" + "=" * 70)
-    print("✅ DEMONSTRATION COMPLETE")
-    print("=" * 70)
-    
-    return genome, ribosome
-
-
 if __name__ == "__main__":
-    genome, ribosome = demonstration()
+    genome = demonstration()
