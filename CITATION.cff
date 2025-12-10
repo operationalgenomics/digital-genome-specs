@@ -1,0 +1,158 @@
+cff-version: 1.2.0
+message: "If you use the Digital Genome / Operational Genomics framework in your research, please cite it using the metadata below."
+
+# ---------------------------------------------------------------------------
+# PRIMARY METADATA – SOFTWARE (THIS REPOSITORY)
+# ---------------------------------------------------------------------------
+type: software
+title: "Digital Genome Framework (Operational Genomics)"
+version: "2.0.0"
+date-released: 2025-12-01
+
+abstract: >
+  Operational Genomics is a unified neuro-symbolic cognitive architecture
+  that models operational knowledge as evolutive DNA-like neurons (operational
+  genes). The framework integrates data, intention, semantics, and action
+  through a four-motor parallel evaluation system (Praxeological, Nash,
+  Chaotic, and Meristic Meta-Motor), computing Craft Performance as the
+  product of all motors where any zero constitutes absolute veto. The
+  architecture distinguishes between Foucauldian truths (immutable,
+  blockchain-registered experiences) and Platonic truths (synthesized,
+  evolving approximations of ideal Forms). This enables industrial cognitive
+  systems with mathematical robustness, full explainability, and adaptive
+  learning suitable for Industry 5.0 environments.
+
+authors:
+  - family-names: "Favini"
+    given-names: "Carlos Eduardo"
+    affiliation: "Operational Genomics Research Initiative"
+    email: "favini@microgenesys.com.br"
+    orcid: "https://orcid.org/0009-0001-6829-9358"
+
+keywords:
+  - operational genomics
+  - digital genome
+  - industry 5.0
+  - neuro-symbolic AI
+  - cognitive architecture
+  - praxeological codon
+  - operational gene
+  - craft performance
+  - meristic meta-motor
+  - nash equilibrium
+  - chaos theory
+  - industrial cognition
+  - explainable AI
+  - knowledge representation
+
+repository-code: "https://github.com/operationalgenomics/digital-genome-specs"
+url: "https://github.com/operationalgenomics/digital-genome-specs"
+license: "MIT"
+
+# ---------------------------------------------------------------------------
+# PREFERRED CITATION – MAIN ACADEMIC REFERENCE (BOOK)
+# ---------------------------------------------------------------------------
+preferred-citation:
+  type: book
+  title: "The Digital Genome: The Science Unifying Data, Artificial Intelligence, and Action in Industry 5.0"
+  authors:
+    - family-names: "Favini"
+      given-names: "Carlos Eduardo"
+      orcid: "https://orcid.org/0009-0001-6829-9358"
+  year: 2025
+  month: 11
+  publisher:
+    name: "Amazon Kindle Direct Publishing"
+  url: "https://www.amazon.com/dp/B0G4HG1PXD"
+  abstract: >
+    The Digital Genome presents Operational Genomics, a new scientific
+    discipline that treats operational knowledge as living, evolving
+    structure rather than static data. The framework introduces DNA-like
+    operational genes evaluated by four parallel cognitive motors, enabling
+    autonomous industrial systems with full explainability and mathematical
+    robustness for Industry 5.0.
+
+# ---------------------------------------------------------------------------
+# REFERENCES – OTHER RELATED WORKS
+# ---------------------------------------------------------------------------
+references:
+  # Portuguese edition of the book
+  - type: book
+    title: "O Genoma Digital: A Ciência que Unifica Dados, Inteligência Artificial e Ação na Indústria 5.0"
+    authors:
+      - family-names: "Favini"
+        given-names: "Carlos Eduardo"
+        orcid: "https://orcid.org/0009-0001-6829-9358"
+    year: 2025
+    month: 11
+    publisher:
+      name: "Amazon Kindle Direct Publishing"
+    url: "https://www.amazon.com/dp/B0G4BFMSWF"
+    notes: >
+      Portuguese edition. Available in Kindle (ASIN B0G4BFMSWF),
+      Paperback (ASIN B0G4DG4L5N), and Hardcover (ASIN B0G4CPWBL2) formats.
+    languages:
+      - pt
+
+  # English edition (alternative formats)
+  - type: book
+    title: "The Digital Genome: The Science Unifying Data, Artificial Intelligence, and Action in Industry 5.0"
+    authors:
+      - family-names: "Favini"
+        given-names: "Carlos Eduardo"
+        orcid: "https://orcid.org/0009-0001-6829-9358"
+    year: 2025
+    month: 11
+    publisher:
+      name: "Amazon Kindle Direct Publishing"
+    url: "https://www.amazon.com/dp/B0G4HG1PXD"
+    notes: >
+      English edition. Available in Kindle (ASIN B0G4HG1PXD),
+      Paperback (ASIN B0G4J9SRYV), and Hardcover (ASIN B0G4ND3V5N) formats.
+    languages:
+      - en
+
+  # Software reference implementation (this repository)
+  - type: software
+    title: "Digital Genome Framework — Reference Implementation"
+    authors:
+      - family-names: "Favini"
+        given-names: "Carlos Eduardo"
+        orcid: "https://orcid.org/0009-0001-6829-9358"
+    year: 2025
+    version: "2.0.0"
+    repository-code: "https://github.com/operationalgenomics/digital-genome-specs"
+    license: "MIT"
+    notes: >
+      Python reference implementation with formal specifications,
+      architectural diagrams, and simulation framework.
+
+  # Medium Article 1
+  - type: article
+    title: "A Neuro-Symbolic Architecture for Industrial Cognition"
+    authors:
+      - family-names: "Favini"
+        given-names: "Carlos Eduardo"
+        orcid: "https://orcid.org/0009-0001-6829-9358"
+    year: 2025
+    month: 12
+    publisher:
+      name: "Towards AI"
+    url: "https://medium.com/towards-artificial-intelligence/a-neuro-symbolic-architecture-for-industrial-cognition-924cefb199e6"
+    notes: >
+      Article published in the Towards AI publication on Medium.
+
+  # Medium Article 2
+  - type: article
+    title: "Building AI That Can Process Signals We Haven't Invented Yet"
+    authors:
+      - family-names: "Favini"
+        given-names: "Carlos Eduardo"
+        orcid: "https://orcid.org/0009-0001-6829-9358"
+    year: 2025
+    month: 12
+    publisher:
+      name: "DataDrivenInvestor"
+    url: "https://medium.com/datadriveninvestor/building-ai-that-can-process-signals-we-havent-invented-yet-727d39a2b4ff"
+    notes: >
+      Article published in the DataDrivenInvestor publication on Medium.
