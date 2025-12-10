@@ -4,6 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--6829--9358-green.svg)](https://orcid.org/0009-0001-6829-9358)
 
 ---
 
@@ -182,6 +183,7 @@ The Meta-Motor is **consultative** — it proposes, never decides:
 It operates at multiple scales (micro, meso, macro), seeing patterns that span domains and time.
 
 ---
+
 ## Repository Structure
 
 ```bash
@@ -247,11 +249,11 @@ digital-genome-specs/
 │   └── digital-genome.schema.json
 │
 ├── diagrams/
-│   ├── foundations/                # PHILOSOPHICAL FOUNDATIONS (NEW)
+│   ├── foundations/                # PHILOSOPHICAL FOUNDATIONS
 │   │   ├── truth-architecture.mmd      # Foucauldian vs Platonic truth systems
 │   │   ├── neuron-ontology.mmd         # DNA as neurons, distributed brain
 │   │   └── information-lifecycle.mmd   # Complete flow from experience to wisdom
-│   ├── sensory-cortex/             # SENSORY CORTEX (NEW)
+│   ├── sensory-cortex/             # SENSORY CORTEX
 │   │   ├── sensory-cortex-architecture.mmd  # Carrier->Pattern->Structure->Semantics
 │   │   └── sensory-cortex-examples.mmd      # Processing examples across time horizons
 │   ├── system/
@@ -272,7 +274,7 @@ digital-genome-specs/
 │   │   └── interaction/            # Operator interaction models, ambiguity-resolution loops
 │   ├── cognitive-core/  
 │   │   ├── architecture/           # Layered architecture and internal cognitive cycles
-│   │   ├── motors/                 # PARALLEL MOTORS (NEW)
+│   │   ├── motors/                 # PARALLEL MOTORS
 │   │   │   ├── parallel-motors-architecture.mmd  # Four motors operating simultaneously
 │   │   │   ├── craft-performance-calculation.mmd # CP as product, not sum
 │   │   │   ├── motor-convergence.mmd             # How motors converge to decisions
@@ -306,6 +308,8 @@ digital-genome-specs/
 │   ├── system-context.md
 │   └── versioning-policy.md
 │
+├── CITATION.cff
+├── CONTRIBUTING.md
 └── README.md
 ```
 
@@ -534,7 +538,12 @@ Operational Genomics is designed for complex industrial environments:
 ### Publications
 
 - **Book (EN)**: [The Digital Genome](https://a.co/d/ciFwzqM) — Amazon
-- **Book (PT-BR)**: [Fundamentos da Genômica Operacional](https://a.co/d/a4PRANJ) — Amazon
+- **Book (PT-BR)**: [O Genoma Digital](https://a.co/d/a4PRANJ) — Amazon
+
+### Articles
+
+- [A Neuro-Symbolic Architecture for Industrial Cognition](https://medium.com/towards-artificial-intelligence/a-neuro-symbolic-architecture-for-industrial-cognition-924cefb199e6) — Towards AI
+- [Building AI That Can Process Signals We Haven't Invented Yet](https://medium.com/datadriveninvestor/building-ai-that-can-process-signals-we-havent-invented-yet-727d39a2b4ff) — DataDrivenInvestor
 
 ### White Papers
 
@@ -544,14 +553,47 @@ Operational Genomics is designed for complex industrial environments:
 
 ## Contributing
 
-Contributions are welcome. Please read the specification documents before proposing changes to ensure alignment with the theoretical foundations.
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute while maintaining alignment with the theoretical foundations.
 
-Areas where contributions are especially valuable:
+---
 
-- Additional domain-specific gene libraries
-- Performance optimizations
-- Visualization tools
-- Integration adapters for industrial systems
+## Abstract
+
+**Operational Genomics** is a new scientific discipline that treats operational knowledge as living, evolving structure rather than static data. The framework introduces DNA-like **operational genes** — sequences of praxeological codons encoding intention, action, and target state — evaluated by four parallel cognitive motors (Praxeological, Nash, Chaotic, and Meristic). The architecture computes **Craft Performance** as the *product* of all motor scores, where any zero constitutes absolute veto — a mathematical property that prevents the dangerous compensatory logic of weighted averages. The framework distinguishes between **Foucauldian truths** (immutable, blockchain-registered experiences) and **Platonic truths** (synthesized, evolving approximations of ideal Forms), enabling systems that accumulate wisdom through experience while maintaining auditable provenance of all operational knowledge. This architecture addresses fundamental limitations of current approaches to industrial cognition: the opacity of neural networks, the brittleness of rule-based systems, and the inability of both to evolve their knowledge structures through operation.
+
+---
+
+## Citation
+
+If you use this framework in your research, please cite:
+
+```bibtex
+@book{favini2025digitalgenome,
+  author       = {Favini, Carlos Eduardo},
+  title        = {The Digital Genome: The Science Unifying Data, Artificial 
+                  Intelligence, and Action in Industry 5.0},
+  year         = {2025},
+  month        = {November},
+  publisher    = {Amazon Kindle Direct Publishing},
+  url          = {https://www.amazon.com/dp/B0G4HG1PXD},
+  note         = {Available in Kindle, Paperback, and Hardcover formats}
+}
+```
+
+For the Portuguese edition:
+
+```bibtex
+@book{favini2025genomadigital,
+  author       = {Favini, Carlos Eduardo},
+  title        = {O Genoma Digital: A Ciência que Unifica Dados, Inteligência 
+                  Artificial e Ação na Indústria 5.0},
+  year         = {2025},
+  month        = {November},
+  publisher    = {Amazon Kindle Direct Publishing},
+  url          = {https://www.amazon.com/dp/B0G4BFMSWF},
+  language     = {Portuguese}
+}
+```
 
 ---
 
@@ -564,10 +606,12 @@ MIT License — see [LICENSE](LICENSE) for details.
 ## Author
 
 **Carlos Eduardo Favini**
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--6829--9358-green.svg)](https://orcid.org/0009-0001-6829-9358)
 
 Creator of Operational Genomics and author of *The Digital Genome*.
+
+Affiliation: Operational Genomics Research Initiative
 
 ---
 
 *"Between 0 and 1 there are infinite values — not binary, it's fractal, quantum-like. Zero is error, one is absolute truth. You cannot integrate what you do not understand. The Digital Genome provides the grammar that makes understanding — and therefore true integration — possible."*
-
