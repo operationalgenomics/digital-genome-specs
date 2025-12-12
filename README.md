@@ -1,11 +1,11 @@
 # Operational Genomics — Technical Specifications & Implementation
 
 > A framework that unifies **data, AI, intention and action** into coherent, evolutive, and explainable operational knowledge systems.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--6829--9358-green.svg)](https://orcid.org/0009-0001-6829-9358)
-
+<!-- ![Static Badge](https://img.shields.io/badge/0.1.0-blue?style=flat&label=release) -->
+<!-- ![Static Badge](https://img.shields.io/badge/Carlos_Eduardo_Favini-yellow?style=flat&label=author) -->
 ---
 
 ## Overview
