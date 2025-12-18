@@ -1,35 +1,36 @@
-# Use uma imagem base oficial do Python
+# Use an official Python base image
 FROM python:3.10-slim
 
-# Metadados da imagem
+# Image Metadata
 LABEL maintainer="Carlos Eduardo Favini <favini@microgenesys.com.br>"
 LABEL description="Operational Genomics Simulation Environment"
 LABEL version="2.0.0"
 
-# Define o diretório de trabalho no container
+# Set the working directory in the container
 WORKDIR /app
 
-# Variáveis de ambiente para evitar arquivos .pyc e buffer de stdout
+# Environment variables to prevent .pyc files and stdout buffering
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-# Adiciona src ao PYTHONPATH para que os imports funcionem corretamente
+
+# Add src to PYTHONPATH to ensure imports work correctly
 ENV PYTHONPATH="${PYTHONPATH}:/app/src"
 
-# Instala as dependências do sistema necessárias (se houver)
+# Install necessary system dependencies (if any)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copia e instala dependências Python
+# Copy and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia toda a estrutura do projeto
+# Copy the entire project structure
 COPY . .
 
-# Cria um usuário não-root por segurança
+# Create a non-root user for security purposes
 RUN useradd -m researcher
 USER researcher
 
-# Comando padrão: executa a demonstração
+# Default command: execute the demo script
 CMD ["python", "examples/demo.py"]

@@ -1,0 +1,116 @@
+{
+  "session_id": "run_rc_initial_1765826351",
+  "start_time": "2025-12-15T16:19:11.204171",
+  "end_time": "2025-12-15T16:19:11.208690",
+  "total_decisions": 3,
+  "decisions": [
+    {
+      "timestamp": "2025-12-15T16:19:11.205171",
+      "gene_uid": "ed5058f65a4269dc291c1b5a486a36889131195d70c84d6f95fd2fadb65e6c03",
+      "gene_name": "Turbofan_Unit_1",
+      "purpose": "Generate Thrust",
+      "metadata": {
+        "ontology_class": "machine",
+        "autonomy_level": "deterministic",
+        "description": "Industrial rotating equipment"
+      },
+      "verdict": "VETO | Chaotic: INTERLOCK: Physical Limit Exceeded",
+      "craft_performance": 0.0,
+      "selected": false,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.1999999999999999,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 0.0,
+          "veto": true,
+          "reason": "INTERLOCK: Physical Limit Exceeded"
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-15T16:19:11.206171",
+      "gene_uid": "6f2d047d8ebd2211706fd8dfa9cefd91132a89bfbaedd7b347e61f2d74c8ccf9",
+      "gene_name": "Field_Engineer_Joe",
+      "purpose": "Inspect Valve",
+      "metadata": {
+        "ontology_class": "human",
+        "autonomy_level": "sovereign",
+        "description": "Human operator"
+      },
+      "verdict": "VETO | Chaotic: DANGER: Lethal Hazard Detected (Advisory Stop)",
+      "craft_performance": 0.0,
+      "selected": false,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.1999999999999999,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 0.0,
+          "veto": true,
+          "reason": "DANGER: Lethal Hazard Detected (Advisory Stop)"
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-15T16:19:11.207675",
+      "gene_uid": "7d80180f75ca956edee9a56c766068869be1c8da7baab467a1fd1b89e833272e",
+      "gene_name": "Monsoon_Rain",
+      "purpose": "Precipitation",
+      "metadata": {
+        "ontology_class": "nature_phenomenon",
+        "autonomy_level": "entropic",
+        "description": "Meteorological event"
+      },
+      "verdict": "VETO | Chaotic: ALERT: Environmental Anomaly (Downstream Warning)",
+      "craft_performance": 0.0,
+      "selected": false,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.1999999999999999,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 0.0,
+          "veto": true,
+          "reason": "ALERT: Environmental Anomaly (Downstream Warning)"
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    }
+  ]
+}

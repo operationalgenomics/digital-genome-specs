@@ -1,0 +1,35 @@
+{
+  "session_id": "run_cmapss_v1_1765831184",
+  "total_decisions": 1,
+  "decisions": [
+    {
+      "timestamp": "2025-12-15T17:39:44.895430",
+      "gene_uid": "3b03fb40929ec43b08a1fcd0ba92a2ed919b14a2e1319416b0123ff8349262f3",
+      "gene_name": "Synthetic_Turbine",
+      "verdict": "ACCEPTED",
+      "craft_performance": 0.8999999999999992,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    }
+  ]
+}

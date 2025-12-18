@@ -1,0 +1,35 @@
+{
+  "session_id": "run_cmapss_v1_1765833384",
+  "total_decisions": 1,
+  "decisions": [
+    {
+      "timestamp": "2025-12-15T18:16:24.448666",
+      "gene_uid": "79dad2e826ea406722356ed221381746707cb97b511355c9e82ef5a3cc29bdb0",
+      "gene_name": "Synthetic_Turbine",
+      "verdict": "VETO | Chaotic: INTERLOCK: Physical Limit Exceeded",
+      "craft_performance": 0.0,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 0.9999999999999998,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.1999999999999999,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 0.0,
+          "veto": true,
+          "reason": "INTERLOCK: Physical Limit Exceeded"
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    }
+  ]
+}

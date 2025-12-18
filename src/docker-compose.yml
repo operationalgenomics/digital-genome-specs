@@ -1,12 +1,12 @@
 version: '3.8'
-
 services:
   genome-core:
     build: .
     container_name: digital-genome-sim
     volumes:
-      # Monta o diretório local para permitir edição e recarga sem rebuild
+      # Mount local directory to allow live editing and reloading without rebuild
       - .:/app
     environment:
+      # Explicitly set python path for the container environment
       - PYTHONPATH=/app/src
     command: python examples/demo.py

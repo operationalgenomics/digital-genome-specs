@@ -1,0 +1,116 @@
+{
+  "session_id": "run_rc_initial_1765814091",
+  "start_time": "2025-12-15T12:54:51.476409",
+  "end_time": "2025-12-15T12:54:51.481410",
+  "total_decisions": 3,
+  "decisions": [
+    {
+      "timestamp": "2025-12-15T12:54:51.477410",
+      "gene_uid": "af1d4eff1c4243be1f03c19d4941a765d4d2a2c88854f5e9cc92123abcb26fdf",
+      "gene_name": "Turbofan_Unit_1",
+      "purpose": "Generate Thrust",
+      "metadata": {
+        "ontology_class": "machine",
+        "autonomy_level": "deterministic",
+        "description": "Industrial rotating equipment subject to physics constraints"
+      },
+      "verdict": "ACCEPTED",
+      "craft_performance": 0.81,
+      "selected": true,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-15T12:54:51.478411",
+      "gene_uid": "43a36ecbccc344020e057ea41a8740fbdbc961bb0643c0061bf2c4944b2b3f21",
+      "gene_name": "Field_Engineer_Joe",
+      "purpose": "Inspect Valve",
+      "metadata": {
+        "ontology_class": "human",
+        "autonomy_level": "sovereign",
+        "description": "Human operator with specialized training"
+      },
+      "verdict": "ACCEPTED",
+      "craft_performance": 0.81,
+      "selected": true,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-15T12:54:51.480410",
+      "gene_uid": "c2bb8d97bad8756ad43ef21a605f5333109946f6b74be785b85555686b45be2b",
+      "gene_name": "Monsoon_Rain",
+      "purpose": "Precipitation",
+      "metadata": {
+        "ontology_class": "nature_phenomenon",
+        "autonomy_level": "entropic",
+        "description": "Meteorological event"
+      },
+      "verdict": "ACCEPTED",
+      "craft_performance": 0.81,
+      "selected": true,
+      "motor_breakdown": {
+        "Praxeological": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Nash": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        },
+        "Chaotic": {
+          "score": 1.0,
+          "veto": false,
+          "reason": null
+        },
+        "Meristic": {
+          "score": 0.9,
+          "veto": false,
+          "reason": null
+        }
+      }
+    }
+  ]
+}

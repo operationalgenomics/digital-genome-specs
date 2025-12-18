@@ -1,4 +1,18 @@
-# Operational Genomics Dependencies
+# Operational Genomics / Digital Genome Dependencies
+# ===================================================
+
+# Core numerical computing
 numpy>=1.24.0
+
+# Visualization
 matplotlib>=3.7.0
-pytest>=7.3.0  # Para rodar os testes mencionados no CONTRIBUTING.md
+
+# Testing
+pytest>=7.3.0
+
+# Optional: Process Mining (for BPI Challenge validation)
+# pm4py>=2.7.0  # Uncomment for advanced XES parsing
+
+# Optional: Statistical analysis
+# scipy>=1.10.0  # For advanced statistical tests
+# scikit-learn>=1.2.0  # For ML baselines comparison
