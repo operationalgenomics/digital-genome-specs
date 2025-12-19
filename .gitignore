@@ -2,3 +2,5 @@
 data/raw/
 results/
 src/data/cortex/*.json
+__pycache__/
+*.log
