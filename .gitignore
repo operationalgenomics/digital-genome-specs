@@ -1,0 +1,4 @@
+# Large data and artifacts
+data/raw/
+results/
+src/data/cortex/*.json
